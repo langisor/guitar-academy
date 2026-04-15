@@ -26,37 +26,76 @@ const chordFingerings: Record<string, number[]> = {
   'F': [1, 3, 3, 2, 1, 1],
 };
 
-const levelContent: Record<number, {
+export type LevelType = "chord" | "strumming" | "fretboard" | "transition" | "quiz" | "song" | "riff" | "technique" | "barre" | "special_quiz";
+
+export interface LevelContent {
   title: string
   lesson: string
-  type: "chord" | "strumming" | "fretboard" | "transition" | "quiz"
+  type: LevelType
   chord?: string
   pattern?: string
   tempo?: number
   question?: string
   options?: string[]
   correctAnswer?: string
-}> = {
-  1: { title: "Guitar Parts", lesson: "Learn the essential parts of your guitar: the headstock, tuning pegs, nut, frets, soundhole, and bridge. Each part plays a crucial role in producing sound.", type: "chord" },
-  2: { title: "Holding the Guitar", lesson: "Sit with good posture and hold the guitar close to your body. Rest it on your right leg (or left if you're left-handed).", type: "chord" },
-  3: { title: "Tuning Basics", lesson: "Standard tuning from low to high: E-A-D-G-B-e. Use a tuner to ensure each string is perfectly in tune.", type: "fretboard" },
-  4: { title: "String Names", lesson: "The six strings are (thickest to thinnest): E, A, D, G, B, e. Remember: 'Eddie Ate Dynamite, Good Bye Eddie'", type: "quiz", question: "Which string is the thinnest (highest pitched)?", options: ["E", "A", "B", "e"], correctAnswer: "e" },
-  5: { title: "Quiz Time", lesson: "Let's test what you've learned! Complete this quiz to earn your stars.", type: "quiz", question: "What is the lowest note on a standard tuned guitar?", options: ["E", "A", "D", "G"], correctAnswer: "E" },
+  targetBpm?: number
+  chords?: string[]
+  progression?: string
+  recommendedStrumming?: string
+  difficulty?: "easy" | "medium" | "hard"
+}
+
+export const levelContent: Record<number, LevelContent> = {
+  1: { title: "Parts of the Guitar", lesson: "Learn the essential parts of your guitar: the headstock, tuning pegs, nut, frets, soundhole, and bridge. Each part plays a crucial role in producing sound.", type: "chord" },
+  2: { title: "Proper Posture", lesson: "Sit with good posture and hold the guitar close to your body. Rest it on your right leg (or left if you're left-handed).", type: "chord" },
+  3: { title: "Tuning Basics", lesson: "Standard tuning is E-A-D-G-B-e. We use tuners to measure 'pitch.' If a note is too high, it's 'sharp'; too low is 'flat.'", type: "fretboard", question: "What is the correct tuning for the 4th string?", options: ["E", "A", "D", "G"], correctAnswer: "D" },
+  4: { title: "String Names & Numbers", lesson: "Strings are numbered 1 (high e) to 6 (low E). Remember: Eddie Ate Dynamite, Good Bye Eddie.", type: "quiz", question: "Which string is the thinnest?", options: ["E", "A", "B", "e"], correctAnswer: "e" },
+  5: { title: "Beginner Basics Boss", lesson: "Review of posture, parts, and strings.", type: "quiz", question: "Which part holds the strings at the bottom?", options: ["Headstock", "Nut", "Bridge", "Fretboard"], correctAnswer: "Bridge" },
   6: { title: "G Major", lesson: "The G chord uses 3 fingers: index on low E (3rd fret), middle on A (2nd fret), ring on D (3rd fret). The two high strings are open.", type: "chord", chord: "G" },
-  7: { title: "C Major", lesson: "C chord: index on B (1st fret), middle on D (2nd fret), ring on A (3rd fret). Two open strings.", type: "chord", chord: "C" },
-  8: { title: "D Major", lesson: "D chord is a triangle shape: index on G (2nd fret), middle on B (3rd fret), ring on D (2nd fret). Three open strings.", type: "chord", chord: "D" },
-  9: { title: "E Minor", lesson: "Em is one of the easiest chords: index on G (2nd fret), middle on A (2nd fret). Two open strings.", type: "chord", chord: "Em" },
-  10: { title: "Quiz Time", lesson: "Let's check your chord knowledge!", type: "quiz", question: "Which chord has fingers on frets 2-2 on strings A and D?", options: ["Em", "G", "C", "D"], correctAnswer: "Em" },
-  11: { title: "G to C", lesson: "Practice transitioning from G to C. Keep your fingers in their shapes and move them together.", type: "transition", chord: "G" },
-  12: { title: "C to D", lesson: "Transition from C to D. Notice how similar the finger positions are - just move your ring finger.", type: "transition", chord: "C" },
-  13: { title: "D to Em", lesson: "D to Em is an easy transition. Remove your middle and ring fingers from D to form Em.", type: "transition", chord: "D" },
-  14: { title: "Em to Am", lesson: "Em to Am: Add your pinky to the D string (2nd fret) while keeping your other fingers.", type: "transition", chord: "Em" },
-  15: { title: "Quiz Time", lesson: "Test your chord transition skills!", type: "quiz", question: "Which chord transition requires the smallest hand movement?", options: ["G to C", "D to Em", "Am to E", "F to Bm"], correctAnswer: "D to Em" },
-  16: { title: "Down Strum", lesson: "A basic down strum means picking all strings in a downward motion. Practice keeping a steady rhythm.", type: "strumming", pattern: "DDDD", tempo: 80 },
-  17: { title: "Down-Up Pattern", lesson: "Alternate between down and up strums. This is the foundation of most strumming patterns.", type: "strumming", pattern: "DUDU", tempo: 90 },
-  18: { title: "Country Pattern", lesson: "The classic country pattern: down on the beat, up on the '&'. D-D-U-D-U-D", type: "strumming", pattern: "DDUDUD", tempo: 100 },
-  19: { title: "Pop Pattern", lesson: "Pop music often uses: down on 1, up on 2-and, down on 3-and, up on 4. D-U-DU-D-U", type: "strumming", pattern: "DUDUDU", tempo: 110 },
-  20: { title: "Quiz Time", lesson: "Test your strumming knowledge!", type: "quiz", question: "What does 'D' typically represent in strumming patterns?", options: ["Down strum", "Down-up strum", "Double strum", "Dampened strum"], correctAnswer: "Down strum" },
+  7: { title: "C Major", lesson: "C is a 'stretchy' chord. Keep your thumb behind the neck for leverage. Avoid muting the open G string.", type: "chord", chord: "C" },
+  8: { title: "D Major", lesson: "The 'Triangle.' Only strum the top 4 strings.", type: "chord", chord: "D" },
+  9: { title: "E Minor", lesson: "The easiest chord. Just two fingers on the 2nd fret.", type: "chord", chord: "Em" },
+  10: { title: "Open Chords Quiz", lesson: "Identify shapes and finger placements for G, C, D, and Em.", type: "quiz", question: "Which chord has fingers on frets 2-2 on strings A and D?", options: ["Em", "G", "C", "D"], correctAnswer: "Em" },
+  11: { title: "G → C", lesson: "Use the middle finger as a 'pivot' guide. Keep your fingers in their shapes and move them together.", type: "transition", chord: "G", targetBpm: 60, chords: ["G", "C"] },
+  12: { title: "C → D", lesson: "Focus on the ring finger sliding/positioning. Notice how similar the finger positions are.", type: "transition", chord: "C", targetBpm: 60, chords: ["C", "D"] },
+  13: { title: "D → Em", lesson: "Remove your middle and ring fingers from D to form Em.", type: "transition", chord: "D", targetBpm: 70, chords: ["D", "Em"] },
+  14: { title: "Em → Am", lesson: "Am is just Em moved down one string set with an added index finger.", type: "transition", chord: "Em", targetBpm: 70, chords: ["Em", "Am"] },
+  15: { title: "Transition Quiz", lesson: "Test your chord transition skills!", type: "quiz", question: "Which transition uses the least movement?", options: ["G to C", "D to Em", "Am to E", "F to Bm"], correctAnswer: "D to Em" },
+  16: { title: "Down Strum", lesson: "Consistent 1/4 note downbeats. Practice keeping a steady rhythm.", type: "strumming", pattern: "DDDD", tempo: 80 },
+  17: { title: "Down-Up Pattern", lesson: "1/8 note subdivisions. Alternate between down and up strums.", type: "strumming", pattern: "DUDU", tempo: 90 },
+  18: { title: "Country/Folk Pattern", lesson: "The 'Boom-Chicka' rhythm. D-D-U-D-U-D", type: "strumming", pattern: "DDUDUD", tempo: 100 },
+  19: { title: "Pop Pattern", lesson: "Constant motion with accents. Down on 1, up on 2-and, down on 3-and, up on 4.", type: "strumming", pattern: "DUDUDU", tempo: 110 },
+  20: { title: "Strumming Quiz", lesson: "Test your strumming knowledge!", type: "quiz", question: "What does 'D' typically represent in strumming patterns?", options: ["Down strum", "Down-up strum", "Double strum", "Dampened strum"], correctAnswer: "Down strum" },
+  21: { title: "Let It Be", lesson: "The Beatles song with C, G, Am, F (simplified to Em). A classic for beginners.", type: "song", chord: "C", progression: "C - G - Am - Em", recommendedStrumming: "D-D-U-D-U-D" },
+  22: { title: "A Horse with No Name", lesson: "America's hit. The ultimate 2-chord song using Em and D.", type: "song", chord: "Em", progression: "Em - D", recommendedStrumming: "D-U-D-U-D-U" },
+  23: { title: "Wonderwall", lesson: "Oasis classic with Em, G, D, Am progression.", type: "song", chord: "Em", progression: "Em - G - D - Am", recommendedStrumming: "D-D-U-D-U-D" },
+  24: { title: "Knockin' on Heaven's Door", lesson: "Bob Dylan's epic. G, D, Am / G, D, C.", type: "song", chord: "G", progression: "G - D - Am", recommendedStrumming: "D-D-U-D-U-D" },
+  25: { title: "Song Challenge Boss", lesson: "Match progressions to the correct song.", type: "quiz", question: "Which song uses Em - D progression?", options: ["Let It Be", "A Horse with No Name", "Wonderwall", "Knockin' on Heaven's Door"], correctAnswer: "A Horse with No Name" },
+  26: { title: "F Major Barre", lesson: "Using the index finger as a 'nut.' The index bars all 6 strings while other fingers form the shape.", type: "barre", chord: "F" },
+  27: { title: "B Minor Barre", lesson: "Playing minor chords from the 5th string root. The A-shape moved up.", type: "barre", chord: "Bm" },
+  28: { title: "D Minor Barre", lesson: "The D-shape moved up the neck. Challenging but essential.", type: "barre", chord: "Dm" },
+  29: { title: "Moving the Shapes", lesson: "Moving F shape to fret 3 (G) and fret 5 (A). Learn to transpose barre chords.", type: "barre", chord: "G", targetBpm: 80 },
+  30: { title: "Barre Chord Quiz", lesson: "Test your barre chord knowledge!", type: "quiz", question: "What fret is the A-shape barre chord at root A?", options: ["3rd fret", "5th fret", "7th fret", "12th fret"], correctAnswer: "5th fret" },
+  31: { title: "Note Names", lesson: "The chromatic scale and natural half-steps (B-C, E-F). All 12 notes.", type: "fretboard" },
+  32: { title: "Minor Pentatonic Pattern 1", lesson: "The 'Box' shape for soloing. The foundation of rock and blues soloing.", type: "riff", chord: "A", pattern: "X-0-2-2-0-0" },
+  33: { title: "Interval Shapes", lesson: "Octaves and Power Chords (Roots and 5ths). Essential for rhythm guitar.", type: "fretboard", pattern: "X-X-0-2-3-2" },
+  34: { title: "Triads", lesson: "Small 3-string shapes on strings 1, 2, and 3. Major, minor, diminished, augmented.", type: "fretboard" },
+  35: { title: "Fretboard Quiz", lesson: "Test your fretboard knowledge!", type: "quiz", question: "What is the 5th fret note on the A string?", options: ["C", "D", "E", "F"], correctAnswer: "D" },
+  36: { title: "Smoke on the Water", lesson: "The iconic Deep Purple riff. Simple power chord pattern.", type: "riff", chord: "G", progression: "G5 - A5 - D5", pattern: "-3---3---5", tempo: 120 },
+  37: { title: "Seven Nation Army", lesson: "The White Stripes. Single-note riff that goes low to high.", type: "riff", chord: "G", progression: "G - G - G", pattern: "3-3-3-3-0-3", tempo: 116 },
+  38: { title: "Iron Man", lesson: "Black Sabbath. The menacing opening riff.", type: "riff", chord: "E", pattern: "0-2-2-0-2-0", tempo: 104 },
+  39: { title: "Back in Black", lesson: "AC/DC. A little more advanced with palm muting.", type: "riff", chord: "A", pattern: "X-0-2-2-2-0", tempo: 120 },
+  40: { title: "Riff Challenge Boss", lesson: "Master the iconic rock riffs!", type: "quiz", question: "Which song uses primarily G5 power chords?", options: ["Smoke on the Water", "Seven Nation Army", "Iron Man", "Back in Black"], correctAnswer: "Smoke on the Water" },
+  41: { title: "Travis Picking", lesson: "The fingerpicking style popularized by Merle Travis. Thumb plays bass, fingers play melody.", type: "technique", chord: "G", pattern: "T-1-2-3", tempo: 80 },
+  42: { title: "Hammer-ons", lesson: "Pluck the string and 'hammer' your finger down to create a note without picking again.", type: "technique", pattern: "H", tempo: 90 },
+  43: { title: "Pull-offs", lesson: "Pull your finger off the string to sound the lower note. The reverse of hammer-ons.", type: "technique", pattern: "P", tempo: 90 },
+  44: { title: "Slides", lesson: "Slide from one note to another. Creates a smooth, connected sound.", type: "technique", pattern: "/", tempo: 100 },
+  45: { title: "Technique Quiz", lesson: "Test your technique knowledge!", type: "quiz", question: "Which technique involves plucking a string with your finger as you lift it?", options: ["Hammer-on", "Pull-off", "Slide", "Bend"], correctAnswer: "Pull-off" },
+  46: { title: "Syncopated Rhythms", lesson: "Off-beat accents and rest strokes. Essential for groovy playing.", type: "strumming", pattern: "D-U-d-U", tempo: 110 },
+  47: { title: "Jazz Chords", lesson: "7ths & 9ths. Cmaj7, Dm7, G7, Am7 shapes.", type: "chord", chord: "Cmaj7" },
+  48: { title: "Modal Interchange", lesson: "Borrowing chords from parallel modes. Mix major and minor palette.", type: "chord", chord: "Db" },
+  49: { title: "Performance Mindset", lesson: "Stage presence, audience connection, and preparing for live performance.", type: "quiz", question: "What is the most important aspect of live performance?", options: ["Speed", "Showmanship", "Consistent practice", "Playing loud"], correctAnswer: "Consistent practice" },
+  50: { title: "Graduation Level", lesson: "Comprehensive review and Master certification. You've come a long way!", type: "special_quiz", question: "Are you ready to call yourself a guitarist?", options: ["Yes!", "Absolutely!", "Definitely!", "Let's go!"], correctAnswer: "Yes!" },
 };
 
 export default function LevelPage() {

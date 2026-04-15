@@ -13,105 +13,119 @@ import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useProgressStore } from "@/stores/progress";
 
-const worldData: Record<number, { title: string; levels: { id: number; title: string; isLesson: boolean }[] }> = {
+export type WorldLevel = { id: number; title: string; isLesson: boolean };
+
+export type WorldData = Record<number, { title: string; levels: WorldLevel[]; theme?: string }>;
+
+export const worldData: WorldData = {
   1: { 
     title: "Beginner Basics", 
+    theme: "Physical orientation and fundamentals.",
     levels: [
-      { id: 1, title: "Guitar Parts", isLesson: true },
-      { id: 2, title: "Holding the Guitar", isLesson: true },
+      { id: 1, title: "Parts of the Guitar", isLesson: true },
+      { id: 2, title: "Proper Posture", isLesson: true },
       { id: 3, title: "Tuning Basics", isLesson: true },
-      { id: 4, title: "String Names", isLesson: true },
-      { id: 5, title: "Quiz Time", isLesson: false },
+      { id: 4, title: "String Names & Numbers", isLesson: true },
+      { id: 5, title: "Beginner Basics Boss", isLesson: false },
     ]
   },
   2: { 
     title: "Open Chords", 
+    theme: "The 'Big Five' essential shapes.",
     levels: [
       { id: 6, title: "G Major", isLesson: true },
       { id: 7, title: "C Major", isLesson: true },
       { id: 8, title: "D Major", isLesson: true },
       { id: 9, title: "E Minor", isLesson: true },
-      { id: 10, title: "Quiz Time", isLesson: false },
+      { id: 10, title: "Open Chords Quiz", isLesson: false },
     ]
   },
   3: { 
     title: "Chord Transitions", 
+    theme: "Speed and efficiency.",
     levels: [
-      { id: 11, title: "G to C", isLesson: true },
-      { id: 12, title: "C to D", isLesson: true },
-      { id: 13, title: "D to Em", isLesson: true },
-      { id: 14, title: "Em to Am", isLesson: true },
-      { id: 15, title: "Quiz Time", isLesson: false },
+      { id: 11, title: "G → C", isLesson: true },
+      { id: 12, title: "C → D", isLesson: true },
+      { id: 13, title: "D → Em", isLesson: true },
+      { id: 14, title: "Em → Am", isLesson: true },
+      { id: 15, title: "Transition Quiz", isLesson: false },
     ]
   },
   4: { 
     title: "Strumming Patterns", 
+    theme: "Developing an internal clock.",
     levels: [
       { id: 16, title: "Down Strum", isLesson: true },
       { id: 17, title: "Down-Up Pattern", isLesson: true },
-      { id: 18, title: "Country Pattern", isLesson: true },
+      { id: 18, title: "Country/Folk Pattern", isLesson: true },
       { id: 19, title: "Pop Pattern", isLesson: true },
-      { id: 20, title: "Quiz Time", isLesson: false },
+      { id: 20, title: "Strumming Quiz", isLesson: false },
     ]
   },
   5: { 
     title: "First Songs", 
+    theme: "Real-world application.",
     levels: [
-      { id: 21, title: "Let It Be Intro", isLesson: true },
-      { id: 22, title: "Horse With No Name", isLesson: true },
+      { id: 21, title: "Let It Be", isLesson: true },
+      { id: 22, title: "A Horse with No Name", isLesson: true },
       { id: 23, title: "Wonderwall", isLesson: true },
-      { id: 24, title: "Knockin Heaven's Door", isLesson: true },
-      { id: 25, title: "Song Challenge", isLesson: false },
+      { id: 24, title: "Knockin' on Heaven's Door", isLesson: true },
+      { id: 25, title: "Song Challenge Boss", isLesson: false },
     ]
   },
   6: { 
     title: "Barre Chords", 
+    theme: "The 'Intermediate Wall.'",
     levels: [
       { id: 26, title: "F Major Barre", isLesson: true },
-      { id: 27, title: "Bm Barre", isLesson: true },
-      { id: 28, title: "Dm Barre", isLesson: true },
-      { id: 29, title: "Fm Barre", isLesson: true },
-      { id: 30, title: "Quiz Time", isLesson: false },
+      { id: 27, title: "B Minor Barre", isLesson: true },
+      { id: 28, title: "D Minor Barre", isLesson: true },
+      { id: 29, title: "Moving the Shapes", isLesson: true },
+      { id: 30, title: "Barre Chord Quiz", isLesson: false },
     ]
   },
   7: { 
     title: "Fretboard Mastery", 
+    theme: "Navigating the neck.",
     levels: [
       { id: 31, title: "Note Names", isLesson: true },
-      { id: 32, title: "Scale Patterns", isLesson: true },
+      { id: 32, title: "Minor Pentatonic Pattern 1", isLesson: true },
       { id: 33, title: "Interval Shapes", isLesson: true },
       { id: 34, title: "Triads", isLesson: true },
-      { id: 35, title: "Quiz Time", isLesson: false },
+      { id: 35, title: "Fretboard Quiz", isLesson: false },
     ]
   },
   8: { 
     title: "Rock Riffs", 
+    theme: "Iconic melodies.",
     levels: [
-      { id: 36, title: "Smoke on Water", isLesson: true },
+      { id: 36, title: "Smoke on the Water", isLesson: true },
       { id: 37, title: "Seven Nation Army", isLesson: true },
       { id: 38, title: "Iron Man", isLesson: true },
       { id: 39, title: "Back in Black", isLesson: true },
-      { id: 40, title: "Riff Challenge", isLesson: false },
+      { id: 40, title: "Riff Challenge Boss", isLesson: false },
     ]
   },
   9: { 
     title: "Advanced Techniques", 
+    theme: "Flavor and expression.",
     levels: [
-      { id: 41, title: "Fingerpicking", isLesson: true },
+      { id: 41, title: "Travis Picking", isLesson: true },
       { id: 42, title: "Hammer-ons", isLesson: true },
       { id: 43, title: "Pull-offs", isLesson: true },
       { id: 44, title: "Slides", isLesson: true },
-      { id: 45, title: "Quiz Time", isLesson: false },
+      { id: 45, title: "Technique Quiz", isLesson: false },
     ]
   },
   10: { 
     title: "Master Guitarist", 
+    theme: "Theory and performance.",
     levels: [
-      { id: 46, title: "Advanced Rhythm", isLesson: true },
+      { id: 46, title: "Syncopated Rhythms", isLesson: true },
       { id: 47, title: "Jazz Chords", isLesson: true },
       { id: 48, title: "Modal Interchange", isLesson: true },
-      { id: 49, title: "Live Performance", isLesson: true },
-      { id: 50, title: "Final Challenge", isLesson: false },
+      { id: 49, title: "Performance Mindset", isLesson: true },
+      { id: 50, title: "Graduation Level", isLesson: false },
     ]
   },
 };
