@@ -1,0 +1,144 @@
+{
+  "chords": [
+    {
+      "name": "C",
+      "fingers": [0, 3, 2, 0, 1, 0],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "D",
+      "fingers": [-1, -1, 0, 2, 3, 2],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "Em",
+      "fingers": [0, 2, 2, 0, 0, 0],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "G",
+      "fingers": [3, 2, 0, 0, 0, 3],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "A",
+      "fingers": [0, 2, 2, 2, 0, 0],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "Am",
+      "fingers": [0, 1, 2, 2, 0, 0],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "E",
+      "fingers": [0, 2, 2, 1, 0, 0],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "F",
+      "fingers": [1, 3, 3, 2, 1, 1],
+      "fret": 1,
+      " Barre": true,
+      "difficulty": "medium"
+    },
+    {
+      "name": "F#m",
+      "fingers": [2, 4, 4, 3, 2, 2],
+      "fret": 2,
+      " Barre": true,
+      "difficulty": "medium"
+    },
+    {
+      "name": "Bm",
+      "fingers": [-1, 2, 4, 4, 3, -1],
+      "fret": 2,
+      " Barre": true,
+      "difficulty": "hard"
+    },
+    {
+      "name": "Dm",
+      "fingers": [-1, -1, 0, 2, 3, 1],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "medium"
+    },
+    {
+      "name": "Fm",
+      "fingers": [1, 3, 3, 1, 1, 1],
+      "fret": 1,
+      " Barre": true,
+      "difficulty": "medium"
+    },
+    {
+      "name": "Gm",
+      "fingers": [3, 5, 5, 3, 3, 3],
+      "fret": 3,
+      " Barre": true,
+      "difficulty": "hard"
+    },
+    {
+      "name": "Cm",
+      "fingers": [-1, 3, 5, 5, 4, 3],
+      "fret": 3,
+      " Barre": true,
+      "difficulty": "hard"
+    },
+    {
+      "name": "B7",
+      "fingers": [-1, 2, 1, 2, 0, 2],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "medium"
+    },
+    {
+      "name": "E7",
+      "fingers": [0, 2, 0, 1, 0, 0],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "A7",
+      "fingers": [0, 2, 0, 2, 0, 0],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "D7",
+      "fingers": [-1, -1, 0, 2, 1, 2],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "G7",
+      "fingers": [3, 2, 0, 0, 0, 1],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "easy"
+    },
+    {
+      "name": "C7",
+      "fingers": [-1, 3, 2, 3, 1, 0],
+      "fret": 0,
+      " Barre": false,
+      "difficulty": "medium"
+    }
+  ]
+}

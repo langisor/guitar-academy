@@ -1,0 +1,44 @@
+{
+  "name": "Guitar Academy",
+  "short_name": "Guitar Academy",
+  "description": "Learn guitar with interactive lessons, chord diagrams, and songs",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "music", "entertainment"],
+  "lang": "en",
+  "dir": "auto",
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Practice",
+      "short_name": "Practice",
+      "description": "Start daily practice",
+      "url": "/practice",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Songs",
+      "short_name": "Songs",
+      "description": "Browse songs",
+      "url": "/songs",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
