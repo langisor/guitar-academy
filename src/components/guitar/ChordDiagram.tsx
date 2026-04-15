@@ -1,9 +1,9 @@
 "use client"
 
-import { memo, useState, useCallback, useMemo } from 'react'
-import { cn } from '@/lib/utils'
-import { useLeftHandMode } from '@/hooks/useLeftHandMode'
-import { ChordData, getChordByName, chordList } from '@/data/chords'
+import { memo, useState, useCallback, useMemo } from "react"
+import { cn } from "@/lib/utils"
+import { useLeftHandMode } from "@/hooks/useLeftHandMode"
+import { ChordData, getChordByName, chordList } from "@/data/music/chords"
 
 interface FingerPosition {
   string: number
@@ -20,12 +20,14 @@ interface ChordDiagramProps {
   frets?: number
   startFret?: number
   className?: string
-  size?: 'sm' | 'md' | 'lg'
+  size?: "sm" | "md" | "lg"
   showLabels?: boolean
   showFingerNumbers?: boolean
+  showPlayButton?: boolean
   interactive?: boolean
   onFretClick?: (string: number, fret: number) => void
   onChordSelect?: (chordName: string) => void
+  onPlayChord?: (chordName: string, direction: "down" | "up") => void
   highlightedFret?: { string: number; fret: number } | null
 }
 
@@ -39,11 +41,11 @@ function convertLegacyFingers(fingers: number[]): FingerPosition[] {
 }
 
 const fingerColors = [
-  'bg-red-500',
-  'bg-blue-500',
-  'bg-green-500',
-  'bg-yellow-500',
-  'bg-purple-500',
+  "bg-red-500",
+  "bg-blue-500",
+  "bg-green-500",
+  "bg-yellow-500",
+  "bg-purple-500",
 ]
 
 const sizeConfig = {
@@ -61,12 +63,14 @@ const ChordDiagramComponent = ({
   frets: providedFrets,
   startFret: providedStartFret,
   className,
-  size = 'md',
+  size = "md",
   showLabels = true,
   showFingerNumbers = true,
+  showPlayButton = false,
   interactive = false,
   onFretClick,
   onChordSelect,
+  onPlayChord,
   highlightedFret,
 }: ChordDiagramProps) => {
   const { leftHandMode, getStringNames } = useLeftHandMode()
@@ -80,7 +84,7 @@ const ChordDiagramComponent = ({
 
   const fingers = useMemo(() => {
     if (providedFingers) {
-      if (Array.isArray(providedFingers) && typeof providedFingers[0] === 'number') {
+      if (Array.isArray(providedFingers) && typeof providedFingers[0] === "number") {
         return convertLegacyFingers(providedFingers as number[])
       }
       return providedFingers as FingerPosition[]
@@ -90,7 +94,7 @@ const ChordDiagramComponent = ({
 
   const openStrings = useMemo(() => {
     if (providedOpenStrings) return providedOpenStrings
-    if (Array.isArray(providedFingers) && typeof providedFingers[0] === 'number') {
+    if (Array.isArray(providedFingers) && typeof providedFingers[0] === "number") {
       const legacyFingers = providedFingers as number[]
       return legacyFingers
         .map((f, idx) => (f === 0 ? idx + 1 : null))
@@ -101,7 +105,7 @@ const ChordDiagramComponent = ({
 
   const muteStrings = useMemo(() => {
     if (providedMuteStrings) return providedMuteStrings
-    if (Array.isArray(providedFingers) && typeof providedFingers[0] === 'number') {
+    if (Array.isArray(providedFingers) && typeof providedFingers[0] === "number") {
       const legacyFingers = providedFingers as number[]
       return legacyFingers
         .map((f, idx) => (f === -1 ? idx + 1 : null))
@@ -131,6 +135,17 @@ const ChordDiagramComponent = ({
     [onFretClick]
   )
 
+  const handlePlayChord = useCallback(
+    (direction: "down" | "up") => {
+      if (chordData?.name) {
+        onPlayChord?.(chordData.name, direction)
+      } else if (chordName) {
+        onPlayChord?.(chordName, direction)
+      }
+    },
+    [chordData, chordName, onPlayChord]
+  )
+
   const svgWidth = config.width
   const svgHeight = config.height
   const marginLeft = 20
@@ -140,30 +155,28 @@ const ChordDiagramComponent = ({
 
   const isHighlighted = useCallback(
     (stringIndex: number, fretIndex: number) => {
-      return (
-        highlightedFret?.string === stringIndex && highlightedFret?.fret === fretIndex
-      )
+      return highlightedFret?.string === stringIndex && highlightedFret?.fret === fretIndex
     },
     [highlightedFret]
   )
 
   return (
-    <div className={cn('flex flex-col items-center', className)}>
+    <div className={cn("flex flex-col items-center", className)}>
       {showLabels && (
         <div className="text-lg font-bold mb-2 text-foreground">
-          {chordData?.name || chordName || 'Chord'}
+          {chordData?.name || chordName || "Chord"}
         </div>
       )}
 
       <div
         className={cn(
-          'relative bg-background rounded-lg p-2 border-2 border-border transition-transform duration-300 ease-in-out',
-          leftHandMode && 'scale-x-[-1]'
+          "relative bg-background rounded-lg p-2 border-2 border-border transition-transform duration-300 ease-in-out",
+          leftHandMode && "scale-x-[-1]"
         )}
         style={{ width: svgWidth, height: svgHeight }}
         role="img"
-        aria-label={`Chord diagram for ${chordData?.name || chordName || 'unknown chord'}, ${
-          leftHandMode ? 'left-handed' : 'right-handed'
+        aria-label={`Chord diagram for ${chordData?.name || chordName || "unknown chord"}, ${
+          leftHandMode ? "left-handed" : "right-handed"
         } view`}
       >
         {startFret > 1 && (
@@ -191,7 +204,7 @@ const ChordDiagramComponent = ({
               y1={marginTop + fretIndex * fretSpacing}
               x2={svgWidth - marginLeft}
               y2={marginTop + fretIndex * fretSpacing}
-              stroke={fretIndex === 0 ? '#333' : '#888'}
+              stroke={fretIndex === 0 ? "#333" : "#888"}
               strokeWidth={fretIndex === 0 ? config.strokeW * 2 : config.strokeW}
             />
           ))}
@@ -254,13 +267,13 @@ const ChordDiagramComponent = ({
                 onClick={() => handleFretClick(finger.string, finger.fret)}
                 onMouseEnter={() => setHoveredFret({ string: finger.string, fret: finger.fret })}
                 onMouseLeave={() => setHoveredFret(null)}
-                className={cn('cursor-pointer', interactive && 'cursor-pointer')}
-                role={interactive ? 'button' : undefined}
+                className={cn("cursor-pointer", interactive && "cursor-pointer")}
+                role={interactive ? "button" : undefined}
                 tabIndex={interactive ? 0 : undefined}
                 onKeyDown={
                   interactive
                     ? (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
+                        if (e.key === "Enter" || e.key === " ") {
                           handleFretClick(finger.string, finger.fret)
                         }
                       }
@@ -278,13 +291,13 @@ const ChordDiagramComponent = ({
                   r={config.circleR + (isHov ? 2 : 0)}
                   className={cn(
                     fingerColors[(finger.finger - 1) % 5],
-                    'transition-all duration-200',
-                    isHl && 'drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]'
+                    "transition-all duration-200",
+                    isHl && "drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]"
                   )}
-                  stroke={isHl ? '#ef4444' : '#fff'}
+                  stroke={isHl ? "#ef4444" : "#fff"}
                   strokeWidth={isHl ? 3 : 2}
                   style={{
-                    filter: isHov ? 'drop-shadow(0 0 6px currentColor)' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+                    filter: isHov ? "drop-shadow(0 0 6px currentColor)" : "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
                   }}
                 />
                 {showFingerNumbers && (
@@ -322,6 +335,49 @@ const ChordDiagramComponent = ({
         )}
       </div>
 
+      {showPlayButton && (chordData?.name || chordName) && (
+        <div className="mt-2 flex gap-2">
+          <button
+            onClick={() => handlePlayChord("down")}
+            className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            aria-label="Play down strum"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+            Down
+          </button>
+          <button
+            onClick={() => handlePlayChord("up")}
+            className="flex items-center gap-1 px-3 py-1.5 text-sm rounded-md border border-border bg-background hover:bg-muted transition-colors"
+            aria-label="Play up strum"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
+            Up
+          </button>
+        </div>
+      )}
+
       {interactive && chordList.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1 justify-center max-w-xs">
           {chordList.map((chord) => (
@@ -329,10 +385,10 @@ const ChordDiagramComponent = ({
               key={chord.name}
               onClick={() => onChordSelect?.(chord.name)}
               className={cn(
-                'px-2 py-1 text-xs rounded border transition-colors',
-                (chordData?.name === chord.name)
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'bg-background hover:bg-muted border-border'
+                "px-2 py-1 text-xs rounded border transition-colors",
+                chordData?.name === chord.name
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-background hover:bg-muted border-border"
               )}
               aria-pressed={chordData?.name === chord.name}
             >
@@ -358,31 +414,31 @@ export function LeftHandToggle({ className }: LeftHandToggleProps) {
     <button
       onClick={toggleLeftHandMode}
       className={cn(
-        'flex items-center gap-2 px-3 py-2 rounded-lg border transition-all duration-200',
+        "flex items-center gap-2 px-3 py-2 rounded-lg border transition-all duration-200",
         leftHandMode
-          ? 'bg-primary text-primary-foreground border-primary'
-          : 'bg-background hover:bg-muted border-border',
+          ? "bg-primary text-primary-foreground border-primary"
+          : "bg-background hover:bg-muted border-border",
         className
       )}
       aria-pressed={leftHandMode}
-      aria-label={`Left hand mode ${leftHandMode ? 'enabled' : 'disabled'}`}
+      aria-label={`Left hand mode ${leftHandMode ? "enabled" : "disabled"}`}
     >
       <span className="text-lg" aria-hidden="true">
-        {leftHandMode ? '🤚' : '✋'}
+        {leftHandMode ? "🤚" : "✋"}
       </span>
       <span className="text-sm font-medium">
-        {leftHandMode ? 'Left Hand' : 'Right Hand'}
+        {leftHandMode ? "Left Hand" : "Right Hand"}
       </span>
       <span
         className={cn(
-          'w-8 h-4 rounded-full relative transition-colors duration-200',
-          leftHandMode ? 'bg-primary-foreground/30' : 'bg-muted-foreground/30'
+          "w-8 h-4 rounded-full relative transition-colors duration-200",
+          leftHandMode ? "bg-primary-foreground/30" : "bg-muted-foreground/30"
         )}
       >
         <span
           className={cn(
-            'absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform duration-200',
-            leftHandMode ? 'left-4' : 'left-0.5'
+            "absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform duration-200",
+            leftHandMode ? "left-4" : "left-0.5"
           )}
         />
       </span>
