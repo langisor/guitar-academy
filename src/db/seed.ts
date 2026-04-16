@@ -163,32 +163,48 @@ db.exec(`
 `);
 
 worldsData.forEach((world, index) => {
-  db.prepare(
+  // Insert English World
+  const enResult = db.prepare(
     "INSERT INTO worlds (course_id, title, description, icon, order_index, is_locked) VALUES (?, ?, ?, ?, ?, ?)"
   ).run(1, world.title, world.description, world.icon, index + 1, index === 0 ? 0 : 1);
   
-  db.prepare(
+  // Insert Arabic World
+  const arResult = db.prepare(
     "INSERT INTO worlds (course_id, title, description, icon, order_index, is_locked) VALUES (?, ?, ?, ?, ?, ?)"
   ).run(2, world.titleAr, world.description, world.icon, index + 1, index === 0 ? 0 : 1);
-});
 
-let levelId = 1;
-worldsData.forEach((world, worldIndex) => {
-  levelsData[worldIndex].forEach((levelTitle, levelIndex) => {
+  // Seed levels for both worlds
+  const levelTitles = levelsData[index];
+  levelTitles.forEach((levelTitle, levelIndex) => {
+    // English Level
     db.prepare(`
       INSERT INTO levels (world_id, title, description, difficulty, xp_reward, order_index, is_locked, content_path)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
-      worldIndex + 1,
+      enResult.lastInsertRowid,
       levelTitle,
       `Learn ${levelTitle.toLowerCase()}`,
-      worldIndex < 2 ? "easy" : worldIndex < 5 ? "medium" : "hard",
+      index < 2 ? "easy" : index < 5 ? "medium" : "hard",
       50,
       levelIndex + 1,
-      levelIndex === 0 && worldIndex === 0 ? 0 : 1,
-      `guitar/world-${worldIndex + 1}/level-${String(levelIndex + 1).padStart(3, '0')}.mdx`
+      levelIndex === 0 && index === 0 ? 0 : 1,
+      `guitar/world-${index + 1}/level-${String(levelIndex + 1).padStart(3, '0')}.mdx`
     );
-    levelId++;
+
+    // Arabic Level
+    db.prepare(`
+      INSERT INTO levels (world_id, title, description, difficulty, xp_reward, order_index, is_locked, content_path)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      arResult.lastInsertRowid,
+      levelTitle,
+      `تعلم ${levelTitle}`,
+      index < 2 ? "easy" : index < 5 ? "medium" : "hard",
+      50,
+      levelIndex + 1,
+      levelIndex === 0 && index === 0 ? 0 : 1,
+      `guitar/world-${index + 1}/level-${String(levelIndex + 1).padStart(3, '0')}.mdx`
+    );
   });
 });
 
