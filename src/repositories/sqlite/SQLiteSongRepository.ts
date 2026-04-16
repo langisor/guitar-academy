@@ -1,17 +1,8 @@
 import { getDatabase } from "@/db/database";
+import { ISongRepository } from "../interfaces/ISongRepository";
+import { Song } from "../interfaces/types";
 
-export interface Song {
-  id: number;
-  title: string;
-  artist: string;
-  chords: string;
-  difficulty: string;
-  tempo: number;
-  capo: number;
-  tuning: string;
-}
-
-export class SongRepository {
+export class SQLiteSongRepository implements ISongRepository {
   private db = getDatabase();
 
   getAll(): Song[] {
@@ -59,7 +50,7 @@ export class SongRepository {
     
     const values = Object.keys(song)
       .filter(k => k !== "id")
-      .map(k => (song as Record<string, unknown>)[k]);
+      .map(k => (song as any)[k]);
     
     this.db.prepare(`UPDATE songs SET ${fields} WHERE id = ?`).run(...values, id);
   }
@@ -68,5 +59,3 @@ export class SongRepository {
     this.db.prepare("DELETE FROM songs WHERE id = ?").run(id);
   }
 }
-
-export const songRepository = new SongRepository();

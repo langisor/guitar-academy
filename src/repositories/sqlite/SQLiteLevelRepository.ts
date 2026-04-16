@@ -1,18 +1,8 @@
 import { getDatabase } from "@/db/database";
+import { ILevelRepository } from "../interfaces/ILevelRepository";
+import { Level } from "../interfaces/types";
 
-export interface Level {
-  id: number;
-  world_id: number;
-  title: string;
-  description: string | null;
-  content_path: string | null;
-  difficulty: string;
-  xp_reward: number;
-  order_index: number;
-  is_locked: number;
-}
-
-export class LevelRepository {
+export class SQLiteLevelRepository implements ILevelRepository {
   private db = getDatabase();
 
   getAll(): Level[] {
@@ -51,6 +41,36 @@ export class LevelRepository {
   lockLevel(id: number): void {
     this.db.prepare("UPDATE levels SET is_locked = 1 WHERE id = ?").run(id);
   }
-}
 
-export const levelRepository = new LevelRepository();
+  create(level: Omit<Level, "id">): Level {
+    const result = this.db.prepare(`
+      INSERT INTO levels (world_id, title, description, content_path, difficulty, xp_reward, order_index, is_locked)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      level.world_id,
+      level.title,
+      level.description,
+      level.content_path,
+      level.difficulty,
+      level.xp_reward,
+      level.order_index,
+      level.is_locked
+    );
+    return this.getById(result.lastInsertRowid as number)!;
+  }
+
+  update(id: number, level: Partial<Level>): void {
+    const fields = Object.keys(level)
+      .filter(k => k !== "id")
+      .map(k => `${k} = ?`)
+      .join(", ");
+    const values = Object.keys(level)
+      .filter(k => k !== "id")
+      .map(k => (level as any)[k]);
+    this.db.prepare(`UPDATE levels SET ${fields} WHERE id = ?`).run(...values, id);
+  }
+
+  delete(id: number): void {
+    this.db.prepare("DELETE FROM levels WHERE id = ?").run(id);
+  }
+}

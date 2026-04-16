@@ -1,18 +1,8 @@
 import { getDatabase } from "@/db/database";
+import { IExerciseRepository } from "../interfaces/IExerciseRepository";
+import { Exercise } from "../interfaces/types";
 
-export interface Exercise {
-  id: number;
-  level_id: number;
-  type: string;
-  question: string;
-  options: string | null;
-  correct_answer: string | null;
-  data: string | null;
-  xp_reward: number;
-  order_index: number;
-}
-
-export class ExerciseRepository {
+export class SQLiteExerciseRepository implements IExerciseRepository {
   private db = getDatabase();
 
   getAll(): Exercise[] {
@@ -61,7 +51,7 @@ export class ExerciseRepository {
     
     const values = Object.keys(exercise)
       .filter(k => k !== "id")
-      .map(k => (exercise as Record<string, unknown>)[k]);
+      .map(k => (exercise as any)[k]);
     
     this.db.prepare(`UPDATE exercises SET ${fields} WHERE id = ?`).run(...values, id);
   }
@@ -70,5 +60,3 @@ export class ExerciseRepository {
     this.db.prepare("DELETE FROM exercises WHERE id = ?").run(id);
   }
 }
-
-export const exerciseRepository = new ExerciseRepository();
