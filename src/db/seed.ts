@@ -160,6 +160,10 @@ console.log("Seeding database...");
 
 db.exec(`
   INSERT OR REPLACE INTO users (id, username, email, password_hash, xp, streak) VALUES (1, 'demo', 'demo@example.com', 'demo', 0, 0);
+  
+  INSERT INTO courses (id, title, language, description) VALUES 
+  (1, 'Guitar Fundamentals', 'en', 'Learn guitar from scratch with interactive lessons'),
+  (2, 'أساسيات الجيتار', 'ar', 'تعلم الجيتار من الصفر مع دروس تفاعلية');
 `);
 
 worldsData.forEach((world, index) => {
