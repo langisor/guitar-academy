@@ -1,65 +1,84 @@
-import { getDatabase } from "@/db/database";
+import { db } from "@/db/database";
 import { ILevelRepository } from "../interfaces/ILevelRepository";
 import { Level } from "../interfaces/types";
 
 export class SQLiteLevelRepository implements ILevelRepository {
-  private db = getDatabase();
-
-  getAll(): Level[] {
-    return this.db.prepare("SELECT * FROM levels ORDER BY world_id, order_index").all() as Level[];
+  async getAll(): Promise<Level[]> {
+    const result = await db.execute("SELECT * FROM levels ORDER BY world_id, order_index");
+    return result.rows as unknown as Level[];
   }
 
-  getById(id: number): Level | undefined {
-    return this.db.prepare("SELECT * FROM levels WHERE id = ?").get(id) as Level | undefined;
+  async getById(id: number): Promise<Level | undefined> {
+    const result = await db.execute({
+      sql: "SELECT * FROM levels WHERE id = ?",
+      args: [id]
+    });
+    return result.rows[0] as unknown as Level | undefined;
   }
 
-  getByWorld(worldId: number): Level[] {
-    return this.db.prepare(
-      "SELECT * FROM levels WHERE world_id = ? ORDER BY order_index"
-    ).all(worldId) as Level[];
+  async getByWorld(worldId: number): Promise<Level[]> {
+    const result = await db.execute({
+      sql: "SELECT * FROM levels WHERE world_id = ? ORDER BY order_index",
+      args: [worldId]
+    });
+    return result.rows as unknown as Level[];
   }
 
-  getNextLevel(currentLevelId: number): Level | undefined {
-    const current = this.getById(currentLevelId);
+  async getNextLevel(currentLevelId: number): Promise<Level | undefined> {
+    const current = await this.getById(currentLevelId);
     if (!current) return undefined;
     
-    const next = this.db.prepare(
-      "SELECT * FROM levels WHERE world_id = ? AND order_index > ? ORDER BY order_index LIMIT 1"
-    ).get(current.world_id, current.order_index) as Level | undefined;
+    const nextResult = await db.execute({
+      sql: "SELECT * FROM levels WHERE world_id = ? AND order_index > ? ORDER BY order_index LIMIT 1",
+      args: [current.world_id, current.order_index]
+    });
     
-    if (next) return next;
+    if (nextResult.rows[0]) return nextResult.rows[0] as unknown as Level;
     
-    return this.db.prepare(
-      "SELECT * FROM levels WHERE world_id > ? ORDER BY world_id, order_index LIMIT 1"
-    ).get(current.world_id + 1) as Level | undefined;
+    const firstInNextWorld = await db.execute({
+      sql: "SELECT * FROM levels WHERE world_id > ? ORDER BY world_id, order_index LIMIT 1",
+      args: [current.world_id]
+    });
+    
+    return firstInNextWorld.rows[0] as unknown as Level | undefined;
   }
 
-  unlockLevel(id: number): void {
-    this.db.prepare("UPDATE levels SET is_locked = 0 WHERE id = ?").run(id);
+  async unlockLevel(id: number): Promise<void> {
+    await db.execute({
+      sql: "UPDATE levels SET is_locked = 0 WHERE id = ?",
+      args: [id]
+    });
   }
 
-  lockLevel(id: number): void {
-    this.db.prepare("UPDATE levels SET is_locked = 1 WHERE id = ?").run(id);
+  async lockLevel(id: number): Promise<void> {
+    await db.execute({
+      sql: "UPDATE levels SET is_locked = 1 WHERE id = ?",
+      args: [id]
+    });
   }
 
-  create(level: Omit<Level, "id">): Level {
-    const result = this.db.prepare(`
-      INSERT INTO levels (world_id, title, description, content_path, difficulty, xp_reward, order_index, is_locked)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(
-      level.world_id,
-      level.title,
-      level.description,
-      level.content_path,
-      level.difficulty,
-      level.xp_reward,
-      level.order_index,
-      level.is_locked
-    );
-    return this.getById(result.lastInsertRowid as number)!;
+  async create(level: Omit<Level, "id">): Promise<Level> {
+    const result = await db.execute({
+      sql: `
+        INSERT INTO levels (world_id, title, description, content_path, difficulty, xp_reward, order_index, is_locked)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        RETURNING *
+      `,
+      args: [
+        level.world_id,
+        level.title,
+        level.description,
+        level.content_path,
+        level.difficulty,
+        level.xp_reward,
+        level.order_index,
+        level.is_locked
+      ]
+    });
+    return result.rows[0] as unknown as Level;
   }
 
-  update(id: number, level: Partial<Level>): void {
+  async update(id: number, level: Partial<Level>): Promise<void> {
     const fields = Object.keys(level)
       .filter(k => k !== "id")
       .map(k => `${k} = ?`)
@@ -67,10 +86,17 @@ export class SQLiteLevelRepository implements ILevelRepository {
     const values = Object.keys(level)
       .filter(k => k !== "id")
       .map(k => (level as any)[k]);
-    this.db.prepare(`UPDATE levels SET ${fields} WHERE id = ?`).run(...values, id);
+    
+    await db.execute({
+      sql: `UPDATE levels SET ${fields} WHERE id = ?`,
+      args: [...values, id]
+    });
   }
 
-  delete(id: number): void {
-    this.db.prepare("DELETE FROM levels WHERE id = ?").run(id);
+  async delete(id: number): Promise<void> {
+    await db.execute({
+      sql: "DELETE FROM levels WHERE id = ?",
+      args: [id]
+    });
   }
 }

@@ -1,44 +1,37 @@
-import { getDatabase } from "@/db/database";
+import { db } from "@/db/database";
 import { IProgressRepository } from "../interfaces/IProgressRepository";
 import { UserProgress } from "../interfaces/types";
 
 export class SQLiteProgressRepository implements IProgressRepository {
-  private db = getDatabase();
-
-  getUserProgress(userId: number): UserProgress[] {
-    return this.db.prepare(
-      "SELECT * FROM progress WHERE user_id = ?"
-    ).all(userId) as UserProgress[];
+  async getUserProgress(userId: number): Promise<UserProgress[]> {
+    const result = await db.execute({
+      sql: "SELECT * FROM progress WHERE user_id = ?",
+      args: [userId]
+    });
+    return result.rows as unknown as UserProgress[];
   }
 
-  getLevelProgress(userId: number, levelId: number): UserProgress | undefined {
-    return this.db.prepare(
-      "SELECT * FROM progress WHERE user_id = ? AND level_id = ?"
-    ).get(userId, levelId) as UserProgress | undefined;
+  async getLevelProgress(userId: number, levelId: number): Promise<UserProgress | undefined> {
+    const result = await db.execute({
+      sql: "SELECT * FROM progress WHERE user_id = ? AND level_id = ?",
+      args: [userId, levelId]
+    });
+    return result.rows[0] as unknown as UserProgress | undefined;
   }
 
-  upsertProgress(progress: Omit<UserProgress, "id">): void {
-    const existing = this.getLevelProgress(progress.user_id, progress.level_id);
-    
-    if (existing) {
-      this.db.prepare(`
-        UPDATE progress 
-        SET completed = ?, stars = ?, xp_earned = ?, attempts = ?, completed_at = ?
-        WHERE user_id = ? AND level_id = ?
-      `).run(
-        progress.completed,
-        progress.stars,
-        progress.xp_earned,
-        progress.attempts,
-        progress.completed_at,
-        progress.user_id,
-        progress.level_id
-      );
-    } else {
-      this.db.prepare(`
+  async upsertProgress(progress: Omit<UserProgress, "id">): Promise<void> {
+    await db.execute({
+      sql: `
         INSERT INTO progress (user_id, level_id, completed, stars, xp_earned, attempts, completed_at)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-      `).run(
+        ON CONFLICT(user_id, level_id) DO UPDATE SET
+          completed = excluded.completed,
+          stars = excluded.stars,
+          xp_earned = excluded.xp_earned,
+          attempts = excluded.attempts,
+          completed_at = excluded.completed_at
+      `,
+      args: [
         progress.user_id,
         progress.level_id,
         progress.completed,
@@ -46,21 +39,23 @@ export class SQLiteProgressRepository implements IProgressRepository {
         progress.xp_earned,
         progress.attempts,
         progress.completed_at
-      );
-    }
+      ]
+    });
   }
 
-  getTotalXP(userId: number): number {
-    const result = this.db.prepare(
-      "SELECT COALESCE(SUM(xp_earned), 0) as total FROM progress WHERE user_id = ?"
-    ).get(userId) as { total: number };
-    return result.total;
+  async getTotalXP(userId: number): Promise<number> {
+    const result = await db.execute({
+      sql: "SELECT COALESCE(SUM(xp_earned), 0) as total FROM progress WHERE user_id = ?",
+      args: [userId]
+    });
+    return (result.rows[0].total as number) || 0;
   }
 
-  getCompletedLevelsCount(userId: number): number {
-    const result = this.db.prepare(
-      "SELECT COUNT(*) as count FROM progress WHERE user_id = ? AND completed = 1"
-    ).get(userId) as { count: number };
-    return result.count;
+  async getCompletedLevelsCount(userId: number): Promise<number> {
+    const result = await db.execute({
+      sql: "SELECT COUNT(*) as count FROM progress WHERE user_id = ? AND completed = 1",
+      args: [userId]
+    });
+    return (result.rows[0].count as number) || 0;
   }
 }

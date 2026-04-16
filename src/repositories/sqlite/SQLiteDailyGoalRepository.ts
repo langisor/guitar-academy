@@ -1,41 +1,43 @@
-import { getDatabase } from "@/db/database";
+import { db } from "@/db/database";
 import { IDailyGoalRepository } from "../interfaces/IDailyGoalRepository";
 import { DailyGoal } from "../interfaces/types";
 
 export class SQLiteDailyGoalRepository implements IDailyGoalRepository {
-  private db = getDatabase();
-
-  getDailyGoal(userId: number, date: string): DailyGoal | undefined {
-    return this.db.prepare(
-      "SELECT * FROM daily_goals WHERE user_id = ? AND date = ?"
-    ).get(userId, date) as DailyGoal | undefined;
+  async getDailyGoal(userId: number, date: string): Promise<DailyGoal | undefined> {
+    const result = await db.execute({
+      sql: "SELECT * FROM daily_goals WHERE user_id = ? AND date = ?",
+      args: [userId, date]
+    });
+    return result.rows[0] as unknown as DailyGoal | undefined;
   }
 
-  upsertDailyGoal(userId: number, goal: Partial<DailyGoal>): void {
+  async upsertDailyGoal(userId: number, goal: Partial<DailyGoal>): Promise<void> {
     const date = goal.date || new Date().toISOString().split('T')[0];
-    const existing = this.getDailyGoal(userId, date);
+    
+    // We can use INSERT ... ON CONFLICT here as well for a single trip
+    const minutesPracticed = goal.minutes_practiced ?? 0;
+    const goalMinutes = goal.goal_minutes ?? 15;
+    const completed = minutesPracticed >= goalMinutes ? 1 : 0;
 
-    if (existing) {
-      const minutes = goal.minutes_practiced ?? existing.minutes_practiced;
-      const target = goal.goal_minutes ?? existing.goal_minutes;
-      const completed = minutes >= target ? 1 : 0;
-      
-      this.db.prepare(`
-        UPDATE daily_goals 
-        SET minutes_practiced = ?, goal_minutes = ?, completed = ?
-        WHERE user_id = ? AND date = ?
-      `).run(minutes, target, completed, userId, date);
-    } else {
-      this.db.prepare(`
+    await db.execute({
+      sql: `
         INSERT INTO daily_goals (user_id, date, minutes_practiced, goal_minutes, completed)
         VALUES (?, ?, ?, ?, ?)
-      `).run(
+        ON CONFLICT(user_id, date) DO UPDATE SET
+          minutes_practiced = COALESCE(excluded.minutes_practiced, daily_goals.minutes_practiced),
+          goal_minutes = COALESCE(excluded.goal_minutes, daily_goals.goal_minutes),
+          completed = CASE 
+            WHEN COALESCE(excluded.minutes_practiced, daily_goals.minutes_practiced) >= COALESCE(excluded.goal_minutes, daily_goals.goal_minutes) 
+            THEN 1 ELSE 0 
+          END
+      `,
+      args: [
         userId,
         date,
-        goal.minutes_practiced ?? 0,
-        goal.goal_minutes ?? 15,
-        (goal.minutes_practiced ?? 0) >= (goal.goal_minutes ?? 15) ? 1 : 0
-      );
-    }
+        goal.minutes_practiced ?? null,
+        goal.goal_minutes ?? null,
+        completed
+      ]
+    });
   }
 }

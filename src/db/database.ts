@@ -1,39 +1,52 @@
-import Database from "better-sqlite3";
+import { createClient, type Client } from "@libsql/client";
 import { schema } from "./schema";
 import path from "path";
 import fs from "fs";
 
-const DB_PATH = process.env.DATABASE_PATH || path.join(process.cwd(), "data", "guitar-academy.db");
+const url = process.env.TURSO_DATABASE_URL || `file:${path.join(process.cwd(), "data", "guitar-academy.db")}`;
+const authToken = process.env.TURSO_AUTH_TOKEN;
 
-let db: Database.Database | null = null;
+// Create the client
+export const db: Client = createClient({
+  url,
+  authToken,
+});
 
-export function getDatabase(): Database.Database {
- if (!db) {
-  const dbDir = path.dirname(DB_PATH);
-  if (!fs.existsSync(dbDir)) {
-    fs.mkdirSync(dbDir, { recursive: true });
+/**
+ * Ensures the database is initialized with the schema and initial data.
+ * This is designed to be called during application startup or in a build script.
+ */
+export async function getDatabase(): Promise<Client> {
+  // For local files, ensure the directory exists
+  if (url.startsWith("file:")) {
+    const dbPath = url.replace("file:", "");
+    const dbDir = path.dirname(dbPath);
+    if (dbDir && !fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true });
+    }
   }
-  db = new Database(DB_PATH);
-  db.pragma("journal_mode = WAL");
-  db.pragma("foreign_keys = ON");
 
-  db.exec(schema);
+  // Check if we need to initialize the schema
+  try {
+    const result = await db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='courses'");
+    if (result.rows.length === 0) {
+      console.log("Initializing database schema...");
+      await db.executeMultiple(schema);
+      await seedDatabase(db);
+    }
+  } catch (error) {
+    console.error("Database initialization error:", error);
+    // Fallback: try to apply schema anyway if the check fails
+    await db.executeMultiple(schema);
+  }
 
-  seedDatabaseIfEmpty(db);
- }
- return db;
+  return db;
 }
 
-function seedDatabaseIfEmpty(database: Database.Database) {
- const courseCount = database.prepare("SELECT COUNT(*) as count FROM courses").get() as { count: number };
-
- if (courseCount.count === 0) {
-  seedDatabase(database);
- }
-}
-
-function seedDatabase(database: Database.Database) {
- database.exec(`
+async function seedDatabase(client: Client) {
+  console.log("Seeding database initial content...");
+  
+  await client.execute(`
     INSERT INTO users (username, email, password_hash, xp, streak) VALUES 
     ('demo', 'demo@example.com', 'demo', 0, 0);
     
@@ -55,10 +68,6 @@ function seedDatabase(database: Database.Database) {
     { title: "Master Guitarist", titleAr: "عازف الجيتار المحترف", description: "Become a master guitarist", icon: "crown" },
   ];
 
-  const insertWorld = database.prepare(
-    "INSERT INTO worlds (course_id, title, description, icon, order_index, is_locked) VALUES (?, ?, ?, ?, ?, ?)"
-  );
-
   const lessonTopics = [
     ["Guitar Parts", "Holding the Guitar", "Tuning Basics", "String Names", "Fret Basics"],
     ["G Major", "C Major", "D Major", "E Minor", "A Minor"],
@@ -72,49 +81,42 @@ function seedDatabase(database: Database.Database) {
     ["Advanced Rhythm", "Jazz Chords", "Modal Interchange", "Live Performance", "Music Theory"],
   ];
 
-  const insertLevel = database.prepare(
-    "INSERT INTO levels (world_id, title, description, difficulty, xp_reward, order_index, is_locked, content_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-  );
-
-  worlds.forEach((world, index) => {
+  for (let i = 0; i < worlds.length; i++) {
+    const world = worlds[i];
+    
     // Insert English World
-    const enResult = insertWorld.run(1, world.title, world.description, world.icon, index + 1, index === 0 ? 0 : 1);
-    const enWorldId = enResult.lastInsertRowid;
+    const enWorld = await client.execute({
+      sql: "INSERT INTO worlds (course_id, title, description, icon, order_index, is_locked) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
+      args: [1, world.title, world.description, world.icon, i + 1, i === 0 ? 0 : 1]
+    });
+    const enWorldId = enWorld.rows[0].id as number;
 
     // Insert Arabic World
-    const arResult = insertWorld.run(2, world.titleAr, world.description, world.icon, index + 1, index === 0 ? 0 : 1);
-    const arWorldId = arResult.lastInsertRowid;
-
-    // Seed levels for this world's topics
-    const topics = lessonTopics[index];
-    topics.forEach((topic, levelIndex) => {
-      // English Level
-      insertLevel.run(
-        enWorldId,
-        topic,
-        `Learn ${topic.toLowerCase()}`,
-        index < 2 ? "easy" : index < 5 ? "medium" : "hard",
-        50,
-        levelIndex + 1,
-        levelIndex === 0 ? 0 : 1,
-        `guitar/world-${index + 1}/level-${String(levelIndex + 1).padStart(3, '0')}.mdx`
-      );
-
-      // Arabic Level
-      insertLevel.run(
-        arWorldId,
-        topic, // You can substitute with translations here if available
-        `تعلم ${topic}`,
-        index < 2 ? "easy" : index < 5 ? "medium" : "hard",
-        50,
-        levelIndex + 1,
-        levelIndex === 0 ? 0 : 1,
-        `guitar/world-${index + 1}/level-${String(levelIndex + 1).padStart(3, '0')}.mdx`
-      );
+    const arWorld = await client.execute({
+      sql: "INSERT INTO worlds (course_id, title, description, icon, order_index, is_locked) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
+      args: [2, world.titleAr, world.description, world.icon, i + 1, i === 0 ? 0 : 1]
     });
-  });
+    const arWorldId = arWorld.rows[0].id as number;
 
- database.exec(`
+    const topics = lessonTopics[i];
+    for (let j = 0; j < topics.length; j++) {
+      const topic = topics[j];
+      const difficulty = i < 2 ? "easy" : i < 5 ? "medium" : "hard";
+      const contentPath = `guitar/world-${i + 1}/level-${String(j + 1).padStart(3, "0")}.mdx`;
+
+      await client.execute({
+        sql: "INSERT INTO levels (world_id, title, description, difficulty, xp_reward, order_index, is_locked, content_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        args: [enWorldId, topic, `Learn ${topic.toLowerCase()}`, difficulty, 50, j + 1, j === 0 ? 0 : 1, contentPath]
+      });
+
+      await client.execute({
+        sql: "INSERT INTO levels (world_id, title, description, difficulty, xp_reward, order_index, is_locked, content_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        args: [arWorldId, topic, `تعلم ${topic}`, difficulty, 50, j + 1, j === 0 ? 0 : 1, contentPath]
+      });
+    }
+  }
+
+  await client.execute(`
     INSERT INTO songs (title, artist, chords, difficulty, tempo, capo) VALUES
     ('Knockin on Heavens Door', 'Bob Dylan', 'G,D,Am,C', 'easy', 70, 0),
     ('Wonderwall', 'Oasis', 'Em,G,D,A', 'easy', 85, 2),
@@ -128,8 +130,6 @@ function seedDatabase(database: Database.Database) {
 }
 
 export function closeDatabase() {
- if (db) {
-  db.close();
-  db = null;
- }
+  // Client is managed by libsql, closing is usually not required for typical app usage
+  // but we can provide a cleanup if needed.
 }

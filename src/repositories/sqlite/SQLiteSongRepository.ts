@@ -1,61 +1,86 @@
-import { getDatabase } from "@/db/database";
+import { db } from "@/db/database";
 import { ISongRepository } from "../interfaces/ISongRepository";
 import { Song } from "../interfaces/types";
 
 export class SQLiteSongRepository implements ISongRepository {
-  private db = getDatabase();
-
-  getAll(): Song[] {
-    return this.db.prepare("SELECT * FROM songs ORDER BY title").all() as Song[];
+  async getAll(): Promise<Song[]> {
+    const result = await db.execute("SELECT * FROM songs ORDER BY title");
+    return result.rows as unknown as Song[];
   }
 
-  getById(id: number): Song | undefined {
-    return this.db.prepare("SELECT * FROM songs WHERE id = ?").get(id) as Song | undefined;
+  async getById(id: number): Promise<Song | undefined> {
+    const result = await db.execute({
+      sql: "SELECT * FROM songs WHERE id = ?",
+      args: [id]
+    });
+    return result.rows[0] as unknown as Song | undefined;
   }
 
-  getByDifficulty(difficulty: string): Song[] {
-    return this.db.prepare(
-      "SELECT * FROM songs WHERE difficulty = ? ORDER BY title"
-    ).all(difficulty) as Song[];
+  async getByDifficulty(difficulty: string): Promise<Song[]> {
+    const result = await db.execute({
+      sql: "SELECT * FROM songs WHERE difficulty = ? ORDER BY title",
+      args: [difficulty]
+    });
+    return result.rows as unknown as Song[];
   }
 
-  getByChord(chord: string): Song[] {
-    return this.db.prepare(
-      "SELECT * FROM songs WHERE chords LIKE ? ORDER BY title"
-    ).all(`%${chord}%`) as Song[];
+  async getByChord(chord: string): Promise<Song[]> {
+    const result = await db.execute({
+      sql: "SELECT * FROM songs WHERE chords LIKE ? ORDER BY title",
+      args: [`%${chord}%`]
+    });
+    return result.rows as unknown as Song[];
   }
 
-  create(song: Omit<Song, "id">): Song {
-    const result = this.db.prepare(`
-      INSERT INTO songs (title, artist, chords, difficulty, tempo, capo, tuning)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(
-      song.title,
-      song.artist,
-      song.chords,
-      song.difficulty,
-      song.tempo,
-      song.capo,
-      song.tuning
-    );
+  async create(song: Omit<Song, "id">): Promise<Song> {
+    const chordsString = Array.isArray(song.chords) ? song.chords.join(",") : song.chords;
+    const result = await db.execute({
+      sql: `
+        INSERT INTO songs (title, artist, chords, difficulty, tempo, capo, tuning)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        RETURNING *
+      `,
+      args: [
+        song.title,
+        song.artist,
+        chordsString,
+        song.difficulty,
+        song.tempo,
+        song.capo,
+        song.tuning
+      ]
+    });
     
-    return this.getById(result.lastInsertRowid as number)!;
+    return result.rows[0] as unknown as Song;
   }
 
-  update(id: number, song: Partial<Song>): void {
-    const fields = Object.keys(song)
+  async update(id: number, song: Partial<Song>): Promise<void> {
+    const songToUpdate = { ...song };
+    if (songToUpdate.chords) {
+      songToUpdate.chords = Array.isArray(songToUpdate.chords) 
+        ? songToUpdate.chords.join(",") 
+        : songToUpdate.chords;
+    }
+
+    const fields = Object.keys(songToUpdate)
       .filter(k => k !== "id")
       .map(k => `${k} = ?`)
       .join(", ");
     
-    const values = Object.keys(song)
+    const values = Object.keys(songToUpdate)
       .filter(k => k !== "id")
-      .map(k => (song as any)[k]);
+      .map(k => (songToUpdate as any)[k]);
     
-    this.db.prepare(`UPDATE songs SET ${fields} WHERE id = ?`).run(...values, id);
+    await db.execute({
+      sql: `UPDATE songs SET ${fields} WHERE id = ?`,
+      args: [...values, id]
+    });
   }
 
-  delete(id: number): void {
-    this.db.prepare("DELETE FROM songs WHERE id = ?").run(id);
+  async delete(id: number): Promise<void> {
+    await db.execute({
+      sql: "DELETE FROM songs WHERE id = ?",
+      args: [id]
+    });
   }
 }
