@@ -93,7 +93,6 @@ export default function HomePage() {
             <Progress 
               value={dailyProgress} 
               className="h-2 bg-green-200 dark:bg-green-800"
-              indicatorClassName="bg-green-500"
             />
           </CardContent>
         </Card>

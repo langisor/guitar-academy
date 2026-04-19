@@ -13,7 +13,6 @@ import {
   useBorrowedChords,
 } from "../hooks/use-progression";
 import { ChordDiagram } from "./chord-diagram";
-import { useLeftHanded } from "@/chords/providers/left-handed-provider";
 import { useAudioPlayback } from "../hooks/use-audio";
 import GuitarHeroMode from "./guitar-hero-mode";
 import { Button } from "@/components/ui/button";
@@ -58,7 +57,6 @@ const ROMAN_BUTTONS = [
 export default function ProgressionBuilder() {
   const [selectedKey, setSelectedKey] = useState<ChordKey>("C");
   const [selectedMode, setSelectedMode] = useState<ScaleMode>("major");
-  const { isLeftHanded } = useLeftHanded();
   const [progression, setProgression] = useState<ChordProgression | null>(null);
   const [numeralInput, setNumeralInput] = useState<string>("");
   const [showSuggestions, setShowSuggestions] = useState(true);
@@ -342,7 +340,6 @@ export default function ProgressionBuilder() {
                             position={step.chord.positions[step.positionIndex]}
                             width={100}
                             height={120}
-                            leftHanded={isLeftHanded}
                             className="text-primary"
                           />
                         )}
@@ -405,7 +402,6 @@ export default function ProgressionBuilder() {
                         position={suggestion.step.chord.positions[suggestion.step.positionIndex]}
                         width={90}
                         height={110}
-                        leftHanded={isLeftHanded}
                         className={idx === 0 ? "text-primary" : "text-foreground"}
                       />
                     )}

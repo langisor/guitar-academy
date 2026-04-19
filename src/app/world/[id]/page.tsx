@@ -183,7 +183,6 @@ export default function WorldPage() {
           <Progress 
             value={progress} 
             className="h-2 mt-3 bg-white/30"
-            indicatorClassName="bg-white"
           />
         </div>
       </header>

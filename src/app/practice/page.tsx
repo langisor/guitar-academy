@@ -89,11 +89,10 @@ export default function PracticePage() {
           <div className="text-4xl font-bold mb-2">
             {dailyPracticeMinutes} / {dailyGoalMinutes} min
           </div>
-          <Progress 
-            value={dailyProgress} 
-            className="h-3 bg-white/30"
-            indicatorClassName={goalReached ? "bg-yellow-400" : "bg-white"}
-          />
+<Progress 
+              value={dailyProgress} 
+              className="h-3 bg-white/30"
+            />
           {goalReached && (
             <p className="mt-2 text-yellow-200">🎉 Daily goal reached!</p>
           )}

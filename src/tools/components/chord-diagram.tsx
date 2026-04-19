@@ -1,35 +1,28 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ChordPosition } from "@/chords/types/chords.types";
+import { ChordPosition } from "@/tools/types/chords.types";
 
 interface ChordDiagramProps {
   position: ChordPosition;
   width?: number;
   height?: number;
   className?: string;
-  leftHanded?: boolean;
 }
 
-const STRING_NAMES_STANDARD = ["E", "A", "D", "G", "B", "e"];
-const STRING_NAMES_LEFT_HANDED = ["e", "B", "G", "D", "A", "E"];
+const STRING_NAMES = ["E", "A", "D", "G", "B", "e"];
 
 export function ChordDiagram({
   position,
   width = 140,
   height = 160,
   className,
-  leftHanded = false,
 }: ChordDiagramProps) {
   const { frets, fingers, baseFret, barres = [] } = position;
 
-  // Helper to get string index for left-handed display
-  // In left-handed mode, string 5 (high e) is visually at position 0 (leftmost)
-  // and string 0 (low E) is visually at position 5 (rightmost)
-  const getVisualStringIndex = (stringIndex: number) =>
-    leftHanded ? 5 - stringIndex : stringIndex;
+  const getVisualStringIndex = (stringIndex: number) => stringIndex;
 
-  const stringNames = leftHanded ? STRING_NAMES_LEFT_HANDED : STRING_NAMES_STANDARD;
+  const stringNames = STRING_NAMES;
 
   const maxFrets = 6;
   const stringCount = 6;
@@ -65,9 +58,6 @@ export function ChordDiagram({
       {/* Vertical strings */}
       {Array.from({ length: stringCount }).map((_, visualIdx) => {
         const x = startX + visualIdx * stringSpacing;
-        // For string thickness: in standard mode, outer strings (0 and 5) are thicker
-        // In left-handed mode, we need to check the original string index
-        const originalIdx = leftHanded ? 5 - visualIdx : visualIdx;
         return (
           <line
             key={`string-${visualIdx}`}
@@ -76,7 +66,7 @@ export function ChordDiagram({
             x2={x}
             y2={nutY + maxFrets * fretHeight}
             stroke="currentColor"
-            strokeWidth={originalIdx === 0 || originalIdx === 5 ? 1.5 : 1}
+            strokeWidth={visualIdx === 0 || visualIdx === 5 ? 1.5 : 1}
             opacity={0.6}
           />
         );

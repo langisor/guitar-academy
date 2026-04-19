@@ -6,8 +6,8 @@ import {
   useChordKeys,
   useChordSuffixes,
   useChordRQ,
-} from "@/chords/hooks/use-chord";
-import { ChordKey, ChordSuffix } from "@/chords/types/chords.types";
+} from "@/tools/hooks/use-chord";
+import { ChordKey, ChordSuffix } from "@/tools/types/chords.types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -21,8 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Music, Grid3x3, Fingerprint, Volume2, Play } from "lucide-react";
-import { useAudioPlayback } from "@/chords/hooks/use-audio";
-import { useLeftHanded } from "@/chords/providers/left-handed-provider";
+import { useAudioPlayback } from "@/tools/hooks/use-audio";
 import { cn } from "@/lib/utils";
 
 export default function ChordExplorer() {
@@ -35,7 +34,6 @@ export default function ChordExplorer() {
 
   const { data: chord } = useChordRQ(selectedKey, selectedSuffix);
   const { playChord, preloadChord, isReady, setVolume, volume } = useAudioPlayback();
-  const { isLeftHanded } = useLeftHanded();
 
   const positions = chord?.positions ?? [];
   const active = positions[positionIndex];
@@ -196,7 +194,6 @@ export default function ChordExplorer() {
                       position={pos}
                       width={120}
                       height={140}
-                      leftHanded={isLeftHanded}
                       className={cn(
                         "transition-all",
                         positionIndex === i ? "text-primary" : "text-foreground"

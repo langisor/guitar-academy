@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Chord, ChordPosition } from "../types/chords.types";
-import { useAudioPlayback } from "../hooks/use-audio";
-import { useLeftHanded } from "@/chords/providers/left-handed-provider";
+import { useAudioPlayback } from "@/tools/hooks/use-audio";
 import { ChordDiagram } from "./chord-diagram";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +46,6 @@ export default function GuitarHeroMode({
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [showFretboard, setShowFretboard] = useState(false);
-  const { isLeftHanded } = useLeftHanded();
   const beatRef = useRef<HTMLDivElement>(null);
 
   // Handle step change from audio playback
@@ -167,7 +165,6 @@ export default function GuitarHeroMode({
                       position={item.chord.positions[item.positionIndex || 0]}
                       width={80}
                       height={100}
-                      leftHanded={isLeftHanded}
                       className={i === 0 ? "text-primary" : "text-muted-foreground"}
                     />
                     <div className="mt-2 text-center space-y-1">
@@ -311,7 +308,6 @@ export default function GuitarHeroMode({
                   position={currentChord.chord.positions[currentChord.positionIndex || 0]}
                   width={200}
                   height={240}
-                  leftHanded={isLeftHanded}
                   className="text-primary"
                 />
                 {isPlaying && (

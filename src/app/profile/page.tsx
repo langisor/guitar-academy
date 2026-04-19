@@ -90,7 +90,6 @@ export default function ProfilePage() {
             <Progress 
               value={dailyProgress} 
               className="h-3"
-              indicatorClassName={dailyProgress >= 100 ? "bg-green-500" : "bg-primary"}
             />
             {dailyProgress >= 100 && (
               <p className="text-sm text-green-600 mt-2 font-medium">
