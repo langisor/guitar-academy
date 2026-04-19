@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ChordKey, ChordPosition, ChordSuffix } from "../types/chords.types";
 import { FretboardRegion, FretboardPosition } from "../types/fretboard.types";
 import {
@@ -21,7 +21,9 @@ import {
   Layers,
   ChevronLeft,
   ChevronRight,
+  Volume2,
 } from "lucide-react";
+import { useAudioPlayback } from "@/tools/hooks/use-audio";
 import { cn } from "@/lib/utils";
 
 const KEYS: ChordKey[] = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
@@ -43,6 +45,7 @@ export default function FretboardExplorer() {
   const [showAllFrets, setShowAllFrets] = useState(false);
 
   const { data: fretboardConfig } = useFretboardConfig(6, 24);
+  const { playChord, preloadChord, isReady, setVolume, volume } = useAudioPlayback();
   const { data: voicings = [] } = useAllVoicings(
     selectedKey,
     selectedSuffix as ChordSuffix,
@@ -72,7 +75,16 @@ export default function FretboardExplorer() {
     if (selectedVoicingIndex === index) return;
     setCompareVoicingIndex(selectedVoicingIndex);
     setSelectedVoicingIndex(index);
+    if (voicings[index] && isReady) {
+      playChord(voicings[index].position, 2);
+    }
   };
+
+  useEffect(() => {
+    if (filteredVoicings.length > 0 && isReady) {
+      preloadChord({ key: selectedKey, suffix: selectedSuffix as ChordSuffix, positions: filteredVoicings.map(v => v.position) }, 0);
+    }
+  }, [filteredVoicings, isReady, selectedKey, selectedSuffix, preloadChord]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-4 md:p-8">
