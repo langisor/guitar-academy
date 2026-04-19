@@ -1,0 +1,93 @@
+{
+  "patterns": [
+    {
+      "name": "Basic Down",
+      "symbol": "DDDD",
+      "tempo": 80,
+      "description": "Four down strums per measure",
+      "difficulty": "beginner",
+      "timeSignature": "4/4"
+    },
+    {
+      "name": "Down-Up Basic",
+      "symbol": "DUDU",
+      "tempo": 80,
+      "description": "Alternating down and up strums",
+      "difficulty": "beginner",
+      "timeSignature": "4/4"
+    },
+    {
+      "name": "Country Pattern",
+      "symbol": "DDUDUD",
+      "tempo": 100,
+      "description": "Down on beat, up on the 'and'",
+      "difficulty": "intermediate",
+      "timeSignature": "4/4"
+    },
+    {
+      "name": "Pop Pattern",
+      "symbol": "DUDUDU",
+      "tempo": 110,
+      "description": "Continuous down-up pattern",
+      "difficulty": "intermediate",
+      "timeSignature": "4/4"
+    },
+    {
+      "name": "Rock Pattern",
+      "symbol": "DD-DU",
+      "tempo": 120,
+      "description": "Heavy rock strumming",
+      "difficulty": "intermediate",
+      "timeSignature": "4/4"
+    },
+    {
+      "name": "Folk Pattern",
+      "symbol": "D-DU-UD",
+      "tempo": 90,
+      "description": "Traditional folk strumming",
+      "difficulty": "intermediate",
+      "timeSignature": "4/4"
+    },
+    {
+      "name": "Reggae Offbeat",
+      "symbol": "-U-U-",
+      "tempo": 75,
+      "description": "Upstroke on the offbeat",
+      "difficulty": "advanced",
+      "timeSignature": "4/4"
+    },
+    {
+      "name": "Waltz",
+      "symbol": "D--U-",
+      "tempo": 90,
+      "description": "Three beats per measure",
+      "difficulty": "intermediate",
+      "timeSignature": "3/4"
+    },
+    {
+      "name": "Travis Picking",
+      "symbol": "TDU-TDU",
+      "tempo": 100,
+      "description": "Fingerpicking pattern",
+      "difficulty": "advanced",
+      "timeSignature": "4/4"
+    },
+    {
+      "name": "Shuffle",
+      "symbol": "D-u-D-u",
+      "tempo": 100,
+      "description": "Swing rhythm pattern",
+      "difficulty": "intermediate",
+      "timeSignature": "4/4"
+    }
+  ],
+  "notation": {
+    "D": "Down strum",
+    "U": "Up strum",
+    "d": "Down strum (muted)",
+    "u": "Up strum (muted)",
+    "-": "Rest",
+    "T": "Thumb (bass note)",
+    "x": "Muted strum"
+  }
+}

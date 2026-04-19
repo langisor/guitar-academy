@@ -1,0 +1,278 @@
+{
+  "categories": [
+    {
+      "name": "Basics & Rhythm",
+      "terms": [
+        {
+          "term": "Note",
+          "definition": "A single musical sound with a specific pitch (e.g., C, D, E)."
+        },
+        {
+          "term": "Pitch",
+          "definition": "How high or low a note sounds, determined by the frequency of vibration."
+        },
+        {
+          "term": "Octave",
+          "definition": "The interval between one musical pitch and another with double its frequency; they share the same note name."
+        },
+        {
+          "term": "Scale",
+          "definition": "A sequence of musical notes ordered by pitch, spanning an octave."
+        },
+        {
+          "term": "Key",
+          "definition": "A group of notes centered around a root note (tonic) that forms the harmonic foundation of a piece."
+        },
+        {
+          "term": "Interval",
+          "definition": "The distance in pitch between two musical notes."
+        },
+        {
+          "term": "Sharp (#)",
+          "definition": "A symbol indicating a note is raised by one half-step (one fret)."
+        },
+        {
+          "term": "Flat (b)",
+          "definition": "A symbol indicating a note is lowered by one half-step (one fret)."
+        },
+        {
+          "term": "Tempo",
+          "definition": "The speed at which a piece of music is played, usually measured in Beats Per Minute (BPM)."
+        },
+        {
+          "term": "Time Signature",
+          "definition": "A notation indicating how many beats are in a measure and which note value receives one beat (e.g., 4/4)."
+        },
+        {
+          "term": "Measure (Bar)",
+          "definition": "A small segment of music contained between two vertical lines on a staff, representing a specific number of beats."
+        }
+      ]
+    },
+    {
+      "name": "Chords & Harmony",
+      "terms": [
+        {
+          "term": "Chord",
+          "definition": "A group of notes played together, typically at least three."
+        },
+        {
+          "term": "Triad",
+          "definition": "The most basic chord type, consisting of a root, a third, and a fifth."
+        },
+        {
+          "term": "Major Chord",
+          "definition": "A chord with a bright sound built from a root, major third, and perfect fifth."
+        },
+        {
+          "term": "Minor Chord",
+          "definition": "A chord with a darker sound built from a root, minor third, and perfect fifth."
+        },
+        {
+          "term": "Diminished Chord",
+          "definition": "A tense chord built from a root, minor third, and flattened fifth."
+        },
+        {
+          "term": "Augmented Chord",
+          "definition": "A chord with a raised fifth, creating an ethereal, unresolved sound."
+        },
+        {
+          "term": "Seventh Chord",
+          "definition": "A triad with an added fourth note, an interval of a seventh above the root (e.g., Cmaj7, G7)."
+        },
+        {
+          "term": "Power Chord",
+          "definition": "A two-note chord consisting of the root and the fifth, common in rock and metal."
+        },
+        {
+          "term": "Arpeggio",
+          "definition": "A 'broken' chord where the notes are played individually in sequence rather than simultaneously."
+        },
+        {
+          "term": "Inversion",
+          "definition": "A chord where a note other than the root is the lowest sounding note (the bass)."
+        },
+        {
+          "term": "Chord Progression",
+          "definition": "A sequence of chords played in order to create a harmonic movement."
+        },
+        {
+          "term": "Roman Numerals",
+          "definition": "A system used to analyze chord functions within a key (e.g., I-IV-V)."
+        },
+        {
+          "term": "Voicing",
+          "definition": "The specific arrangement of the notes within a chord."
+        }
+      ]
+    },
+    {
+      "name": "Guitar Anatomy & Setup",
+      "terms": [
+        {
+          "term": "String",
+          "definition": "Core components made of steel or nylon that vibrate to produce sound."
+        },
+        {
+          "term": "Fret",
+          "definition": "A metal strip on the neck that shortens the vibrating length of a string to change pitch."
+        },
+        {
+          "term": "Fretboard",
+          "definition": "The wooden surface on the front of the neck where the player presses the strings."
+        },
+        {
+          "term": "Nut",
+          "definition": "The piece of material at the end of the fretboard that supports the strings near the headstock."
+        },
+        {
+          "term": "Bridge",
+          "definition": "The part of the guitar that anchors the strings to the body and transmits vibrations."
+        },
+        {
+          "term": "Headstock",
+          "definition": "The part at the top of the neck that holds the tuning pegs."
+        },
+        {
+          "term": "Tuning Pegs",
+          "definition": "Geared mechanisms used to tighten or loosen strings to adjust their pitch."
+        },
+        {
+          "term": "Pickups",
+          "definition": "Magnets wrapped in wire that convert string vibrations into electrical signals (Electric Guitar)."
+        },
+        {
+          "term": "Action",
+          "definition": "The height of the strings above the fretboard."
+        },
+        {
+          "term": "Intonation",
+          "definition": "The accuracy of a guitar's pitch across the entire length of the fretboard."
+        },
+        {
+          "term": "Truss Rod",
+          "definition": "An adjustable metal rod inside the neck used to control its curvature."
+        }
+      ]
+    },
+    {
+      "name": "Playing Techniques",
+      "terms": [
+        {
+          "term": "Strumming",
+          "definition": "A rhythmic movement of the hand or pick across multiple strings."
+        },
+        {
+          "term": "Alternate Picking",
+          "definition": "A technique using strictly alternating downward and upward pick strokes."
+        },
+        {
+          "term": "Hammer-on",
+          "definition": "Sounding a note by sharply bringing a finger down onto the fretboard."
+        },
+        {
+          "term": "Pull-off",
+          "definition": "Sounding a lower note by 'plucking' the string with a fretting finger as you release it."
+        },
+        {
+          "term": "Slide (Glissando)",
+          "definition": "Moving from one fret to another while maintaining pressure on the string."
+        },
+        {
+          "term": "Bend",
+          "definition": "Physically pushing the string across the fret to increase tension and raise the pitch."
+        },
+        {
+          "term": "Vibrato",
+          "definition": "Rapidly and slightly varying the pitch of a note to add expression."
+        },
+        {
+          "term": "Palm Muting",
+          "definition": "Resting the side of the picking hand across the strings near the bridge to produce a muffled, percussive sound."
+        },
+        {
+          "term": "Sweep Picking",
+          "definition": "A technique where the pick moves in one continuous motion across multiple strings to play arpeggios."
+        },
+        {
+          "term": "Tapping",
+          "definition": "Using the fingers of the picking hand to hammer-on notes on the fretboard."
+        },
+        {
+          "term": "Legato",
+          "definition": "Playing a series of notes smoothly and connectedly, often using hammer-ons and pull-offs."
+        },
+        {
+          "term": "Harmonics",
+          "definition": "High-pitched, bell-like tones produced by lightly touching the string at specific nodes."
+        }
+      ]
+    },
+    {
+      "name": "Theory & Advanced Concepts",
+      "terms": [
+        {
+          "term": "Capo",
+          "definition": "A clamp-like device used to shorten the playable length of strings, effectively changing the key of open chords."
+        },
+        {
+          "term": "Barre Chord",
+          "definition": "A chord where the index finger acts like a nut, pressing down multiple strings across a single fret."
+        },
+        {
+          "term": "Standard Tuning",
+          "definition": "The default guitar tuning: E2, A2, D3, G3, B3, E4."
+        },
+        {
+          "term": "Drop D Tuning",
+          "definition": "Lowering the low E string by one whole step to D."
+        },
+        {
+          "term": "Scale Degree",
+          "definition": "The number assigned to a note based on its position in a scale (e.g., the 5th degree of C Major is G)."
+        },
+        {
+          "term": "Circle of Fifths",
+          "definition": "A visual representation of the relationships between the 12 tones of the chromatic scale and their corresponding key signatures."
+        },
+        {
+          "term": "Modes",
+          "definition": "Seven different scales derived from the major scale, each starting on a different note (Ionian, Dorian, Phrygian, etc.)."
+        },
+        {
+          "term": "Relative Minor",
+          "definition": "The minor key that shares the same key signature as a specific major key (e.g., A Minor is the relative minor of C Major)."
+        },
+        {
+          "term": "Transposition",
+          "definition": "The process of moving a piece of music or a set of chords to a different key."
+        }
+      ]
+    },
+    {
+      "name": "Notation & Reading",
+      "terms": [
+        {
+          "term": "Tablature (Tab)",
+          "definition": "A visual representation of guitar strings and fret numbers, showing where to place fingers."
+        },
+        {
+          "term": "Standard Notation",
+          "definition": "The traditional system of writing music using a five-line staff and note symbols."
+        },
+        {
+          "term": "Chord Diagram",
+          "definition": "A grid-based visual showing where to place fingers on the fretboard for a specific chord."
+        },
+        {
+          "term": "Lead Sheet",
+          "definition": "A simplified form of notation containing only the melody, lyrics, and chord symbols."
+        },
+        {
+          "term": "Dynamic Markings",
+          "definition": "Symbols like 'p' (piano/soft) or 'f' (forte/loud) that indicate the volume of the music."
+        }
+      ]
+    }
+  ]
+}
