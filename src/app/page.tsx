@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { 
   Flame, Trophy, Music, Settings, Play, Star, 
-  ChevronRight, Zap, Target, Lock
+  ChevronRight, Zap, Target, Lock, Wrench
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -42,7 +42,13 @@ export default function HomePage() {
             <h1 className="text-2xl font-bold">{t.common.appName}</h1>
             <p className="text-sm text-white/80">{t.home.welcome}</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Link href="/tools">
+              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                <Wrench className="w-4 h-4 mr-1.5" />
+                Tools
+              </Button>
+            </Link>
             <Button
               variant="ghost"
               size="icon"

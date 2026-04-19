@@ -91,9 +91,9 @@ export function ChordDiagram({
         <text
           x={4}
           y={nutY + fretHeight / 2 + 3}
-          fontSize="10"
-          fontWeight="500"
-          fill="currentColor"
+          fontSize="11"
+          fontWeight="600"
+          fill={"#FF0000"}
           opacity={0.8}
         >
           {baseFret}
