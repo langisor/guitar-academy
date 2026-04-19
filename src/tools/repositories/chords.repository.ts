@@ -33,7 +33,7 @@ export class ChordsRepository {
     this.loadingPromise = (async () => {
       const filePath = path.resolve(
         process.cwd(),
-        "src/chords/data/chords.json"
+        "src/tools/data/chords.json"
       );
 
       const raw = await fs.readFile(filePath, "utf-8");
