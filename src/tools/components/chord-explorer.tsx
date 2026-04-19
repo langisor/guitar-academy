@@ -183,7 +183,11 @@ export default function ChordExplorer() {
                 {positions.map((pos, i) => (
                   <button
                     key={i}
-                    onClick={() => setPositionIndex(i)}
+                    onClick={() => {
+                      setPositionIndex(i)
+                      // play chord
+                      playChord(pos)
+                    }}
                     className={cn(
                       "group relative flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all hover:bg-accent",
                       positionIndex === i
