@@ -149,6 +149,7 @@ export default function ChordExplorer() {
                       onClick={() => {
                         setSelectedSuffix(s);
                         setPositionIndex(0);
+                        
                       }}
                       className={cn(
                         "shrink-0 transition-all",
