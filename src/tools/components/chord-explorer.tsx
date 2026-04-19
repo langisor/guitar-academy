@@ -192,8 +192,8 @@ export default function ChordExplorer() {
                   >
                     <ChordDiagram
                       position={pos}
-                      width={120}
-                      height={140}
+                      width={140}
+                      height={170}
                       className={cn(
                         "transition-all",
                         positionIndex === i ? "text-primary" : "text-foreground"
