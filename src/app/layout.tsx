@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Arabic, Inter } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/hooks/useLanguage";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
@@ -50,7 +51,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${notoSansArabic.variable} h-full antialiased`}
       >
         <LanguageProvider>
-          {children}
+          <TooltipProvider>
+            {children}
+          </TooltipProvider>
         </LanguageProvider>
       </body>
     </html>
