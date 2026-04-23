@@ -201,17 +201,18 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
                 <div className="tuner-playing-indicator" />
               )}
             </Button>
-            <Badge
-              variant={isPlaying ? "success" : "secondary"}
+            <Button
+              variant={isPlaying ? "default" : "outline"}
+              size="icon-xs"
               onClick={(e) => {
                 e.stopPropagation();
                 onPlay(s);
               }}
-              className="tuner-play-button cursor-pointer"
+              className="tuner-play-button"
               title="Play reference tone"
             >
-              {isPlaying ? "pause" : "play"}
-            </Badge>
+              {isPlaying ? <Pause size={10} /> : <Play size={10} />}
+            </Button>
           </div>
         );
       })}
