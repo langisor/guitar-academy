@@ -1,17 +1,49 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { useTuner } from "../hooks/use-tuner";
+import { useTuner, GuitarString } from "../hooks/use-tunar";
+
+/* ─── TypeScript Interfaces ───────────────────────────────────────────── */
+
+interface NeedleGaugeProps {
+  cents: number;
+  active: boolean;
+  showSuccess: boolean;
+}
+
+interface LEDBarProps {
+  cents: number;
+  active: boolean;
+  showSuccess: boolean;
+}
+
+interface WaveformCanvasProps {
+  canvasRef: React.RefObject<HTMLCanvasElement | null>;
+  drawWaveform: (canvasRef: React.RefObject<HTMLCanvasElement | null>) => void;
+}
+
+interface StringSelectorProps {
+  targetString: GuitarString | null;
+  onSelect: (string: GuitarString | null) => void;
+  detectedNote: string;
+  playingNote: string | null;
+  onPlay: (noteData: GuitarString) => Promise<void>;
+  GUITAR_STRINGS: GuitarString[];
+}
+
+interface SignalMeterProps {
+  rms: number;
+}
 
 /* ─── Tuning Needle SVG ──────────────────────────────────────────────── */
-function NeedleGauge({ cents, active }) {
+function NeedleGauge({ cents, active, showSuccess }: NeedleGaugeProps) {
   const clampedCents = Math.max(-50, Math.min(50, cents));
   const angleDeg = (clampedCents / 50) * 52;
-  const inTune = active && Math.abs(clampedCents) < 5;
+  const inTune = active && Math.abs(clampedCents) <= 3; // Use reduced sensitivity
 
   const cx = 160, cy = 140, r = 110;
 
-  function polarToXY(deg) {
+  function polarToXY(deg: number): [number, number] {
     const rad = (deg - 90) * (Math.PI / 180);
     return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
   }
@@ -25,7 +57,8 @@ function NeedleGauge({ cents, active }) {
   const nx = cx + needleLen * Math.cos(nRad);
   const ny = cy + needleLen * Math.sin(nRad);
 
-  const accent = inTune ? "#22d47b" : "#e8a020";
+  // Enhanced success visual
+  const accent = showSuccess ? "#22d47b" : (inTune ? "#22d47b" : "#e8a020");
 
   return (
     <svg viewBox="0 0 320 160" className="w-full h-auto overflow-visible">
@@ -83,11 +116,11 @@ function NeedleGauge({ cents, active }) {
 }
 
 /* ─── LED Indicator Bar ──────────────────────────────────────────────── */
-function LEDBar({ cents, active }) {
+function LEDBar({ cents, active, showSuccess }: LEDBarProps) {
   const LEDS = 21;
   const mid  = Math.floor(LEDS / 2);
   const lit  = active ? Math.round((cents / 50) * mid) : null;
-  const inTune = active && Math.abs(cents) < 5;
+  const inTune = active && Math.abs(cents) <= 3; // Use reduced sensitivity
 
   return (
     <div className="flex gap-0.5 justify-center items-center">
@@ -98,14 +131,14 @@ function LEDBar({ cents, active }) {
         let bgColor = "bg-[#1a1a22]";
         let shadow = "";
         
-        if (isLit || (inTune && isCtr)) {
-          if (inTune) {
+        if (isLit || (inTune && isCtr) || showSuccess) {
+          if (showSuccess || inTune) {
             bgColor = "bg-[#22d47b]";
-            shadow = "shadow-[0_0_5px_#22d47b]";
-          } else if (lit > 2) {
+            shadow = "shadow-[0_0_8px_#22d47b]";
+          } else if (lit && lit > 2) {
             bgColor = "bg-[#e8501a]";
             shadow = "shadow-[0_0_5px_#e8501a]";
-          } else if (lit < -2) {
+          } else if (lit && lit < -2) {
             bgColor = "bg-[#1a7ee8]";
             shadow = "shadow-[0_0_5px_#1a7ee8]";
           } else {
@@ -128,7 +161,7 @@ function LEDBar({ cents, active }) {
 }
 
 /* ─── Waveform Canvas ────────────────────────────────────────────────── */
-function WaveformCanvas({ canvasRef, drawWaveform }) {
+function WaveformCanvas({ canvasRef, drawWaveform }: WaveformCanvasProps) {
   useEffect(() => {
     if (!canvasRef.current || !drawWaveform) return;
     const interval = setInterval(() => drawWaveform(canvasRef), 50);
@@ -143,7 +176,7 @@ function WaveformCanvas({ canvasRef, drawWaveform }) {
 }
 
 /* ─── String Selector with Play Button ──────────────────────────────── */
-function StringSelector({ targetString, onSelect, detectedNote, playingNote, onPlay, GUITAR_STRINGS }) {
+function StringSelector({ targetString, onSelect, detectedNote, playingNote, onPlay, GUITAR_STRINGS }: StringSelectorProps) {
   return (
     <>
       <style jsx>{`
@@ -153,7 +186,7 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
         }
       `}</style>
       <div className="grid grid-cols-6 gap-1.5">
-        {GUITAR_STRINGS.map((s) => {
+        {GUITAR_STRINGS.map((s: GuitarString) => {
           const isTarget   = targetString?.note === s.note;
           const isDetected = !targetString && detectedNote === s.note;
           const isPlaying  = playingNote === s.note;
@@ -218,7 +251,7 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
 }
 
 /* ─── Signal Meter ───────────────────────────────────────────────────── */
-function SignalMeter({ rms }) {
+function SignalMeter({ rms }: SignalMeterProps) {
   const pct = Math.min(1, rms / 0.12) * 100;
   return (
     <div className="flex items-center gap-2">
@@ -237,7 +270,7 @@ function SignalMeter({ rms }) {
 
 /* ─── Main Component ─────────────────────────────────────────────────── */
 export default function GuitarTuner() {
-  const waveCanvasRef = useRef(null);
+  const waveCanvasRef = useRef<HTMLCanvasElement>(null);
   
   const {
     status,
@@ -247,6 +280,8 @@ export default function GuitarTuner() {
     targetString,
     rms,
     playingNote,
+    isInTune,
+    showSuccess,
     setTargetString,
     playReferenceNote,
     drawWaveform,
@@ -254,17 +289,18 @@ export default function GuitarTuner() {
   } = useTuner();
 
   const isActive    = status === "listening" && frequency !== null;
-  const inTune      = isActive && Math.abs(cents) < 5;
+  const inTune      = isActive && isInTune;
   const tuningLabel = !isActive
     ? (status === "denied" ? "mic access denied" : status === "listening" ? "play a string…" : "starting…")
     : inTune
       ? "in tune"
       : cents > 0 ? `${cents.toFixed(1)}¢ sharp` : `${Math.abs(cents).toFixed(1)}¢ flat`;
 
-  const accentColor = inTune ? "#22d47b" : isActive ? "#e8a020" : "#33333f";
+  const accentColor = showSuccess ? "#22d47b" : (inTune ? "#22d47b" : isActive ? "#e8a020" : "#33333f");
+  const backgroundColor = showSuccess ? "bg-[#22d47b22]" : "bg-[#0d0d12]";
 
   return (
-    <div className="w-[360px] bg-[#0d0d12] rounded-2xl px-[18px] pt-5 pb-[18px] font-mono select-none shadow-[0_0_0_1px_#1e1e28,0_20px_60px_rgba(0,0,0,0.6)]">
+    <div className={`w-[360px] ${backgroundColor} rounded-2xl px-[18px] pt-5 pb-[18px] font-mono select-none shadow-[0_0_0_1px_#1e1e28,0_20px_60px_rgba(0,0,0,0.6)] transition-colors duration-300`}>
 
       {/* Header */}
       <div className="flex justify-between items-center mb-3.5">
@@ -286,11 +322,11 @@ export default function GuitarTuner() {
 
       {/* Needle gauge */}
       <div className="my-2 mt-2">
-        <NeedleGauge cents={cents} active={isActive} />
+        <NeedleGauge cents={cents} active={isActive} showSuccess={showSuccess} />
       </div>
 
       {/* LED bar */}
-      <LEDBar cents={cents} active={isActive} />
+      <LEDBar cents={cents} active={isActive} showSuccess={showSuccess} />
 
       {/* Note display */}
       <div className="text-center my-3.5 mt-3.5">
