@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+"use client";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 /* ─── String definitions ─────────────────────────────────────────────── */
 const GUITAR_STRINGS = [
@@ -28,7 +29,7 @@ const CHROMATIC = buildChromatic();
  * Function (CMNDF) + parabolic interpolation — much more accurate and
  * stable than naive autocorrelation, especially for guitar.
  */
-function detectPitchYIN(buffer: Float32Array, sampleRate: number, threshold = 0.15) {
+function detectPitchYIN(buffer, sampleRate, threshold = 0.15) {
   const halfSize = Math.floor(buffer.length / 2);
   const yin = new Float32Array(halfSize);
 
@@ -70,17 +71,17 @@ function detectPitchYIN(buffer: Float32Array, sampleRate: number, threshold = 0.
 }
 
 /* ─── Helpers ────────────────────────────────────────────────────────── */
-function findClosest(freq: number, pool: Array<{ note: string; string: number; frequency: number }>) {
+function findClosest(freq, pool) {
   return pool.reduce((best, c) =>
     Math.abs(c.frequency - freq) < Math.abs(best.frequency - freq) ? c : best
   );
 }
 
-function getCents(detected: number, target: number) {
+function getCents(detected, target) {
   return 1200 * Math.log2(detected / target);
 }
 
-function getRMS(buf: Float32Array) {
+function getRMS(buf) {
   let sum = 0;
   for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
   return Math.sqrt(sum / buf.length);
@@ -88,10 +89,8 @@ function getRMS(buf: Float32Array) {
 
 /* Median filter for pitch stability – eliminates outlier frames */
 class MedianFilter {
-  size: number;
-  buf: number[];
-  constructor(size = 9) { this.size = size; this.buf = []; }
-  push(v: number) {
+  constructor(size = 7) { this.size = size; this.buf = []; }
+  push(v) {
     this.buf.push(v);
     if (this.buf.length > this.size) this.buf.shift();
     const s = [...this.buf].sort((a, b) => a - b);
@@ -100,89 +99,40 @@ class MedianFilter {
   reset() { this.buf = []; }
 }
 
-/* Smooth cents calculation to reduce needle jitter */
-class CentsSmoother {
-  size: number;
-  buf: number[];
-  constructor(size = 5) { this.size = size; this.buf = []; }
-  push(v: number) {
-    this.buf.push(v);
-    if (this.buf.length > this.size) this.buf.shift();
-    return this.buf.reduce((sum, val) => sum + val, 0) / this.buf.length;
-  }
-  reset() { this.buf = []; }
-}
-
 /* Map note name to audio filename (E2 → E2.mp3, A#2 → As2.mp3) */
-function noteToFilename(note: string) {
+function noteToFilename(note) {
   return `/audio/guitar/${note.replace("#", "s")}.mp3`;
 }
 
 /* ─── Main Hook ──────────────────────────────────────────────────────── */
-export function useTuner(): {
-  status: string;
-  frequency: number | null;
-  note: string;
-  cents: number;
-  targetString: { note: string; string: number } | null;
-  rms: number;
-  playingNote: string | null;
-  isInTune: boolean;
-  pitchGuidance: "up" | "down" | null;
-  showSuccess: boolean;
-  isManuallyStopped: boolean;
-  startTuner: () => void;
-  stopTuner: () => void;
-  setTargetString: React.Dispatch<React.SetStateAction<{ note: string; string: number } | null>>;
-  playReferenceNote: (s: { note: string; string: number }) => void;
-  drawWaveform: (ref: React.RefObject<HTMLCanvasElement | null>) => void;
-  GUITAR_STRINGS: Array<{ note: string; string: number }>;
-} {
+export function useTuner() {
   // Audio analysis refs
-  const audioCtxRef    = useRef<AudioContext | null>(null);
-  const analyserRef    = useRef<AnalyserNode | null>(null);
-  const dataArrayRef   = useRef<any>(null);
-  const animRef        = useRef<any>(null);
-  const pitchFilter    = useRef(new MedianFilter(9));
-  const centsSmoother  = useRef(new CentsSmoother(5));
-  const successAudioRef = useRef<HTMLAudioElement | null>(null);
-  const lastInTuneRef  = useRef<boolean>(false);
-  const streamRef      = useRef<MediaStream | null>(null);
+  const audioCtxRef    = useRef(null);
+  const analyserRef    = useRef(null);
+  const dataArrayRef   = useRef(null);
+  const animRef        = useRef(null);
+  const pitchFilter    = useRef(new MedianFilter(7));
   
   // Playback refs
-  const playbackCtxRef = useRef<AudioContext | null>(null);
-  const currentSourceRef = useRef<AudioScheduledSourceNode | null>(null);
-  const audioBufferCache = useRef(new Map<string, AudioBuffer>());
+  const playbackCtxRef = useRef(null);
+  const currentSourceRef = useRef(null);
+  const audioBufferCache = useRef(new Map());
 
   // State
-  const [status,       setStatus]       = useState<string>("idle");
-  const [frequency,    setFrequency]    = useState<number | null>(null);
-  const [note,         setNote]         = useState<string>("--");
-  const [cents,        setCents]        = useState<number>(0);
-  const [targetString, setTargetString] = useState<{ note: string; string: number } | null>(null);
-  const [rms,          setRms]          = useState<number>(0);
-  const [playingNote,  setPlayingNote]  = useState<string | null>(null);
-  const [isInTune,     setIsInTune]     = useState<boolean>(false);
-  const [pitchGuidance, setPitchGuidance] = useState<"up" | "down" | null>(null);
-  const [showSuccess,  setShowSuccess]  = useState<boolean>(false);
-  const [isManuallyStopped, setIsManuallyStopped] = useState<boolean>(true);
-
-  /* Play success sound */
-  const playSuccessSound = useCallback(() => {
-    if (!successAudioRef.current) {
-      successAudioRef.current = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZURE');
-      successAudioRef.current.volume = 0.3;
-    }
-    successAudioRef.current.play().catch(() => {});
-  }, []);
+  const [status,       setStatus]       = useState("idle");   // idle | listening | denied
+  const [frequency,    setFrequency]    = useState(null);
+  const [note,         setNote]         = useState("--");
+  const [cents,        setCents]        = useState(0);
+  const [targetString, setTargetString] = useState(null);
+  const [rms,          setRms]          = useState(0);
+  const [playingNote,  setPlayingNote]  = useState(null);
 
   /* Draw waveform callback (passed to UI) */
-  const drawWaveform = useCallback((canvasRef: React.RefObject<HTMLCanvasElement | null>) => {
+  const drawWaveform = useCallback((canvasRef) => {
     const canvas = canvasRef.current;
     if (!canvas || !dataArrayRef.current) return;
     
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
     const W = canvas.width, H = canvas.height;
     const buf = dataArrayRef.current.subarray(0, 512);
     
@@ -216,52 +166,27 @@ export function useTuner(): {
     setRms(sigRMS);
 
     if (sigRMS > 0.005) {
-      const audioCtx = audioCtxRef.current;
-      if (!audioCtx) return;
-      const raw = detectPitchYIN(dataArray, audioCtx.sampleRate, 0.15);
+      const raw = detectPitchYIN(dataArray, audioCtxRef.current.sampleRate, 0.15);
       if (raw !== -1 && raw > 60 && raw < 2000) {
         const smoothed = pitchFilter.current.push(raw);
         const pool = targetString ? [targetString] : GUITAR_STRINGS;
-        const closest = findClosest(smoothed, (pool.length > 1 ? CHROMATIC : pool) as Array<{ note: string; string: number; frequency: number }>);
-        const rawCents = getCents(smoothed, closest.frequency);
-        const smoothedCents = centsSmoother.current.push(rawCents);
+        const closest = findClosest(smoothed, pool.length > 1 ? CHROMATIC : pool);
+        const c = getCents(smoothed, closest.frequency);
 
         setFrequency(smoothed);
         setNote(closest.note);
-        setCents(smoothedCents);
-
-        // Determine tuning status and guidance
-        const currentlyInTune = Math.abs(smoothedCents) < 5;
-        setIsInTune(currentlyInTune);
-        
-        if (currentlyInTune) {
-          setPitchGuidance(null);
-          // Play success sound only once when transitioning to in-tune
-          if (!lastInTuneRef.current) {
-            setShowSuccess(true);
-            playSuccessSound();
-            setTimeout(() => setShowSuccess(false), 2000);
-          }
-        } else {
-          setPitchGuidance(smoothedCents > 0 ? "down" : "up");
-        }
-        
-        lastInTuneRef.current = currentlyInTune;
+        setCents(c);
       }
     } else {
       // Silence – keep last note displayed but reset filter
       if (sigRMS < 0.003) {
         setFrequency(null);
         pitchFilter.current.reset();
-        centsSmoother.current.reset();
-        setIsInTune(false);
-        setPitchGuidance(null);
-        lastInTuneRef.current = false;
       }
     }
 
     animRef.current = requestAnimationFrame(detect);
-  }, [targetString, playSuccessSound]);
+  }, [targetString]);
 
   /* Start microphone */
   const startAudio = useCallback(async () => {
@@ -285,71 +210,16 @@ export function useTuner(): {
       audioCtxRef.current  = audioCtx;
       analyserRef.current  = analyser;
       dataArrayRef.current = dataArray;
-      streamRef.current     = stream;
 
       setStatus("listening");
-      setIsManuallyStopped(false);
       animRef.current = requestAnimationFrame(detect);
     } catch {
       setStatus("denied");
-      setIsManuallyStopped(false);
     }
   }, [detect]);
 
-  /* Safe AudioContext cleanup */
-  const cleanupAudioContext = useCallback((ctxRef: React.RefObject<AudioContext | null>) => {
-    const ctx = ctxRef.current;
-    if (ctx) {
-      try {
-        if (ctx.state !== 'closed') {
-          ctx.close();
-        }
-      } catch (error) {
-        console.warn('AudioContext cleanup error:', error);
-      }
-    }
-    ctxRef.current = null;
-  }, []);
-
-  /* Stop microphone and cleanup */
-  const stopAudio = useCallback(() => {
-    if (animRef.current) {
-      cancelAnimationFrame(animRef.current);
-      animRef.current = null;
-    }
-    
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-    
-    cleanupAudioContext(audioCtxRef);
-    
-    setStatus("idle");
-    setIsManuallyStopped(true);
-    setFrequency(null);
-    setNote("--");
-    setCents(0);
-    setRms(0);
-    setIsInTune(false);
-    setPitchGuidance(null);
-    setShowSuccess(false);
-    pitchFilter.current.reset();
-    centsSmoother.current.reset();
-    lastInTuneRef.current = false;
-  }, [cleanupAudioContext]);
-
-  /* Manual tuner controls */
-  const startTuner = useCallback(() => {
-    startAudio();
-  }, [startAudio]);
-
-  const stopTuner = useCallback(() => {
-    stopAudio();
-  }, [stopAudio]);
-
   /* Play reference note */
-  const playReferenceNote = useCallback(async (noteData: { note: string; string: number }) => {
+  const playReferenceNote = useCallback(async (noteData) => {
     // Stop any currently playing sound
     if (currentSourceRef.current) {
       try {
@@ -360,8 +230,7 @@ export function useTuner(): {
 
     // Initialize playback context if needed
     if (!playbackCtxRef.current) {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      playbackCtxRef.current = new AudioCtx();
+      playbackCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
     }
     const ctx = playbackCtxRef.current;
 
@@ -403,31 +272,15 @@ export function useTuner(): {
     }
   }, []);
 
-  /* Page leave detection and cleanup */
+  /* Initialize on mount */
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden && status === "listening") {
-        stopAudio();
-      }
-    };
-
-    const handleBeforeUnload = () => {
-      if (status === "listening") {
-        stopAudio();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
+    startAudio();
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      if (animRef.current) cancelAnimationFrame(animRef.current);
-      cleanupAudioContext(audioCtxRef);
-      cleanupAudioContext(playbackCtxRef);
+      if (animRef.current)        cancelAnimationFrame(animRef.current);
+      if (audioCtxRef.current)    audioCtxRef.current.close();
+      if (playbackCtxRef.current) playbackCtxRef.current.close();
     };
-  }, [status, stopAudio, cleanupAudioContext]);
+  }, [startAudio]);
 
   /* Restart detect loop when targetString changes */
   useEffect(() => {
@@ -446,14 +299,8 @@ export function useTuner(): {
     targetString,
     rms,
     playingNote,
-    isInTune,
-    pitchGuidance,
-    showSuccess,
-    isManuallyStopped,
     
     // Actions
-    startTuner,
-    stopTuner,
     setTargetString,
     playReferenceNote,
     drawWaveform,

@@ -1,54 +1,38 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Play, Pause, Mic, MicOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardTitle, CardContent, CardAction } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import { Alert } from "@/components/ui/alert";
-import { useTuner } from "@/tools/hooks/use-tuner";
+import { useTuner } from "../hooks/use-tuner";
 
 /* ─── Tuning Needle SVG ──────────────────────────────────────────────── */
-function NeedleGauge({ cents, active }: { cents: number; active: boolean }) {
+function NeedleGauge({ cents, active }) {
   const clampedCents = Math.max(-50, Math.min(50, cents));
-  const angleDeg = (clampedCents / 50) * 52;           // ±52° swing
+  const angleDeg = (clampedCents / 50) * 52;
   const inTune = active && Math.abs(clampedCents) < 5;
 
-  // Arc parameters
   const cx = 160, cy = 140, r = 110;
-  const startAng = -232, endAng = -308; // unused – manual path instead
 
-  // Generate arc path from -52° to +52° centred at bottom
-  function polarToXY(deg: number) {
+  function polarToXY(deg) {
     const rad = (deg - 90) * (Math.PI / 180);
     return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
   }
   const arcStart = polarToXY(-52);
   const arcEnd   = polarToXY( 52);
 
-  // Tick marks
   const ticks = [-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50];
 
-  // Needle endpoint
   const needleLen = 95;
   const nRad = (angleDeg - 90) * (Math.PI / 180);
   const nx = cx + needleLen * Math.cos(nRad);
   const ny = cy + needleLen * Math.sin(nRad);
 
-  const accent = inTune ? "var(--primary)" : "var(--accent)";
-  const dim    = inTune ? "var(--primary)" : "var(--accent)";
+  const accent = inTune ? "#22d47b" : "#e8a020";
 
   return (
-    <svg viewBox="0 0 320 160" className="tuner-svg">
-      {/* Arc track */}
+    <svg viewBox="0 0 320 160" className="w-full h-auto overflow-visible">
       <path
         d={`M ${arcStart[0]} ${arcStart[1]} A ${r} ${r} 0 0 1 ${arcEnd[0]} ${arcEnd[1]}`}
-        fill="none" stroke="var(--border)" strokeWidth="18" strokeLinecap="round"
+        fill="none" stroke="#2a2a32" strokeWidth="18" strokeLinecap="round"
       />
-      {/* Active arc segment */}
       {active && (() => {
         const seg = polarToXY(angleDeg);
         const large = Math.abs(angleDeg) > 0 ? 0 : 0;
@@ -58,99 +42,85 @@ function NeedleGauge({ cents, active }: { cents: number; active: boolean }) {
           <path
             d={`M ${origin[0]} ${origin[1]} A ${r} ${r} 0 ${large} ${sweep} ${seg[0]} ${seg[1]}`}
             fill="none" stroke={accent} strokeWidth="18" strokeLinecap="round"
-            style={{ opacity: 0.7 }}
+            className="opacity-70"
           />
         );
       })()}
 
-      {/* Tick marks */}
       {ticks.map(t => {
         const inner = t === 0 ? 88 : (Math.abs(t) % 10 === 0 ? 94 : 99);
         const outer = 106;
         const pa = polarToXY((t / 50) * 52);
-        const pb = polarToXY((t / 50) * 52);
         const ia = [(cx + (inner / r) * (pa[0] - cx)), (cy + (inner / r) * (pa[1] - cy))];
         const oa = [(cx + (outer / r) * (pa[0] - cx)), (cy + (outer / r) * (pa[1] - cy))];
         return (
-          <line key={t} x1={Number(ia[0].toFixed(2))} y1={Number(ia[1].toFixed(2))} x2={Number(oa[0].toFixed(2))} y2={Number(oa[1].toFixed(2))}
-                stroke={t === 0 ? "var(--primary)" : "var(--muted-foreground)"} strokeWidth={t === 0 ? 2 : 1}
+          <line key={t} x1={ia[0]} y1={ia[1]} x2={oa[0]} y2={oa[1]}
+            stroke={t === 0 ? "#22d47b" : "#44444f"} strokeWidth={t === 0 ? 2 : 1}
           />
         );
       })}
 
-      {/* Centre label */}
-      <text x={cx} y={cy - 26} textAnchor="middle" fill="var(--muted-foreground)" fontSize="9" fontFamily="monospace">♭ FLAT</text>
-      <text x={cx} y={cy - 26} textAnchor="middle" fill="var(--muted-foreground)" fontSize="9" fontFamily="monospace" dx="46">SHARP ♯</text>
-      <text x={cx - 46} y={cy - 26} textAnchor="middle" fill="var(--muted-foreground)" fontSize="9" fontFamily="monospace">♭ FLAT</text>
+      <text x={cx} y={cy - 26} textAnchor="middle" fill="#44444f" fontSize="9" className="font-mono">♭ FLAT</text>
+      <text x={cx} y={cy - 26} textAnchor="middle" fill="#44444f" fontSize="9" className="font-mono" dx="46">SHARP ♯</text>
+      <text x={cx - 46} y={cy - 26} textAnchor="middle" fill="#44444f" fontSize="9" className="font-mono">♭ FLAT</text>
 
-      {/* Needle */}
-      <motion.line
-        x1={cx} y1={cy} 
-        x2={Number(nx.toFixed(2))} y2={Number(ny.toFixed(2))}
+      <line x1={cx} y1={cy} x2={nx} y2={ny}
         stroke={accent} strokeWidth="2.5" strokeLinecap="round"
-        animate={{ 
-          x2: Number(nx.toFixed(2)),
-          y2: Number(ny.toFixed(2)),
-          transition: { 
-            type: "spring", 
-            stiffness: 200, 
-            damping: 20,
-            mass: 1
-          }
-        }}
-        style={{ 
-          filter: `drop-shadow(0 0 4px ${accent})` 
-        }}
+        className="transition-all duration-75 ease-out"
+        style={{ filter: `drop-shadow(0 0 4px ${accent})` }}
       />
-      {/* Pivot */}
-      <motion.circle 
-        cx={cx} cy={cy} r="5" 
-        animate={{ fill: accent }}
-        transition={{ duration: 0.2 }}
-      />
-      <circle cx={cx} cy={cy} r="2.5" fill="var(--background)" />
+      <circle cx={cx} cy={cy} r="5" fill={accent} />
+      <circle cx={cx} cy={cy} r="2.5" fill="#0d0d12" />
 
-      {/* Cents readout */}
-      <motion.text 
-        x={cx} y={cy + 26} textAnchor="middle"
-        fontSize="13" fontFamily="monospace" fontWeight="bold"
-        animate={{ fill: active ? accent : "var(--muted-foreground)" }}
-        transition={{ duration: 0.2 }}
+      <text x={cx} y={cy + 26} textAnchor="middle"
+        fill={active ? accent : "#33333f"}
+        fontSize="13" className="font-mono font-bold"
       >
         {active ? `${clampedCents > 0 ? "+" : ""}${clampedCents.toFixed(1)}¢` : "– ¢"}
-      </motion.text>
+      </text>
     </svg>
   );
 }
 
 /* ─── LED Indicator Bar ──────────────────────────────────────────────── */
-function LEDBar({ cents, active }: { cents: number; active: boolean }) {
-  const LEDS = 21;          // 10 flat | centre | 10 sharp
+function LEDBar({ cents, active }) {
+  const LEDS = 21;
   const mid  = Math.floor(LEDS / 2);
   const lit  = active ? Math.round((cents / 50) * mid) : null;
   const inTune = active && Math.abs(cents) < 5;
 
   return (
-    <div className="tuner-led-bar">
+    <div className="flex gap-0.5 justify-center items-center">
       {Array.from({ length: LEDS }, (_, i) => {
         const pos   = i - mid;
         const isLit = lit !== null && (lit >= 0 ? pos >= 0 && pos <= lit : pos <= 0 && pos >= lit);
         const isCtr = i === mid;
-        let color   = "var(--muted)";
+        let bgColor = "bg-[#1a1a22]";
+        let shadow = "";
+        
         if (isLit || (inTune && isCtr)) {
-          if (inTune)           color = "var(--primary)";
-          else if (lit !== null && lit > 2)     color = "var(--destructive)";
-          else if (lit !== null && lit < -2)    color = "var(--primary)";
-          else                  color = "var(--accent)";
+          if (inTune) {
+            bgColor = "bg-[#22d47b]";
+            shadow = "shadow-[0_0_5px_#22d47b]";
+          } else if (lit > 2) {
+            bgColor = "bg-[#e8501a]";
+            shadow = "shadow-[0_0_5px_#e8501a]";
+          } else if (lit < -2) {
+            bgColor = "bg-[#1a7ee8]";
+            shadow = "shadow-[0_0_5px_#1a7ee8]";
+          } else {
+            bgColor = "bg-[#e8a020]";
+            shadow = "shadow-[0_0_5px_#e8a020]";
+          }
         } else if (isCtr) {
-          color = "var(--muted)";
+          bgColor = "bg-[#22472e]";
         }
+        
         return (
-          <div key={i} className={`tuner-led ${isCtr ? 'center' : 'side'} ${isLit || (inTune && isCtr) ? 'lit' : ''}`}
-               style={{
-                 background: color,
-                 boxShadow: isLit || (inTune && isCtr) ? `0 0 5px ${color}` : "none",
-               }} />
+          <div key={i} className={`
+            ${isCtr ? 'w-1.5 h-3.5' : 'w-1 h-2.5'}
+            rounded-sm ${bgColor} ${shadow} transition-colors duration-75
+          `} />
         );
       })}
     </div>
@@ -158,78 +128,109 @@ function LEDBar({ cents, active }: { cents: number; active: boolean }) {
 }
 
 /* ─── Waveform Canvas ────────────────────────────────────────────────── */
-function WaveformCanvas({ canvasRef, drawWaveform }: { canvasRef: React.RefObject<HTMLCanvasElement | null>; drawWaveform: ((ref: React.RefObject<HTMLCanvasElement | null>) => void) | null }) {
+function WaveformCanvas({ canvasRef, drawWaveform }) {
   useEffect(() => {
     if (!canvasRef.current || !drawWaveform) return;
-    const interval = setInterval(() => drawWaveform(canvasRef), 50); // 20fps for canvas
+    const interval = setInterval(() => drawWaveform(canvasRef), 50);
     return () => clearInterval(interval);
   }, [canvasRef, drawWaveform]);
 
   return (
-    <canvas ref={canvasRef} width={320} height={60} className="tuner-waveform-canvas" />
+    <canvas ref={canvasRef} width={320} height={60}
+      className="w-full h-[60px] rounded-md bg-[#0a0a10]"
+    />
   );
 }
 
 /* ─── String Selector with Play Button ──────────────────────────────── */
-function StringSelector({ targetString, onSelect, detectedNote, playingNote, onPlay, GUITAR_STRINGS, isTunerActive }: {
-  targetString: { note: string; string: number } | null;
-  onSelect: (s: { note: string; string: number } | null) => void;
-  detectedNote: string | null;
-  playingNote: string | null;
-  onPlay: (s: { note: string; string: number }) => void;
-  GUITAR_STRINGS: Array<{ note: string; string: number }>;
-  isTunerActive: boolean;
-}) {
+function StringSelector({ targetString, onSelect, detectedNote, playingNote, onPlay, GUITAR_STRINGS }) {
   return (
-    <div className="tuner-string-grid">
-      {GUITAR_STRINGS.map((s) => {
-        const isTarget   = targetString?.note === s.note;
-        const isDetected = !targetString && detectedNote === s.note;
-        const isPlaying  = playingNote === s.note;
-        const active     = isTarget || isDetected;
-        
-        return (
-          <div key={s.note} className="tuner-string-wrapper">
-            <Button 
-              onClick={() => isTunerActive && onSelect(isTarget ? null : s)}
-              variant={active ? "default" : "outline"}
-              size="sm"
-              className="tuner-string-button"
-              disabled={!isTunerActive}
-            >
-              <div className="tuner-string-number">{s.string}</div>
-              <div>{s.note}</div>
-              {isPlaying && (
-                <div className="tuner-playing-indicator" />
-              )}
-            </Button>
-            <Button
-              variant={isPlaying ? "default" : "outline"}
-              size="icon-xs"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (isTunerActive) onPlay(s);
-              }}
-              className="tuner-play-button"
-              title={isTunerActive ? "Play reference tone" : "Start tuner to play reference tone"}
-              disabled={!isTunerActive}
-            >
-              {isPlaying ? <Pause size={10} /> : <Play size={10} />}
-            </Button>
-          </div>
-        );
-      })}
-    </div>
+    <>
+      <style jsx>{`
+        @keyframes pulse-border {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+      `}</style>
+      <div className="grid grid-cols-6 gap-1.5">
+        {GUITAR_STRINGS.map((s) => {
+          const isTarget   = targetString?.note === s.note;
+          const isDetected = !targetString && detectedNote === s.note;
+          const isPlaying  = playingNote === s.note;
+          const active     = isTarget || isDetected;
+          
+          return (
+            <div key={s.note} className="relative">
+              <button 
+                onClick={() => onSelect(isTarget ? null : s)}
+                className={`
+                  w-full py-2 px-0 border-0 rounded-md cursor-pointer
+                  font-mono text-xs font-bold leading-tight relative
+                  ${active 
+                    ? (isTarget ? 'bg-[#22d47b22]' : 'bg-[#22d47b11]') 
+                    : 'bg-[#16161e]'
+                  }
+                  ${active ? 'text-[#22d47b]' : 'text-[#55556a]'}
+                  ${isTarget 
+                    ? 'outline outline-[1.5px] outline-[#22d47b55]' 
+                    : 'outline outline-1 outline-[#22222a]'
+                  }
+                  transition-all duration-100
+                `}
+              >
+                <div className="text-[11px] opacity-60">{s.string}</div>
+                <div>{s.note}</div>
+                {isPlaying && (
+                  <div 
+                    className="absolute inset-0 border-2 border-[#22d47b] rounded-md pointer-events-none"
+                    style={{ animation: 'pulse-border 0.8s ease-in-out infinite' }}
+                  />
+                )}
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPlay(s);
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#22d47b55'}
+                onMouseLeave={(e) => e.currentTarget.style.background = isPlaying ? '#22d47b' : '#22222a88'}
+                className={`
+                  absolute top-0.5 right-0.5 w-5 h-5
+                  border-0 rounded cursor-pointer
+                  flex items-center justify-center
+                  text-[10px] transition-all duration-150
+                  backdrop-blur-sm
+                  ${isPlaying 
+                    ? 'bg-[#22d47b] text-[#0d0d12]' 
+                    : 'bg-[#22222a88] text-[#55556a]'
+                  }
+                `}
+                title="Play reference tone"
+              >
+                {isPlaying ? "⏸" : "▶"}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 }
 
 /* ─── Signal Meter ───────────────────────────────────────────────────── */
-function SignalMeter({ rms }: { rms: number }) {
+function SignalMeter({ rms }) {
   const pct = Math.min(1, rms / 0.12) * 100;
   return (
-    <div className="tuner-signal-meter">
-      <span className="tuner-signal-label">SIG</span>
-      <Progress value={pct} className="tuner-signal-bar" />
+    <div className="flex items-center gap-2">
+      <span className="font-mono text-[10px] text-[#44444f] w-6">SIG</span>
+      <div className="flex-1 h-0.5 bg-[#1a1a22] rounded-sm overflow-hidden">
+        <div 
+          className={`h-full rounded-sm transition-all duration-50 ${
+            pct > 70 ? 'bg-[#e8501a]' : 'bg-[#22d47b]'
+          }`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
     </div>
   );
 }
@@ -238,7 +239,6 @@ function SignalMeter({ rms }: { rms: number }) {
 export default function GuitarTuner() {
   const waveCanvasRef = useRef(null);
   
-  // Use the custom hook for all tuner logic
   const {
     status,
     frequency,
@@ -247,12 +247,6 @@ export default function GuitarTuner() {
     targetString,
     rms,
     playingNote,
-    isInTune,
-    pitchGuidance,
-    showSuccess,
-    isManuallyStopped,
-    startTuner,
-    stopTuner,
     setTargetString,
     playReferenceNote,
     drawWaveform,
@@ -260,150 +254,72 @@ export default function GuitarTuner() {
   } = useTuner();
 
   const isActive    = status === "listening" && frequency !== null;
-  const inTune      = isActive && isInTune;
+  const inTune      = isActive && Math.abs(cents) < 5;
   const tuningLabel = !isActive
-    ? (isManuallyStopped ? "tuner stopped" : status === "denied" ? "mic access denied" : status === "listening" ? "play a string…" : "starting…")
-    : showSuccess
-      ? "✓ Perfect!"
-      : inTune
-        ? "in tune"
-        : cents > 0 ? `${cents.toFixed(1)}¢ sharp` : `${Math.abs(cents).toFixed(1)}¢ flat`;
+    ? (status === "denied" ? "mic access denied" : status === "listening" ? "play a string…" : "starting…")
+    : inTune
+      ? "in tune"
+      : cents > 0 ? `${cents.toFixed(1)}¢ sharp` : `${Math.abs(cents).toFixed(1)}¢ flat`;
 
-  const accentColor = showSuccess ? "var(--primary)" : inTune ? "var(--primary)" : isActive ? "var(--accent)" : "var(--muted-foreground)";
+  const accentColor = inTune ? "#22d47b" : isActive ? "#e8a020" : "#33333f";
 
   return (
-    <Card size="sm" className="tuner-container">
+    <div className="w-[360px] bg-[#0d0d12] rounded-2xl px-[18px] pt-5 pb-[18px] font-mono select-none shadow-[0_0_0_1px_#1e1e28,0_20px_60px_rgba(0,0,0,0.6)]">
 
       {/* Header */}
-      <CardHeader>
-        <div className="tuner-title-section">
-          <motion.div 
-            animate={{ 
-              scale: status === "listening" ? [1, 1.2, 1] : 1,
-              opacity: status === "listening" ? 1 : 0.3
-            }}
-            transition={{ 
-              duration: 2, 
-              repeat: status === "listening" ? Infinity : 0,
-              ease: "easeInOut"
-            }}
-            className={`tuner-status-indicator ${status === "listening" ? 'listening' : ''}`} 
+      <div className="flex justify-between items-center mb-3.5">
+        <div className="flex items-center gap-2">
+          <div 
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              status === "listening" 
+                ? 'bg-[#22d47b] shadow-[0_0_6px_#22d47b]' 
+                : 'bg-[#33333f]'
+            }`} 
           />
-          <CardTitle className="tuner-title">Guitar Tuner</CardTitle>
+          <span className="text-[11px] text-[#44444f] tracking-[0.12em] uppercase">Guitar Tuner</span>
         </div>
-        <CardAction>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Button
-              onClick={status === "listening" ? stopTuner : startTuner}
-              variant={status === "listening" ? "default" : isManuallyStopped ? "destructive" : "outline"}
-              size="sm"
-            >
-              {status === "listening" ? <Pause size={14} /> : <Play size={14} />}
-              {status === "listening" ? "Stop" : "Start"}
-            </Button>
-          </motion.div>
-          <span className="tuner-algorithm-label">YIN</span>
-        </CardAction>
-      </CardHeader>
+        <span className="text-[10px] text-[#2a2a35]">YIN</span>
+      </div>
 
-      <CardContent>
-        {/* Waveform oscilloscope */}
-        <WaveformCanvas canvasRef={waveCanvasRef} drawWaveform={drawWaveform} />
+      {/* Waveform oscilloscope */}
+      <WaveformCanvas canvasRef={waveCanvasRef} drawWaveform={drawWaveform} />
 
-        {/* Needle gauge */}
-        <div className="tuner-gauge-container">
-          <NeedleGauge cents={cents} active={isActive} />
-        </div>
+      {/* Needle gauge */}
+      <div className="my-2 mt-2">
+        <NeedleGauge cents={cents} active={isActive} />
+      </div>
 
-        {/* LED bar */}
-        <LEDBar cents={cents} active={isActive} />
+      {/* LED bar */}
+      <LEDBar cents={cents} active={isActive} />
 
-        {/* Note display */}
-        <div className="tuner-note-display">
-        <motion.div 
-          animate={{ 
+      {/* Note display */}
+      <div className="text-center my-3.5 mt-3.5">
+        <div 
+          className="text-6xl font-bold tracking-tight leading-none transition-colors duration-200"
+          style={{ 
             color: accentColor,
-            scale: showSuccess ? [1, 1.05, 1] : 1,
-            textShadow: isActive ? `0 0 30px ${accentColor}44` : "none"
+            textShadow: isActive ? `0 0 30px ${accentColor}44` : "none" 
           }}
-          transition={{ duration: 0.3 }}
-          className="tuner-note"
         >
           {note}
-        </motion.div>
-        <motion.div 
-          animate={{ opacity: isActive ? 1 : 0.6 }}
-          transition={{ duration: 0.2 }}
-          className="tuner-frequency"
-        >
+        </div>
+        <div className="text-[13px] text-[#55556a] mt-1">
           {isActive ? `${frequency.toFixed(2)} Hz` : "-- Hz"}
-        </motion.div>
-        <motion.div 
-          animate={{ color: accentColor }}
-          transition={{ duration: 0.2 }}
-          className="tuner-tuning-label"
+        </div>
+        <div 
+          className="text-[11px] mt-0.5 min-h-4 transition-colors duration-200"
+          style={{ color: accentColor }}
         >
           {tuningLabel}
-        </motion.div>
-        
-        {/* Pitch Guidance Indicator */}
-        {isActive && pitchGuidance && !inTune && (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className={`tuner-pitch-guidance ${pitchGuidance === "up" ? "up" : "down"}`}
-          >
-            <motion.span
-              animate={{ y: pitchGuidance === "up" ? [-2, 2, -2] : [2, -2, 2] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              {pitchGuidance === "up" ? "▲" : "▼"}
-            </motion.span>
-            <span>{pitchGuidance === "up" ? "Tune Up" : "Tune Down"}</span>
-            <motion.span 
-              className="tuner-pitch-hint"
-              animate={{ opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              ({pitchGuidance === "up" ? "+" : "-"})
-            </motion.span>
-          </motion.div>
-        )}
-        
-        {/* Success Message */}
-        {showSuccess && (
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ 
-              type: "spring", 
-              stiffness: 300, 
-              damping: 20 
-            }}
-          >
-            <Alert className="tuner-success-message">
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 0.5, repeat: 2 }}
-              >
-                ✓ Perfect pitch achieved!
-              </motion.div>
-            </Alert>
-          </motion.div>
-        )}
+        </div>
       </div>
 
       {/* Divider */}
-      <Separator />
+      <div className="h-px bg-[#1a1a22] my-3" />
 
       {/* String selector */}
-      <div className="tuner-string-section">
-        <div className="tuner-string-label">
+      <div className="mb-2.5">
+        <div className="text-[9px] text-[#33333f] tracking-[0.1em] mb-1.5">
           {targetString ? `LOCKED · STRING ${targetString.string}` : "AUTO DETECT · TAP TO LOCK"}
         </div>
         <StringSelector 
@@ -413,13 +329,11 @@ export default function GuitarTuner() {
           playingNote={playingNote}
           onPlay={playReferenceNote}
           GUITAR_STRINGS={GUITAR_STRINGS}
-          isTunerActive={status === "listening"}
         />
       </div>
 
       {/* Signal meter */}
-        <SignalMeter rms={rms} />
-      </CardContent>
-    </Card>
+      <SignalMeter rms={rms} />
+    </div>
   );
 }
