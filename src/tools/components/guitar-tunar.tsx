@@ -3,7 +3,7 @@
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Play, Pause, Mic, MicOff } from "lucide-react";
-import { useTuner } from "@/tools/tunar/hooks/use-tuner";
+import { useTuner } from "@/tools/hooks/use-tuner";
 
 /* ─── Tuning Needle SVG ──────────────────────────────────────────────── */
 function NeedleGauge({ cents, active }: { cents: number; active: boolean }) {
