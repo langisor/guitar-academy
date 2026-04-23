@@ -89,7 +89,8 @@ function NeedleGauge({ cents, active }: { cents: number; active: boolean }) {
         x2={Number(nx.toFixed(2))} y2={Number(ny.toFixed(2))}
         stroke={accent} strokeWidth="2.5" strokeLinecap="round"
         animate={{ 
-          rotate: angleDeg,
+          x2: Number(nx.toFixed(2)),
+          y2: Number(ny.toFixed(2)),
           transition: { 
             type: "spring", 
             stiffness: 200, 
@@ -98,7 +99,6 @@ function NeedleGauge({ cents, active }: { cents: number; active: boolean }) {
           }
         }}
         style={{ 
-          transformOrigin: `${cx}px ${cy}px`,
           filter: `drop-shadow(0 0 4px ${accent})` 
         }}
       />
