@@ -36,7 +36,7 @@ function NeedleGauge({ cents, active }: { cents: number; active: boolean }) {
   const dim    = inTune ? "var(--primary)" : "var(--accent)";
 
   return (
-    <svg viewBox="0 0 320 160" style={{ width: "100%", height: "auto", overflow: "visible" }}>
+    <svg viewBox="0 0 320 160" className="tuner-svg">
       {/* Arc track */}
       <path
         d={`M ${arcStart[0]} ${arcStart[1]} A ${r} ${r} 0 0 1 ${arcEnd[0]} ${arcEnd[1]}`}
@@ -125,7 +125,7 @@ function LEDBar({ cents, active }: { cents: number; active: boolean }) {
   const inTune = active && Math.abs(cents) < 5;
 
   return (
-    <div style={{ display: "flex", gap: "3px", justifyContent: "center", alignItems: "center" }}>
+    <div className="tuner-led-bar">
       {Array.from({ length: LEDS }, (_, i) => {
         const pos   = i - mid;
         const isLit = lit !== null && (lit >= 0 ? pos >= 0 && pos <= lit : pos <= 0 && pos >= lit);
@@ -140,12 +140,11 @@ function LEDBar({ cents, active }: { cents: number; active: boolean }) {
           color = "var(--muted)";
         }
         return (
-          <div key={i} style={{
-            width: isCtr ? 6 : 4, height: isCtr ? 14 : 10,
-            borderRadius: 2, background: color,
-            transition: "background 0.06s",
-            boxShadow: isLit || (inTune && isCtr) ? `0 0 5px ${color}` : "none",
-          }} />
+          <div key={i} className={`tuner-led ${isCtr ? 'center' : 'side'} ${isLit || (inTune && isCtr) ? 'lit' : ''}`}
+               style={{
+                 background: color,
+                 boxShadow: isLit || (inTune && isCtr) ? `0 0 5px ${color}` : "none",
+               }} />
         );
       })}
     </div>
@@ -161,9 +160,7 @@ function WaveformCanvas({ canvasRef, drawWaveform }: { canvasRef: React.RefObjec
   }, [canvasRef, drawWaveform]);
 
   return (
-    <canvas ref={canvasRef} width={320} height={60}
-      style={{ width: "100%", height: 60, borderRadius: 6, background: "var(--muted)" }}
-    />
+    <canvas ref={canvasRef} width={320} height={60} className="tuner-waveform-canvas" />
   );
 }
 
@@ -177,7 +174,7 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
   GUITAR_STRINGS: Array<{ note: string; string: number }>;
 }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 6 }}>
+    <div className="tuner-string-grid">
       {GUITAR_STRINGS.map((s) => {
         const isTarget   = targetString?.note === s.note;
         const isDetected = !targetString && detectedNote === s.note;
@@ -185,36 +182,15 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
         const active     = isTarget || isDetected;
         
         return (
-          <div key={s.note} style={{ position: "relative" }}>
+          <div key={s.note} className="tuner-string-wrapper">
             <button 
               onClick={() => onSelect(isTarget ? null : s)}
-              style={{
-                width: "100%",
-                padding: "8px 0", 
-                border: "none", 
-                borderRadius: 6, 
-                cursor: "pointer",
-                fontFamily: "monospace", 
-                fontSize: 12, 
-                fontWeight: "bold", 
-                lineHeight: 1.3,
-                background: active ? (isTarget ? "var(--primary)" : "var(--primary)") : "var(--card)",
-                color: active ? "var(--primary-foreground)" : "var(--muted-foreground)",
-                outline: isTarget ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                transition: "all 0.12s",
-                position: "relative",
-              }}
+              className={`tuner-string-button ${active ? 'active' : ''}`}
             >
-              <div style={{ fontSize: 11, opacity: 0.6 }}>{s.string}</div>
+              <div className="tuner-string-number">{s.string}</div>
               <div>{s.note}</div>
               {isPlaying && (
-                <div style={{
-                  position: "absolute",
-                  top: 0, left: 0, right: 0, bottom: 0,
-                  border: "2px solid var(--primary)",
-                  borderRadius: 6,
-                  opacity: 0.8,
-                }} />
+                <div className="tuner-playing-indicator" />
               )}
             </button>
             <button
@@ -222,24 +198,7 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
                 e.stopPropagation();
                 onPlay(s);
               }}
-              style={{
-                position: "absolute",
-                top: 2, right: 2,
-                width: 20, height: 20,
-                border: "none",
-                borderRadius: 4,
-                background: isPlaying ? "var(--primary)" : "var(--border)",
-                color: isPlaying ? "var(--primary-foreground)" : "var(--muted-foreground)",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 10,
-                transition: "all 0.15s",
-                backdropFilter: "blur(4px)",
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = "var(--primary)"}
-              onMouseLeave={(e) => e.currentTarget.style.background = isPlaying ? "var(--primary)" : "var(--border)"}
+              className={`tuner-play-button ${isPlaying ? 'playing' : ''}`}
               title="Play reference tone"
             >
               {isPlaying ? "pause" : "play"}
@@ -255,10 +214,10 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
 function SignalMeter({ rms }: { rms: number }) {
   const pct = Math.min(1, rms / 0.12) * 100;
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <span style={{ fontFamily: "monospace", fontSize: 10, color: "var(--muted-foreground)", width: 24 }}>SIG</span>
-      <div style={{ flex: 1, height: 3, background: "var(--muted)", borderRadius: 2 }}>
-        <div style={{ width: `${pct}%`, height: "100%", background: pct > 70 ? "var(--destructive)" : "var(--primary)", borderRadius: 2, transition: "width 0.05s" }} />
+    <div className="tuner-signal-meter">
+      <span className="tuner-signal-label">SIG</span>
+      <div className="tuner-signal-bar">
+        <div className={`tuner-signal-fill ${pct > 70 ? 'high' : ''}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
@@ -302,17 +261,11 @@ export default function GuitarTuner() {
   const accentColor = showSuccess ? "var(--primary)" : inTune ? "var(--primary)" : isActive ? "var(--accent)" : "var(--muted-foreground)";
 
   return (
-    <div style={{
-      width: "100%", maxWidth: 360, background: "var(--card)", borderRadius: 16,
-      padding: "20px 18px 18px", fontFamily: "monospace",
-      boxShadow: "0 0 0 1px var(--border), 0 20px 60px rgba(0,0,0,0.6)",
-      userSelect: "none",
-      margin: "0 auto",
-    }}>
+    <div className="tuner-container">
 
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div className="tuner-header">
+        <div className="tuner-title-section">
           <motion.div 
             animate={{ 
               scale: status === "listening" ? [1, 1.2, 1] : 1,
@@ -323,40 +276,21 @@ export default function GuitarTuner() {
               repeat: status === "listening" ? Infinity : 0,
               ease: "easeInOut"
             }}
-            style={{ 
-              width: 8, 
-              height: 8, 
-              borderRadius: "50%", 
-              background: status === "listening" ? "var(--primary)" : "var(--muted-foreground)", 
-              boxShadow: status === "listening" ? "0 0 6px var(--primary)" : "none" 
-            }} 
+            className={`tuner-status-indicator ${status === "listening" ? 'listening' : ''}`} 
           />
-          <span style={{ fontSize: 11, color: "var(--muted-foreground)", letterSpacing: "0.12em", textTransform: "uppercase" }}>Guitar Tuner</span>
+          <span className="tuner-title">Guitar Tuner</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div className="tuner-controls">
           <motion.button
             onClick={status === "listening" ? stopTuner : startTuner}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "6px 12px",
-              border: "none",
-              borderRadius: 6,
-              background: status === "listening" ? "var(--primary)" : isManuallyStopped ? "var(--destructive)" : "var(--muted-foreground)",
-              color: status === "listening" ? "var(--primary-foreground)" : isManuallyStopped ? "var(--destructive-foreground)" : "var(--muted-foreground)",
-              cursor: "pointer",
-              fontSize: 10,
-              fontWeight: "bold",
-              transition: "all 0.2s",
-            }}
+            className={`tuner-button ${status === "listening" ? 'listening' : isManuallyStopped ? 'stopped' : ''}`}
           >
             {status === "listening" ? <Pause size={14} /> : <Play size={14} />}
             {status === "listening" ? "Stop" : "Start"}
           </motion.button>
-          <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>YIN</span>
+          <span className="tuner-algorithm-label">YIN</span>
         </div>
       </div>
 
@@ -364,7 +298,7 @@ export default function GuitarTuner() {
       <WaveformCanvas canvasRef={waveCanvasRef} drawWaveform={drawWaveform} />
 
       {/* Needle gauge */}
-      <div style={{ margin: "8px 0 2px" }}>
+      <div className="tuner-gauge-container">
         <NeedleGauge cents={cents} active={isActive} />
       </div>
 
@@ -372,7 +306,7 @@ export default function GuitarTuner() {
       <LEDBar cents={cents} active={isActive} />
 
       {/* Note display */}
-      <div style={{ textAlign: "center", margin: "14px 0 4px" }}>
+      <div className="tuner-note-display">
         <motion.div 
           animate={{ 
             color: accentColor,
@@ -380,26 +314,21 @@ export default function GuitarTuner() {
             textShadow: isActive ? `0 0 30px ${accentColor}44` : "none"
           }}
           transition={{ duration: 0.3 }}
-          style={{ 
-            fontSize: 64, 
-            fontWeight: "bold", 
-            letterSpacing: "-0.02em", 
-            lineHeight: 1
-          }}
+          className="tuner-note"
         >
           {note}
         </motion.div>
         <motion.div 
           animate={{ opacity: isActive ? 1 : 0.6 }}
           transition={{ duration: 0.2 }}
-          style={{ fontSize: 13, color: "var(--muted-foreground)", marginTop: 4 }}
+          className="tuner-frequency"
         >
           {isActive ? `${frequency.toFixed(2)} Hz` : "-- Hz"}
         </motion.div>
         <motion.div 
           animate={{ color: accentColor }}
           transition={{ duration: 0.2 }}
-          style={{ fontSize: 11, marginTop: 2, minHeight: 16 }}
+          className="tuner-tuning-label"
         >
           {tuningLabel}
         </motion.div>
@@ -411,16 +340,7 @@ export default function GuitarTuner() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            style={{ 
-              fontSize: 14, 
-              color: pitchGuidance === "up" ? "var(--primary)" : "var(--destructive)", 
-              marginTop: 4, 
-              fontWeight: "bold",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 4
-            }}
+            className={`tuner-pitch-guidance ${pitchGuidance === "up" ? "up" : "down"}`}
           >
             <motion.span
               animate={{ y: pitchGuidance === "up" ? [-2, 2, -2] : [2, -2, 2] }}
@@ -430,7 +350,7 @@ export default function GuitarTuner() {
             </motion.span>
             <span>{pitchGuidance === "up" ? "Tune Up" : "Tune Down"}</span>
             <motion.span 
-              style={{ fontSize: 12, opacity: 0.7 }}
+              className="tuner-pitch-hint"
               animate={{ opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
@@ -449,13 +369,7 @@ export default function GuitarTuner() {
               stiffness: 300, 
               damping: 20 
             }}
-            style={{ 
-              fontSize: 12, 
-              color: "var(--primary)", 
-              marginTop: 4, 
-              fontWeight: "bold",
-              textAlign: "center",
-            }}
+            className="tuner-success-message"
           >
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
@@ -468,11 +382,11 @@ export default function GuitarTuner() {
       </div>
 
       {/* Divider */}
-      <div style={{ height: 1, background: "var(--border)", margin: "12px 0" }} />
+      <div className="tuner-divider" />
 
       {/* String selector */}
-      <div style={{ marginBottom: 10 }}>
-        <div style={{ fontSize: 9, color: "var(--muted-foreground)", letterSpacing: "0.1em", marginBottom: 6 }}>
+      <div className="tuner-string-section">
+        <div className="tuner-string-label">
           {targetString ? `LOCKED · STRING ${targetString.string}` : "AUTO DETECT · TAP TO LOCK"}
         </div>
         <StringSelector 

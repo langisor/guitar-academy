@@ -161,3 +161,307 @@ body {
     @apply font-sans;
   }
 }
+
+/* Guitar Tuner Styles */
+.tuner-container {
+  width: 100%;
+  max-width: 360px;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px 18px 18px;
+  font-family: monospace;
+  box-shadow: 0 0 0 1px var(--border), 0 20px 60px rgba(0,0,0,0.6);
+  user-select: none;
+  margin: 0 auto;
+}
+
+.tuner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.tuner-title-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tuner-status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted-foreground);
+}
+
+.tuner-status-indicator.listening {
+  background: var(--primary);
+  box-shadow: 0 0 6px var(--primary);
+}
+
+.tuner-title {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tuner-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tuner-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--muted-foreground);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.tuner-button.listening {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.tuner-button.stopped {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.tuner-algorithm-label {
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+
+.tuner-gauge-container {
+  margin: 8px 0 2px;
+}
+
+.tuner-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.tuner-note-display {
+  text-align: center;
+  margin: 14px 0 4px;
+}
+
+.tuner-note {
+  font-size: 64px;
+  font-weight: bold;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.tuner-frequency {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 4px;
+}
+
+.tuner-tuning-label {
+  font-size: 11px;
+  margin-top: 2px;
+  min-height: 16px;
+}
+
+.tuner-pitch-guidance {
+  font-size: 14px;
+  margin-top: 4px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.tuner-pitch-guidance.up {
+  color: var(--primary);
+}
+
+.tuner-pitch-guidance.down {
+  color: var(--destructive);
+}
+
+.tuner-pitch-hint {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.tuner-success-message {
+  font-size: 12px;
+  color: var(--primary);
+  margin-top: 4px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.tuner-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 0;
+}
+
+.tuner-string-section {
+  margin-bottom: 10px;
+}
+
+.tuner-string-label {
+  font-size: 9px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.tuner-string-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+
+.tuner-string-wrapper {
+  position: relative;
+}
+
+.tuner-string-button {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1.3;
+  background: var(--card);
+  color: var(--muted-foreground);
+  outline: 1px solid var(--border);
+  transition: all 0.12s;
+  position: relative;
+}
+
+.tuner-string-button.active {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  outline: 1.5px solid var(--primary);
+}
+
+.tuner-string-number {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.tuner-playing-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid var(--primary);
+  border-radius: 6px;
+  opacity: 0.8;
+}
+
+.tuner-play-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 4px;
+  background: var(--border);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: all 0.15s;
+  backdrop-filter: blur(4px);
+}
+
+.tuner-play-button:hover {
+  background: var(--primary);
+}
+
+.tuner-play-button.playing {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.tuner-signal-meter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tuner-signal-label {
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--muted-foreground);
+  width: 24px;
+}
+
+.tuner-signal-bar {
+  flex: 1;
+  height: 3px;
+  background: var(--muted);
+  border-radius: 2px;
+}
+
+.tuner-signal-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: width 0.05s;
+}
+
+.tuner-signal-fill.high {
+  background: var(--destructive);
+}
+
+.tuner-led-bar {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  align-items: center;
+}
+
+.tuner-led {
+  border-radius: 2px;
+  transition: background 0.06s;
+}
+
+.tuner-led.center {
+  width: 6px;
+  height: 14px;
+}
+
+.tuner-led.side {
+  width: 4px;
+  height: 10px;
+}
+
+.tuner-led.lit {
+  box-shadow: 0 0 5px currentColor;
+}
+
+.tuner-waveform-canvas {
+  width: 100%;
+  height: 60px;
+  border-radius: 6px;
+  background: var(--muted);
+}
