@@ -3,6 +3,12 @@
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Play, Pause, Mic, MicOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardContent, CardAction } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { Alert } from "@/components/ui/alert";
 import { useTuner } from "@/tools/hooks/use-tuner";
 
 /* ─── Tuning Needle SVG ──────────────────────────────────────────────── */
@@ -183,26 +189,29 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
         
         return (
           <div key={s.note} className="tuner-string-wrapper">
-            <button 
+            <Button 
               onClick={() => onSelect(isTarget ? null : s)}
-              className={`tuner-string-button ${active ? 'active' : ''}`}
+              variant={active ? "default" : "outline"}
+              size="default"
+              className="tuner-string-button"
             >
               <div className="tuner-string-number">{s.string}</div>
               <div>{s.note}</div>
               {isPlaying && (
                 <div className="tuner-playing-indicator" />
               )}
-            </button>
-            <button
+            </Button>
+            <Badge
+              variant={isPlaying ? "success" : "secondary"}
               onClick={(e) => {
                 e.stopPropagation();
                 onPlay(s);
               }}
-              className={`tuner-play-button ${isPlaying ? 'playing' : ''}`}
+              className="tuner-play-button cursor-pointer"
               title="Play reference tone"
             >
               {isPlaying ? "pause" : "play"}
-            </button>
+            </Badge>
           </div>
         );
       })}
@@ -216,9 +225,7 @@ function SignalMeter({ rms }: { rms: number }) {
   return (
     <div className="tuner-signal-meter">
       <span className="tuner-signal-label">SIG</span>
-      <div className="tuner-signal-bar">
-        <div className={`tuner-signal-fill ${pct > 70 ? 'high' : ''}`} style={{ width: `${pct}%` }} />
-      </div>
+      <Progress value={pct} className="tuner-signal-bar" />
     </div>
   );
 }
@@ -261,10 +268,10 @@ export default function GuitarTuner() {
   const accentColor = showSuccess ? "var(--primary)" : inTune ? "var(--primary)" : isActive ? "var(--accent)" : "var(--muted-foreground)";
 
   return (
-    <div className="tuner-container">
+    <Card size="sm" className="tuner-container">
 
       {/* Header */}
-      <div className="tuner-header">
+      <CardHeader>
         <div className="tuner-title-section">
           <motion.div 
             animate={{ 
@@ -278,35 +285,40 @@ export default function GuitarTuner() {
             }}
             className={`tuner-status-indicator ${status === "listening" ? 'listening' : ''}`} 
           />
-          <span className="tuner-title">Guitar Tuner</span>
+          <CardTitle className="tuner-title">Guitar Tuner</CardTitle>
         </div>
-        <div className="tuner-controls">
-          <motion.button
-            onClick={status === "listening" ? stopTuner : startTuner}
+        <CardAction>
+          <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={`tuner-button ${status === "listening" ? 'listening' : isManuallyStopped ? 'stopped' : ''}`}
           >
-            {status === "listening" ? <Pause size={14} /> : <Play size={14} />}
-            {status === "listening" ? "Stop" : "Start"}
-          </motion.button>
+            <Button
+              onClick={status === "listening" ? stopTuner : startTuner}
+              variant={status === "listening" ? "default" : isManuallyStopped ? "destructive" : "outline"}
+              size="sm"
+            >
+              {status === "listening" ? <Pause size={14} /> : <Play size={14} />}
+              {status === "listening" ? "Stop" : "Start"}
+            </Button>
+          </motion.div>
           <span className="tuner-algorithm-label">YIN</span>
+        </CardAction>
+      </CardHeader>
+
+      <CardContent>
+        {/* Waveform oscilloscope */}
+        <WaveformCanvas canvasRef={waveCanvasRef} drawWaveform={drawWaveform} />
+
+        {/* Needle gauge */}
+        <div className="tuner-gauge-container">
+          <NeedleGauge cents={cents} active={isActive} />
         </div>
-      </div>
 
-      {/* Waveform oscilloscope */}
-      <WaveformCanvas canvasRef={waveCanvasRef} drawWaveform={drawWaveform} />
+        {/* LED bar */}
+        <LEDBar cents={cents} active={isActive} />
 
-      {/* Needle gauge */}
-      <div className="tuner-gauge-container">
-        <NeedleGauge cents={cents} active={isActive} />
-      </div>
-
-      {/* LED bar */}
-      <LEDBar cents={cents} active={isActive} />
-
-      {/* Note display */}
-      <div className="tuner-note-display">
+        {/* Note display */}
+        <div className="tuner-note-display">
         <motion.div 
           animate={{ 
             color: accentColor,
@@ -361,7 +373,7 @@ export default function GuitarTuner() {
         
         {/* Success Message */}
         {showSuccess && (
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ 
@@ -369,20 +381,21 @@ export default function GuitarTuner() {
               stiffness: 300, 
               damping: 20 
             }}
-            className="tuner-success-message"
           >
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 0.5, repeat: 2 }}
-            >
-              ✓ Perfect pitch achieved!
-            </motion.div>
+            <Alert className="tuner-success-message">
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 0.5, repeat: 2 }}
+              >
+                ✓ Perfect pitch achieved!
+              </motion.div>
+            </Alert>
           </motion.div>
         )}
       </div>
 
       {/* Divider */}
-      <div className="tuner-divider" />
+      <Separator />
 
       {/* String selector */}
       <div className="tuner-string-section">
@@ -400,7 +413,8 @@ export default function GuitarTuner() {
       </div>
 
       {/* Signal meter */}
-      <SignalMeter rms={rms} />
-    </div>
+        <SignalMeter rms={rms} />
+      </CardContent>
+    </Card>
   );
 }
