@@ -45,7 +45,9 @@ function NeedleGauge({ cents, active, showSuccess }: NeedleGaugeProps) {
 
   function polarToXY(deg: number): [number, number] {
     const rad = (deg - 90) * (Math.PI / 180);
-    return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+    const x = cx + r * Math.cos(rad);
+    const y = cy + r * Math.sin(rad);
+    return [Math.round(x * 100) / 100, Math.round(y * 100) / 100];
   }
   const arcStart = polarToXY(-52);
   const arcEnd   = polarToXY( 52);
@@ -87,7 +89,7 @@ function NeedleGauge({ cents, active, showSuccess }: NeedleGaugeProps) {
         const ia = [(cx + (inner / r) * (pa[0] - cx)), (cy + (inner / r) * (pa[1] - cy))];
         const oa = [(cx + (outer / r) * (pa[0] - cx)), (cy + (outer / r) * (pa[1] - cy))];
         return (
-          <line key={t} x1={ia[0]} y1={ia[1]} x2={oa[0]} y2={oa[1]}
+          <line key={t} x1={Math.round(ia[0] * 100) / 100} y1={Math.round(ia[1] * 100) / 100} x2={Math.round(oa[0] * 100) / 100} y2={Math.round(oa[1] * 100) / 100}
             stroke={t === 0 ? "#22d47b" : "#44444f"} strokeWidth={t === 0 ? 2 : 1}
           />
         );
@@ -97,7 +99,7 @@ function NeedleGauge({ cents, active, showSuccess }: NeedleGaugeProps) {
       <text x={cx} y={cy - 26} textAnchor="middle" fill="#44444f" fontSize="9" className="font-mono" dx="46">SHARP ♯</text>
       <text x={cx - 46} y={cy - 26} textAnchor="middle" fill="#44444f" fontSize="9" className="font-mono">♭ FLAT</text>
 
-      <line x1={cx} y1={cy} x2={nx} y2={ny}
+      <line x1={cx} y1={cy} x2={Math.round(nx * 100) / 100} y2={Math.round(ny * 100) / 100}
         stroke={accent} strokeWidth="2.5" strokeLinecap="round"
         className="transition-all duration-75 ease-out"
         style={{ filter: `drop-shadow(0 0 4px ${accent})` }}

@@ -140,8 +140,12 @@ class SynthesizerEngine {
   this.oscillators.clear()
   this.gains.clear()
 
-  if (this.audioContext) {
-   this.audioContext.close()
+  if (this.audioContext && this.audioContext.state !== "closed") {
+   try {
+    this.audioContext.close()
+   } catch (error) {
+    console.warn("Error closing AudioContext:", error)
+   }
    this.audioContext = null
   }
  }
