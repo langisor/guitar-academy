@@ -100,10 +100,10 @@ export default function Page() {
   return (
     <Providers>
       <Drawer direction="top">
-        <div className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b px-4 py-3 flex items-center justify-between">
+        <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border/50 shadow-sm px-4 py-3 flex items-center justify-between">
           <div />
           <DrawerTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-1.5">
+            <Button variant="outline" size="sm" className="gap-1.5 hover:bg-primary/10 hover:border-primary/30 transition-colors">
               <HelpCircle className="h-4 w-4" />
               What's Fretboard
             </Button>

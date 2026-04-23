@@ -33,17 +33,17 @@ export default function ToolsLayout({
   const isRoot = pathname === "/tools";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
       {/* Navigation Bar */}
-      <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex items-center gap-1 p-2 overflow-x-auto">
+      <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 shadow-sm">
+        <div className="flex items-center gap-1 p-3 overflow-x-auto">
           <Link href="/">
-            <Button variant="ghost" size="sm" className="shrink-0">
+            <Button variant="ghost" size="sm" className="shrink-0 hover:bg-primary/10">
               <ChevronLeft className="h-4 w-4 mr-1" />
               Back
             </Button>
           </Link>
-          <div className="w-px h-6 bg-border shrink-0 mx-1" />
+          <div className="w-px h-6 bg-border shrink-0 mx-2" />
           {TOOLS.map((tool) => {
             const Icon = tool.icon;
             const isActive = pathname === `/tools/${tool.slug}`;
@@ -52,7 +52,7 @@ export default function ToolsLayout({
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
                   size="sm"
-                  className={`shrink-0 gap-1.5 ${isActive ? "bg-secondary" : ""}`}
+                  className={`shrink-0 gap-1.5 transition-all hover:bg-primary/10 ${isActive ? "bg-primary text-primary-foreground shadow-sm" : ""}`}
                 >
                   <Icon className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">{tool.title}</span>
@@ -64,7 +64,7 @@ export default function ToolsLayout({
       </nav>
 
       {/* Page Content */}
-      <main>{children}</main>
+      <main className="animate-fade-in">{children}</main>
     </div>
   );
 }

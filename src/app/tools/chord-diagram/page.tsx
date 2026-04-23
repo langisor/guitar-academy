@@ -108,10 +108,10 @@ const CHORD_DIAGRAM_CONTENT = (
 export default function Page() {
   return (
     <Drawer direction="top">
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b px-4 py-3 flex items-center justify-between">
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border/50 shadow-sm px-4 py-3 flex items-center justify-between">
         <CardTitle className="text-lg">Chord Diagram</CardTitle>
         <DrawerTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-1.5">
+          <Button variant="outline" size="sm" className="gap-1.5 hover:bg-primary/10 hover:border-primary/30 transition-colors">
             <HelpCircle className="h-4 w-4" />
             What's Chord Diagram
           </Button>
@@ -136,15 +136,16 @@ export default function Page() {
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-4 md:p-8">
-        <div className="mx-auto max-w-2xl space-y-6">
-          <Card className="border-none shadow-sm">
-            <CardHeader>
-              <CardDescription>
-                Visual representation of guitar chord fingerings
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex justify-center">
+      <div className="p-4 md:p-8">
+        <div className="mx-auto max-w-2xl space-y-8">
+          <div className="text-center space-y-4">
+            <h1 className="text-3xl font-bold">Chord Diagram</h1>
+            <p className="text-lg text-muted-foreground max-w-lg mx-auto">
+              Visual representation of guitar chord fingerings
+            </p>
+          </div>
+          <Card className="border border-border/50 shadow-lg bg-card/50 backdrop-blur-sm">
+            <CardContent className="p-8 flex justify-center">
               <ChordDiagram
                 position={DEMO_POSITION}
                 width={200}
