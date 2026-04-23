@@ -192,7 +192,7 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
             <Button 
               onClick={() => onSelect(isTarget ? null : s)}
               variant={active ? "default" : "outline"}
-              size="default"
+              size="sm"
               className="tuner-string-button"
             >
               <div className="tuner-string-number">{s.string}</div>
