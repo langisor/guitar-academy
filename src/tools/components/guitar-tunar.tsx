@@ -171,13 +171,14 @@ function WaveformCanvas({ canvasRef, drawWaveform }: { canvasRef: React.RefObjec
 }
 
 /* ─── String Selector with Play Button ──────────────────────────────── */
-function StringSelector({ targetString, onSelect, detectedNote, playingNote, onPlay, GUITAR_STRINGS }: {
+function StringSelector({ targetString, onSelect, detectedNote, playingNote, onPlay, GUITAR_STRINGS, isTunerActive }: {
   targetString: { note: string; string: number } | null;
   onSelect: (s: { note: string; string: number } | null) => void;
   detectedNote: string | null;
   playingNote: string | null;
   onPlay: (s: { note: string; string: number }) => void;
   GUITAR_STRINGS: Array<{ note: string; string: number }>;
+  isTunerActive: boolean;
 }) {
   return (
     <div className="tuner-string-grid">
@@ -190,10 +191,11 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
         return (
           <div key={s.note} className="tuner-string-wrapper">
             <Button 
-              onClick={() => onSelect(isTarget ? null : s)}
+              onClick={() => isTunerActive && onSelect(isTarget ? null : s)}
               variant={active ? "default" : "outline"}
               size="sm"
               className="tuner-string-button"
+              disabled={!isTunerActive}
             >
               <div className="tuner-string-number">{s.string}</div>
               <div>{s.note}</div>
@@ -206,10 +208,11 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
               size="icon-xs"
               onClick={(e) => {
                 e.stopPropagation();
-                onPlay(s);
+                if (isTunerActive) onPlay(s);
               }}
               className="tuner-play-button"
-              title="Play reference tone"
+              title={isTunerActive ? "Play reference tone" : "Start tuner to play reference tone"}
+              disabled={!isTunerActive}
             >
               {isPlaying ? <Pause size={10} /> : <Play size={10} />}
             </Button>
@@ -410,6 +413,7 @@ export default function GuitarTuner() {
           playingNote={playingNote}
           onPlay={playReferenceNote}
           GUITAR_STRINGS={GUITAR_STRINGS}
+          isTunerActive={status === "listening"}
         />
       </div>
 
