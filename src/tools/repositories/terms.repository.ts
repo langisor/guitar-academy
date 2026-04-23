@@ -26,7 +26,7 @@ export class TermsRepository {
     this.loadingPromise = (async () => {
       const filePath = path.resolve(
         process.cwd(),
-        "src/chords/data/terms.json"
+        "src/tools/data/terms.json"
       );
 
       const raw = await fs.readFile(filePath, "utf-8");

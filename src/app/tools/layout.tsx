@@ -9,8 +9,7 @@ import {
   Search, 
   LayoutGrid,
   ListMusic,
-  Info,
-  Zap,
+  MusicIcon,
   ChevronLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,8 +21,7 @@ const TOOLS = [
   { slug: "term-search", title: "Term Search", icon: Search },
   { slug: "chord-diagram", title: "Chord Diagram", icon: LayoutGrid },
   { slug: "progression-builder", title: "Progression", icon: ListMusic },
-  { slug: "term-tooltip", title: "Term Tooltip", icon: Info },
-  { slug: "guitar-hero-mode", title: "Guitar Hero", icon: Zap },
+  { slug: "tuner", title: "Guitar Tuner", icon: MusicIcon },
 ];
 
 export default function ToolsLayout({

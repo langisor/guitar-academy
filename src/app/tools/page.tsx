@@ -8,8 +8,7 @@ import {
   Search, 
   LayoutGrid,
   ListMusic,
-  Info,
-  Zap
+  MusicIcon
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -51,16 +50,10 @@ const TOOLS = [
     icon: ListMusic,
   },
   {
-    slug: "term-tooltip",
-    title: "Term Tooltip",
-    description: "Learn guitar terms with interactive tooltips",
-    icon: Info,
-  },
-  {
-    slug: "guitar-hero-mode",
-    title: "Guitar Hero Mode",
-    description: "Practice chord changes in a rhythm game style",
-    icon: Zap,
+    slug: "tuner",
+    title: "Guitar Tuner",
+    description: "Tune your guitar with precision pitch detection",
+    icon: MusicIcon,
   },
 ];
 

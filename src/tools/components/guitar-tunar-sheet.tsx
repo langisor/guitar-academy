@@ -34,11 +34,11 @@ export default function GuitarTunerSheet() {
         showCloseButton={true}
       >
         <SheetHeader className="text-left mb-4">
-          <SheetTitle className="text-2xl font-bold text-foreground flex items-center gap-2">
+          <SheetTitle className="text-2xl font-bold  flex items-center gap-2">
             <MusicIcon className="h-6 w-6 text-primary" />
             Guitar Tuner
           </SheetTitle>
-          <SheetDescription className="text-muted-foreground">
+          <SheetDescription className="">
             Tune your guitar with precision using our advanced pitch detection. 
             Play a string and follow the visual and audio feedback.
           </SheetDescription>

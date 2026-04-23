@@ -32,15 +32,15 @@ function NeedleGauge({ cents, active }: { cents: number; active: boolean }) {
   const nx = cx + needleLen * Math.cos(nRad);
   const ny = cy + needleLen * Math.sin(nRad);
 
-  const accent = inTune ? "#22d47b" : "#e8a020";
-  const dim    = inTune ? "#1a9456" : "#8a5a0a";
+  const accent = inTune ? "var(--primary)" : "var(--accent)";
+  const dim    = inTune ? "var(--primary)" : "var(--accent)";
 
   return (
     <svg viewBox="0 0 320 160" style={{ width: "100%", height: "auto", overflow: "visible" }}>
       {/* Arc track */}
       <path
         d={`M ${arcStart[0]} ${arcStart[1]} A ${r} ${r} 0 0 1 ${arcEnd[0]} ${arcEnd[1]}`}
-        fill="none" stroke="#2a2a32" strokeWidth="18" strokeLinecap="round"
+        fill="none" stroke="var(--border)" strokeWidth="18" strokeLinecap="round"
       />
       {/* Active arc segment */}
       {active && (() => {
@@ -67,15 +67,15 @@ function NeedleGauge({ cents, active }: { cents: number; active: boolean }) {
         const oa = [(cx + (outer / r) * (pa[0] - cx)), (cy + (outer / r) * (pa[1] - cy))];
         return (
           <line key={t} x1={Number(ia[0].toFixed(2))} y1={Number(ia[1].toFixed(2))} x2={Number(oa[0].toFixed(2))} y2={Number(oa[1].toFixed(2))}
-                stroke={t === 0 ? "#22d47b" : "#44444f"} strokeWidth={t === 0 ? 2 : 1}
+                stroke={t === 0 ? "var(--primary)" : "var(--muted-foreground)"} strokeWidth={t === 0 ? 2 : 1}
           />
         );
       })}
 
       {/* Centre label */}
-      <text x={cx} y={cy - 26} textAnchor="middle" fill="#44444f" fontSize="9" fontFamily="monospace">♭ FLAT</text>
-      <text x={cx} y={cy - 26} textAnchor="middle" fill="#44444f" fontSize="9" fontFamily="monospace" dx="46">SHARP ♯</text>
-      <text x={cx - 46} y={cy - 26} textAnchor="middle" fill="#44444f" fontSize="9" fontFamily="monospace">♭ FLAT</text>
+      <text x={cx} y={cy - 26} textAnchor="middle" fill="var(--muted-foreground)" fontSize="9" fontFamily="monospace">♭ FLAT</text>
+      <text x={cx} y={cy - 26} textAnchor="middle" fill="var(--muted-foreground)" fontSize="9" fontFamily="monospace" dx="46">SHARP ♯</text>
+      <text x={cx - 46} y={cy - 26} textAnchor="middle" fill="var(--muted-foreground)" fontSize="9" fontFamily="monospace">♭ FLAT</text>
 
       {/* Needle */}
       <motion.line
@@ -102,13 +102,13 @@ function NeedleGauge({ cents, active }: { cents: number; active: boolean }) {
         animate={{ fill: accent }}
         transition={{ duration: 0.2 }}
       />
-      <circle cx={cx} cy={cy} r="2.5" fill="#0d0d12" />
+      <circle cx={cx} cy={cy} r="2.5" fill="var(--background)" />
 
       {/* Cents readout */}
       <motion.text 
         x={cx} y={cy + 26} textAnchor="middle"
         fontSize="13" fontFamily="monospace" fontWeight="bold"
-        animate={{ fill: active ? accent : "#33333f" }}
+        animate={{ fill: active ? accent : "var(--muted-foreground)" }}
         transition={{ duration: 0.2 }}
       >
         {active ? `${clampedCents > 0 ? "+" : ""}${clampedCents.toFixed(1)}¢` : "– ¢"}
@@ -130,14 +130,14 @@ function LEDBar({ cents, active }: { cents: number; active: boolean }) {
         const pos   = i - mid;
         const isLit = lit !== null && (lit >= 0 ? pos >= 0 && pos <= lit : pos <= 0 && pos >= lit);
         const isCtr = i === mid;
-        let color   = "#1a1a22";
+        let color   = "var(--muted)";
         if (isLit || (inTune && isCtr)) {
-          if (inTune)           color = "#22d47b";
-          else if (lit !== null && lit > 2)     color = "#e8501a";
-          else if (lit !== null && lit < -2)    color = "#1a7ee8";
-          else                  color = "#e8a020";
+          if (inTune)           color = "var(--primary)";
+          else if (lit !== null && lit > 2)     color = "var(--destructive)";
+          else if (lit !== null && lit < -2)    color = "var(--primary)";
+          else                  color = "var(--accent)";
         } else if (isCtr) {
-          color = "#22472e";
+          color = "var(--muted)";
         }
         return (
           <div key={i} style={{
@@ -162,7 +162,7 @@ function WaveformCanvas({ canvasRef, drawWaveform }: { canvasRef: React.RefObjec
 
   return (
     <canvas ref={canvasRef} width={320} height={60}
-      style={{ width: "100%", height: 60, borderRadius: 6, background: "#0a0a10" }}
+      style={{ width: "100%", height: 60, borderRadius: 6, background: "var(--muted)" }}
     />
   );
 }
@@ -198,9 +198,9 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
                 fontSize: 12, 
                 fontWeight: "bold", 
                 lineHeight: 1.3,
-                background: active ? (isTarget ? "#22d47b22" : "#22d47b11") : "#16161e",
-                color: active ? "#22d47b" : "#55556a",
-                outline: isTarget ? "1.5px solid #22d47b55" : "1px solid #22222a",
+                background: active ? (isTarget ? "var(--primary)" : "var(--primary)") : "var(--card)",
+                color: active ? "var(--primary-foreground)" : "var(--muted-foreground)",
+                outline: isTarget ? "1.5px solid var(--primary)" : "1px solid var(--border)",
                 transition: "all 0.12s",
                 position: "relative",
               }}
@@ -211,7 +211,7 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
                 <div style={{
                   position: "absolute",
                   top: 0, left: 0, right: 0, bottom: 0,
-                  border: "2px solid #22d47b",
+                  border: "2px solid var(--primary)",
                   borderRadius: 6,
                   opacity: 0.8,
                 }} />
@@ -228,8 +228,8 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
                 width: 20, height: 20,
                 border: "none",
                 borderRadius: 4,
-                background: isPlaying ? "#22d47b" : "#22222a88",
-                color: isPlaying ? "#0d0d12" : "#55556a",
+                background: isPlaying ? "var(--primary)" : "var(--border)",
+                color: isPlaying ? "var(--primary-foreground)" : "var(--muted-foreground)",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -238,8 +238,8 @@ function StringSelector({ targetString, onSelect, detectedNote, playingNote, onP
                 transition: "all 0.15s",
                 backdropFilter: "blur(4px)",
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = "#22d47b55"}
-              onMouseLeave={(e) => e.currentTarget.style.background = isPlaying ? "#22d47b" : "#22222a88"}
+              onMouseEnter={(e) => e.currentTarget.style.background = "var(--primary)"}
+              onMouseLeave={(e) => e.currentTarget.style.background = isPlaying ? "var(--primary)" : "var(--border)"}
               title="Play reference tone"
             >
               {isPlaying ? "pause" : "play"}
@@ -256,9 +256,9 @@ function SignalMeter({ rms }: { rms: number }) {
   const pct = Math.min(1, rms / 0.12) * 100;
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <span style={{ fontFamily: "monospace", fontSize: 10, color: "#44444f", width: 24 }}>SIG</span>
-      <div style={{ flex: 1, height: 3, background: "#1a1a22", borderRadius: 2 }}>
-        <div style={{ width: `${pct}%`, height: "100%", background: pct > 70 ? "#e8501a" : "#22d47b", borderRadius: 2, transition: "width 0.05s" }} />
+      <span style={{ fontFamily: "monospace", fontSize: 10, color: "var(--muted-foreground)", width: 24 }}>SIG</span>
+      <div style={{ flex: 1, height: 3, background: "var(--muted)", borderRadius: 2 }}>
+        <div style={{ width: `${pct}%`, height: "100%", background: pct > 70 ? "var(--destructive)" : "var(--primary)", borderRadius: 2, transition: "width 0.05s" }} />
       </div>
     </div>
   );
@@ -299,13 +299,13 @@ export default function GuitarTuner() {
         ? "in tune"
         : cents > 0 ? `${cents.toFixed(1)}¢ sharp` : `${Math.abs(cents).toFixed(1)}¢ flat`;
 
-  const accentColor = showSuccess ? "#22d47b" : inTune ? "#22d47b" : isActive ? "#e8a020" : "#33333f";
+  const accentColor = showSuccess ? "var(--primary)" : inTune ? "var(--primary)" : isActive ? "var(--accent)" : "var(--muted-foreground)";
 
   return (
     <div style={{
-      width: "100%", maxWidth: 360, background: "#0d0d12", borderRadius: 16,
+      width: "100%", maxWidth: 360, background: "var(--card)", borderRadius: 16,
       padding: "20px 18px 18px", fontFamily: "monospace",
-      boxShadow: "0 0 0 1px #1e1e28, 0 20px 60px rgba(0,0,0,0.6)",
+      boxShadow: "0 0 0 1px var(--border), 0 20px 60px rgba(0,0,0,0.6)",
       userSelect: "none",
       margin: "0 auto",
     }}>
@@ -327,11 +327,11 @@ export default function GuitarTuner() {
               width: 8, 
               height: 8, 
               borderRadius: "50%", 
-              background: status === "listening" ? "#22d47b" : "#33333f", 
-              boxShadow: status === "listening" ? "0 0 6px #22d47b" : "none" 
+              background: status === "listening" ? "var(--primary)" : "var(--muted-foreground)", 
+              boxShadow: status === "listening" ? "0 0 6px var(--primary)" : "none" 
             }} 
           />
-          <span style={{ fontSize: 11, color: "#44444f", letterSpacing: "0.12em", textTransform: "uppercase" }}>Guitar Tuner</span>
+          <span style={{ fontSize: 11, color: "var(--muted-foreground)", letterSpacing: "0.12em", textTransform: "uppercase" }}>Guitar Tuner</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <motion.button
@@ -345,8 +345,8 @@ export default function GuitarTuner() {
               padding: "6px 12px",
               border: "none",
               borderRadius: 6,
-              background: status === "listening" ? "#22d47b22" : isManuallyStopped ? "#e8501a22" : "#33333f",
-              color: status === "listening" ? "#22d47b" : isManuallyStopped ? "#e8501a" : "#55556a",
+              background: status === "listening" ? "var(--primary)" : isManuallyStopped ? "var(--destructive)" : "var(--muted-foreground)",
+              color: status === "listening" ? "var(--primary-foreground)" : isManuallyStopped ? "var(--destructive-foreground)" : "var(--muted-foreground)",
               cursor: "pointer",
               fontSize: 10,
               fontWeight: "bold",
@@ -356,7 +356,7 @@ export default function GuitarTuner() {
             {status === "listening" ? <Pause size={14} /> : <Play size={14} />}
             {status === "listening" ? "Stop" : "Start"}
           </motion.button>
-          <span style={{ fontSize: 10, color: "#2a2a35" }}>YIN</span>
+          <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>YIN</span>
         </div>
       </div>
 
@@ -392,7 +392,7 @@ export default function GuitarTuner() {
         <motion.div 
           animate={{ opacity: isActive ? 1 : 0.6 }}
           transition={{ duration: 0.2 }}
-          style={{ fontSize: 13, color: "#55556a", marginTop: 4 }}
+          style={{ fontSize: 13, color: "var(--muted-foreground)", marginTop: 4 }}
         >
           {isActive ? `${frequency.toFixed(2)} Hz` : "-- Hz"}
         </motion.div>
@@ -413,7 +413,7 @@ export default function GuitarTuner() {
             transition={{ duration: 0.3 }}
             style={{ 
               fontSize: 14, 
-              color: pitchGuidance === "up" ? "#1a7ee8" : "#e8501a", 
+              color: pitchGuidance === "up" ? "var(--primary)" : "var(--destructive)", 
               marginTop: 4, 
               fontWeight: "bold",
               display: "flex",
@@ -451,7 +451,7 @@ export default function GuitarTuner() {
             }}
             style={{ 
               fontSize: 12, 
-              color: "#22d47b", 
+              color: "var(--primary)", 
               marginTop: 4, 
               fontWeight: "bold",
               textAlign: "center",
@@ -468,11 +468,11 @@ export default function GuitarTuner() {
       </div>
 
       {/* Divider */}
-      <div style={{ height: 1, background: "#1a1a22", margin: "12px 0" }} />
+      <div style={{ height: 1, background: "var(--border)", margin: "12px 0" }} />
 
       {/* String selector */}
       <div style={{ marginBottom: 10 }}>
-        <div style={{ fontSize: 9, color: "#33333f", letterSpacing: "0.1em", marginBottom: 6 }}>
+        <div style={{ fontSize: 9, color: "var(--muted-foreground)", letterSpacing: "0.1em", marginBottom: 6 }}>
           {targetString ? `LOCKED · STRING ${targetString.string}` : "AUTO DETECT · TAP TO LOCK"}
         </div>
         <StringSelector 
