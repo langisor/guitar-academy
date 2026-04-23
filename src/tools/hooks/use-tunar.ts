@@ -26,27 +26,30 @@ export interface TunerState {
   playingNote: string | null;
   isInTune: boolean;
   showSuccess: boolean;
+  /** A4 reference frequency (default 440 Hz) */
+  a4Ref: number;
+  /** Number of strings successfully tuned this session */
+  tunedCount: number;
 }
 
 export interface UseTunerReturn extends TunerState {
   setTargetString: (string: GuitarString | null) => void;
   playReferenceNote: (noteData: GuitarString) => Promise<void>;
   drawWaveform: (canvasRef: React.RefObject<HTMLCanvasElement | null>) => void;
+  setA4Ref: (hz: number) => void;
+  startAudio: () => Promise<void>;
+  stopAudio: () => void;
   GUITAR_STRINGS: GuitarString[];
   isInTune: boolean;
   showSuccess: boolean;
 }
 
-interface CanvasRef {
-  current: HTMLCanvasElement | null;
+interface AnalyserRef {
+  current: AnalyserNode | null;
 }
 
 interface AudioContextRef {
   current: AudioContext | null;
-}
-
-interface AnalyserRef {
-  current: AnalyserNode | null;
 }
 
 interface Float32ArrayRef {
@@ -70,7 +73,7 @@ interface MedianFilterRef {
 }
 
 /* ─── String definitions ─────────────────────────────────────────────── */
-const GUITAR_STRINGS: GuitarString[] = [
+const BASE_GUITAR_STRINGS: GuitarString[] = [
   { note: "E2", frequency: 82.41,  string: 6 },
   { note: "A2", frequency: 110.0,  string: 5 },
   { note: "D3", frequency: 146.83, string: 4 },
@@ -79,16 +82,24 @@ const GUITAR_STRINGS: GuitarString[] = [
   { note: "E4", frequency: 329.63, string: 1 },
 ];
 
+/**
+ * Recompute guitar string frequencies for a given A4 reference.
+ * Standard A4 = 440 Hz. Each string's frequency scales linearly.
+ */
+function buildGuitarStrings(a4Hz: number): GuitarString[] {
+  const ratio = a4Hz / 440;
+  return BASE_GUITAR_STRINGS.map(s => ({ ...s, frequency: s.frequency * ratio }));
+}
+
 /* Build full chromatic scale for free-mode note detection */
-function buildChromatic(): Note[] {
+function buildChromatic(a4Hz: number): Note[] {
   const names = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
-  const notes = [];
+  const notes: Note[] = [];
   for (let o = 0; o <= 8; o++)
     for (let i = 0; i < 12; i++)
-      notes.push({ note: `${names[i]}${o}`, frequency: 440 * Math.pow(2, (o * 12 + i - 57) / 12) });
+      notes.push({ note: `${names[i]}${o}`, frequency: a4Hz * Math.pow(2, (o * 12 + i - 57) / 12) });
   return notes;
 }
-const CHROMATIC = buildChromatic();
 
 /* ─── YIN pitch detection algorithm ─────────────────────────────────── */
 /*
@@ -159,12 +170,12 @@ function getRMS(buf: Float32Array): number {
 class MedianFilter {
   size: number;
   buf: number[];
-  
-  constructor(size = 7) { 
-    this.size = size; 
-    this.buf = []; 
+
+  constructor(size = 7) {
+    this.size = size;
+    this.buf = [];
   }
-  
+
   push(v: number): number {
     this.buf.push(v);
     if (this.buf.length > this.size) this.buf.shift();
@@ -187,68 +198,72 @@ export function useTuner(): UseTunerReturn {
   const dataArrayRef: Float32ArrayRef = useRef(null);
   const animRef: AnimationFrameRef = useRef(null);
   const pitchFilter: MedianFilterRef = useRef(new MedianFilter(7));
-  
+
   // Playback refs
   const playbackCtxRef: AudioContextRef = useRef(null);
   const currentSourceRef: AudioBufferSourceRef = useRef(null);
   const audioBufferCache: AudioBufferCacheRef = useRef(new Map());
   const successAudioRef: AudioBufferSourceRef = useRef(null);
-  const inTuneStabilityRef = useRef(0); // Track stability for success feedback
+
+  // Use refs for values consumed inside the rAF loop to avoid stale closures
+  const inTuneStabilityRef = useRef(0);
+  const showSuccessRef = useRef(false);
+  const targetStringRef = useRef<GuitarString | null>(null);
+  const a4RefValueRef = useRef(440);
+  const tunedNotesRef = useRef<Set<string>>(new Set());
 
   // State
-  const [status,       setStatus]       = useState<TunerStatus>("idle");   // idle | listening | denied
+  const [status,       setStatus]       = useState<TunerStatus>("idle");
   const [frequency,    setFrequency]    = useState<number | null>(null);
   const [note,         setNote]         = useState<string>("--");
   const [cents,        setCents]        = useState<number>(0);
-  const [targetString, setTargetString] = useState<GuitarString | null>(null);
+  const [targetString, _setTargetString] = useState<GuitarString | null>(null);
   const [rms,          setRms]          = useState<number>(0);
   const [playingNote,  setPlayingNote]  = useState<string | null>(null);
   const [isInTune,     setIsInTune]     = useState<boolean>(false);
   const [showSuccess,  setShowSuccess]  = useState<boolean>(false);
+  const [a4Ref,        _setA4Ref]       = useState<number>(440);
+  const [tunedCount,   setTunedCount]   = useState<number>(0);
+
+  /** Keep ref in sync with state so the rAF loop always sees the latest value */
+  const setTargetString = useCallback((s: GuitarString | null) => {
+    targetStringRef.current = s;
+    _setTargetString(s);
+  }, []);
+
+  const setA4Ref = useCallback((hz: number) => {
+    a4RefValueRef.current = hz;
+    _setA4Ref(hz);
+  }, []);
 
   /* Play success sound */
   const playSuccessSound = useCallback(async (): Promise<void> => {
-    // Stop any currently playing success sound
     if (successAudioRef.current) {
-      try {
-        successAudioRef.current.stop();
-      } catch {}
+      try { successAudioRef.current.stop(); } catch { /* ignore */ }
       successAudioRef.current = null;
     }
 
-    // Initialize playback context if needed
     if (!playbackCtxRef.current) {
-      const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext) as typeof AudioContext;
+      const AudioContextClass = (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext);
       playbackCtxRef.current = new AudioContextClass();
     }
     const ctx = playbackCtxRef.current;
-
-    // Resume if suspended (autoplay policy)
-    if (ctx.state === 'suspended') {
-      await ctx.resume();
-    }
+    if (ctx.state === "suspended") await ctx.resume();
 
     try {
-      // Fetch and decode success sound
-      let audioBuffer = audioBufferCache.current.get('/audio/success.mp3');
-      
+      let audioBuffer = audioBufferCache.current.get("/audio/success.mp3");
       if (!audioBuffer) {
-        const response = await fetch('/audio/success.mp3');
+        const response = await fetch("/audio/success.mp3");
         const arrayBuffer = await response.arrayBuffer();
         audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-        audioBufferCache.current.set('/audio/success.mp3', audioBuffer);
+        audioBufferCache.current.set("/audio/success.mp3", audioBuffer);
       }
-
-      // Play success sound
       const source = ctx.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(ctx.destination);
-      source.onended = () => {
-        successAudioRef.current = null;
-      };
+      source.onended = () => { successAudioRef.current = null; };
       source.start(0);
       successAudioRef.current = source;
-
     } catch (err) {
       console.error("Failed to play success sound:", err);
     }
@@ -257,20 +272,52 @@ export function useTuner(): UseTunerReturn {
   /* Draw waveform callback (passed to UI) */
   const drawWaveform = useCallback((canvasRef: React.RefObject<HTMLCanvasElement | null>): void => {
     const canvas = canvasRef.current;
-    if (!canvas || !dataArrayRef.current) return;
-    
+    if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    
+
     const W = canvas.width, H = canvas.height;
+
+    // Idle / silence state — draw flat centre line
+    if (!dataArrayRef.current) {
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = "#22222a";
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(0, H / 2);
+      ctx.lineTo(W, H / 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      return;
+    }
+
     const buf = dataArrayRef.current.subarray(0, 512);
-    
+    const currentRMS = getRMS(buf);
+
     ctx.clearRect(0, 0, W, H);
-    ctx.strokeStyle = "#22d47b";
-    ctx.lineWidth = 1.2;
-    ctx.globalAlpha = 0.7;
+
+    // Gradient colour: green when in tune, amber otherwise
+    const grad = ctx.createLinearGradient(0, 0, W, 0);
+    if (showSuccessRef.current) {
+      grad.addColorStop(0, "#22d47b44");
+      grad.addColorStop(0.5, "#22d47b");
+      grad.addColorStop(1, "#22d47b44");
+    } else if (currentRMS > 0.005) {
+      grad.addColorStop(0, "#e8a02044");
+      grad.addColorStop(0.5, "#e8a020");
+      grad.addColorStop(1, "#e8a02044");
+    } else {
+      grad.addColorStop(0, "#22222a");
+      grad.addColorStop(1, "#22222a");
+    }
+
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = currentRMS > 0.005 ? 0.85 : 0.3;
     ctx.beginPath();
-    
+
     const sliceW = W / buf.length;
     let x = 0;
     for (let i = 0; i < buf.length; i++) {
@@ -282,7 +329,7 @@ export function useTuner(): UseTunerReturn {
     ctx.globalAlpha = 1;
   }, []);
 
-  /* Main pitch-detection loop */
+  /* Main pitch-detection loop — uses refs only, no state in closure */
   const detect = useCallback(() => {
     const analyser  = analyserRef.current;
     const dataArray = dataArrayRef.current;
@@ -290,64 +337,84 @@ export function useTuner(): UseTunerReturn {
 
     analyser.getFloatTimeDomainData(dataArray as any);
 
-    // Signal level
     const sigRMS = getRMS(dataArray);
     setRms(sigRMS);
 
     if (sigRMS > 0.005) {
-      const raw = detectPitchYIN(dataArray, audioCtxRef.current?.sampleRate || 44100, 0.15);
+      const sampleRate = audioCtxRef.current?.sampleRate ?? 44100;
+      const raw = detectPitchYIN(dataArray, sampleRate, 0.12);
+
       if (raw !== -1 && raw > 60 && raw < 2000) {
         const smoothed = pitchFilter.current.push(raw);
-        const pool = targetString ? [targetString] : GUITAR_STRINGS;
-        const closest = findClosest(smoothed, pool.length > 1 ? CHROMATIC : pool);
+        const a4Hz = a4RefValueRef.current;
+        const chromatic = buildChromatic(a4Hz);
+        const strings   = buildGuitarStrings(a4Hz);
+        const ts = targetStringRef.current;
+        const pool = ts ? [ts] : strings;
+        const closest = findClosest(smoothed, pool.length > 1 ? chromatic : pool);
         const c = getCents(smoothed, closest.frequency);
 
         setFrequency(smoothed);
         setNote(closest.note);
         setCents(c);
-        
-        // Check if in tune with reduced sensitivity (3 cents threshold)
+
         const currentlyInTune = Math.abs(c) <= 3;
         setIsInTune(currentlyInTune);
-        
-        // Success feedback logic
+
         if (currentlyInTune) {
           inTuneStabilityRef.current++;
-          // Show success after being in tune for 10 consecutive frames
-          if (inTuneStabilityRef.current >= 10 && !showSuccess) {
+          // Trigger success after 10 consecutive in-tune frames (~167 ms at 60 fps)
+          if (inTuneStabilityRef.current >= 10 && !showSuccessRef.current) {
+            showSuccessRef.current = true;
             setShowSuccess(true);
+
+            // Track unique strings tuned this session
+            const noteName = closest.note;
+            if (!tunedNotesRef.current.has(noteName)) {
+              tunedNotesRef.current.add(noteName);
+              setTunedCount(tunedNotesRef.current.size);
+            }
+
             playSuccessSound();
-            // Hide success after 2 seconds
-            setTimeout(() => setShowSuccess(false), 2000);
+            setTimeout(() => {
+              showSuccessRef.current = false;
+              setShowSuccess(false);
+            }, 2000);
           }
         } else {
           inTuneStabilityRef.current = 0;
-          setShowSuccess(false);
+          if (showSuccessRef.current) {
+            showSuccessRef.current = false;
+            setShowSuccess(false);
+          }
         }
       }
     } else {
-      // Silence – keep last note displayed but reset filter
       if (sigRMS < 0.003) {
         setFrequency(null);
         pitchFilter.current.reset();
         inTuneStabilityRef.current = 0;
-        setShowSuccess(false);
+        if (showSuccessRef.current) {
+          showSuccessRef.current = false;
+          setShowSuccess(false);
+        }
         setIsInTune(false);
       }
     }
-
-    animRef.current = requestAnimationFrame(detect);
-  }, [targetString, showSuccess]);
+  }, [playSuccessSound]);
 
   /* Start microphone */
   const startAudio = useCallback(async () => {
+    // Already listening, don't restart
+    if (status === "listening") return;
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: { 
-          echoCancellation: false, 
-          noiseSuppression: false, 
-          autoGainControl: false 
-        } 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+        },
       });
       const audioCtx = new AudioContext();
       const analyser = audioCtx.createAnalyser();
@@ -363,51 +430,61 @@ export function useTuner(): UseTunerReturn {
       dataArrayRef.current = dataArray;
 
       setStatus("listening");
-      animRef.current = requestAnimationFrame(detect);
+      // Start animation loop in next effect
     } catch {
       setStatus("denied");
     }
-  }, [detect]);
+  }, [status]);
+
+  /* Stop microphone */
+  const stopAudio = useCallback(() => {
+    if (animRef.current) {
+      cancelAnimationFrame(animRef.current);
+      animRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      audioCtxRef.current.close();
+      audioCtxRef.current = null;
+    }
+    analyserRef.current = null;
+    dataArrayRef.current = null;
+    pitchFilter.current.reset();
+    inTuneStabilityRef.current = 0;
+    setStatus("idle");
+    setFrequency(null);
+    setNote("--");
+    setCents(0);
+    setRms(0);
+    setIsInTune(false);
+  }, []);
 
   /* Play reference note */
   const playReferenceNote = useCallback(async (noteData: GuitarString): Promise<void> => {
-    // Stop any currently playing sound
     if (currentSourceRef.current) {
-      try {
-        currentSourceRef.current.stop();
-      } catch {}
+      try { currentSourceRef.current.stop(); } catch { /* ignore */ }
       currentSourceRef.current = null;
     }
 
-    // Initialize playback context if needed
     if (!playbackCtxRef.current) {
-      const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext) as typeof AudioContext;
+      const AudioContextClass = (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext);
       playbackCtxRef.current = new AudioContextClass();
     }
     const ctx = playbackCtxRef.current;
-
-    // Resume if suspended (autoplay policy)
-    if (ctx.state === 'suspended') {
-      await ctx.resume();
-    }
+    if (ctx.state === "suspended") await ctx.resume();
 
     const filename = noteToFilename(noteData.note);
 
     try {
       setPlayingNote(noteData.note);
 
-      // Check cache
       let audioBuffer = audioBufferCache.current.get(filename);
-      
       if (!audioBuffer) {
-        // Fetch and decode
         const response = await fetch(filename);
         const arrayBuffer = await response.arrayBuffer();
         audioBuffer = await ctx.decodeAudioData(arrayBuffer);
         audioBufferCache.current.set(filename, audioBuffer);
       }
 
-      // Play
       const source = ctx.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(ctx.destination);
@@ -417,7 +494,6 @@ export function useTuner(): UseTunerReturn {
       };
       source.start(0);
       currentSourceRef.current = source;
-
     } catch (err) {
       console.error("Failed to play reference note:", err);
       setPlayingNote(null);
@@ -426,13 +502,61 @@ export function useTuner(): UseTunerReturn {
 
   /* Initialize on mount */
   useEffect(() => {
-    startAudio();
+    let isMounted = true;
+
+    const init = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: false,
+            noiseSuppression: false,
+            autoGainControl: false,
+          },
+        });
+
+        if (!isMounted) {
+          stream.getTracks().forEach(t => t.stop());
+          return;
+        }
+
+        const audioCtx = new AudioContext();
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 4096;
+
+        const source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+
+        const dataArray = new Float32Array(analyser.fftSize);
+
+        audioCtxRef.current  = audioCtx;
+        analyserRef.current  = analyser;
+        dataArrayRef.current = dataArray;
+
+        if (isMounted) {
+          setStatus("listening");
+        }
+      } catch {
+        if (isMounted) {
+          setStatus("denied");
+        }
+      }
+    };
+
+    init();
+
     return () => {
-      if (animRef.current)        cancelAnimationFrame(animRef.current);
-      if (audioCtxRef.current)    audioCtxRef.current.close();
+      isMounted = false;
+      stopAudio();
       if (playbackCtxRef.current) playbackCtxRef.current.close();
     };
-  }, [startAudio]);
+  }, [stopAudio]);
+
+  /* Start animation loop when listening status is set */
+  useEffect(() => {
+    if (status !== "listening") return;
+    if (animRef.current !== null) cancelAnimationFrame(animRef.current);
+    animRef.current = requestAnimationFrame(detect);
+  }, [status, detect]);
 
   /* Restart detect loop when targetString changes */
   useEffect(() => {
@@ -443,7 +567,6 @@ export function useTuner(): UseTunerReturn {
   }, [targetString, detect, status]);
 
   return {
-    // State
     status,
     frequency,
     note,
@@ -453,13 +576,14 @@ export function useTuner(): UseTunerReturn {
     playingNote,
     isInTune,
     showSuccess,
-    
-    // Actions
+    a4Ref,
+    tunedCount,
     setTargetString,
     playReferenceNote,
     drawWaveform,
-    
-    // Constants
-    GUITAR_STRINGS,
+    setA4Ref,
+    startAudio,
+    stopAudio,
+    GUITAR_STRINGS: buildGuitarStrings(a4Ref),
   };
 }
