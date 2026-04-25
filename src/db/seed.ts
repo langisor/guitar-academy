@@ -119,6 +119,19 @@ async function seed() {
     });
   }
 
+  // Seed quizzes from generated JSON
+  const quizzesPath = path.join(process.cwd(), "src", "data", "quizzes.json");
+  if (fs.existsSync(quizzesPath)) {
+    console.log("Seeding quizzes...");
+    const quizzes = JSON.parse(fs.readFileSync(quizzesPath, "utf-8"));
+    for (const quiz of quizzes) {
+      await db.execute({
+        sql: "INSERT INTO quizzes (level_id, question, options, correct_answer, xp_reward) VALUES (?, ?, ?, ?, ?)",
+        args: [quiz.level_id, quiz.question, quiz.options, quiz.correct_answer, quiz.xp_reward]
+      });
+    }
+  }
+
   console.log("Database seeded successfully!");
 }
 

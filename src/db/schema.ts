@@ -56,6 +56,16 @@ CREATE TABLE IF NOT EXISTS exercises (
   FOREIGN KEY (level_id) REFERENCES levels(id)
 );
 
+CREATE TABLE IF NOT EXISTS quizzes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  level_id INTEGER NOT NULL,
+  question TEXT NOT NULL,
+  options TEXT NOT NULL,
+  correct_answer TEXT NOT NULL,
+  xp_reward INTEGER DEFAULT 10,
+  FOREIGN KEY (level_id) REFERENCES levels(id)
+);
+
 CREATE TABLE IF NOT EXISTS songs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,

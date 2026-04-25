@@ -1,0 +1,128 @@
+[
+  {
+    "level_id": 5,
+    "question": "What is the correct tuning for the 4th string (counting from lowest)?",
+    "options": "[\"E\",\"A\",\"D\",\"G\"]",
+    "correct_answer": "D",
+    "xp_reward": 50
+  },
+  {
+    "level_id": 93,
+    "question": "What gives jazz chords their characteristic rich sound?",
+    "options": "[\"Using only root notes\",\"Adding 7th and extended notes beyond basic triads\",\"Playing all strings open\",\"Using only power chords\"]",
+    "correct_answer": "Adding 7th and extended notes beyond basic triads",
+    "xp_reward": 140
+  },
+  {
+    "level_id": 95,
+    "question": "What is modal interchange in chord progression?",
+    "options": "[\"Playing chords in a random order\",\"Borrowing chords from parallel minor/major keys to add color\",\"Only using chords from one key signature\",\"Avoiding chord changes\"]",
+    "correct_answer": "Borrowing chords from parallel minor/major keys to add color",
+    "xp_reward": 140
+  },
+  {
+    "level_id": 11,
+    "question": "Which finger goes on the 2nd fret of the A string when playing G Major?",
+    "options": "[\"Index finger\",\"Middle finger\",\"Ring finger\",\"Pinky finger\"]",
+    "correct_answer": "Middle finger",
+    "xp_reward": 60
+  },
+  {
+    "level_id": 13,
+    "question": "What fret does the middle finger press for C Major?",
+    "options": "[\"1st fret\",\"2nd fret\",\"3rd fret\",\"Open (no fret)\"]",
+    "correct_answer": "2nd fret",
+    "xp_reward": 60
+  },
+  {
+    "level_id": 15,
+    "question": "Which strings should be strummed when playing D Major?",
+    "options": "[\"All six strings\",\"Only the top 4 strings (D, G, B, e)\",\"Only the bottom 3 strings (E, A, D)\",\"The low E, A, D, and G strings\"]",
+    "correct_answer": "Only the top 4 strings (D, G, B, e)",
+    "xp_reward": 60
+  },
+  {
+    "level_id": 17,
+    "question": "How many fingers are needed to play E Minor?",
+    "options": "[\"One finger\",\"Two fingers\",\"Three fingers\",\"Four fingers\"]",
+    "correct_answer": "Two fingers",
+    "xp_reward": 60
+  },
+  {
+    "level_id": 31,
+    "question": "How many down strums are in one measure of 4/4 time using the DDDD pattern?",
+    "options": "[\"2\",\"4\",\"6\",\"8\"]",
+    "correct_answer": "4",
+    "xp_reward": 80
+  },
+  {
+    "level_id": 33,
+    "question": "In the D-U-D-U pattern, what type of note subdivision is being used?",
+    "options": "[\"Quarter notes\",\"Eighth notes\",\"Sixteenth notes\",\"Half notes\"]",
+    "correct_answer": "Eighth notes",
+    "xp_reward": 80
+  },
+  {
+    "level_id": 37,
+    "question": "What is the most important technique tip for the pop strumming pattern?",
+    "options": "[\"Strum loudly on every stroke\",\"Stop between strums\",\"Never stop moving your hand\",\"Only use down strums\"]",
+    "correct_answer": "Never stop moving your hand",
+    "xp_reward": 80
+  },
+  {
+    "level_id": 45,
+    "question": "What is the chord progression in \"Wonderwall\"?",
+    "options": "[\"C - G - Am - F\",\"G - D - Am - Em\",\"Em - G - D - Am\",\"D - Am - G - Em\"]",
+    "correct_answer": "Em - G - D - Am",
+    "xp_reward": 90
+  },
+  {
+    "level_id": 51,
+    "question": "What does your index finger do in an F Major barre chord?",
+    "options": "[\"Frets only 1 string\",\"Bars all 6 strings\",\"Plays no role\",\"Only mutes strings\"]",
+    "correct_answer": "Bars all 6 strings",
+    "xp_reward": 100
+  },
+  {
+    "level_id": 61,
+    "question": "Which two natural half-steps have no sharps between them?",
+    "options": "[\"C-D and F-G\",\"D-E and G-A\",\"B-C and E-F\",\"A-B and E-F\"]",
+    "correct_answer": "B-C and E-F",
+    "xp_reward": 110
+  },
+  {
+    "level_id": 65,
+    "question": "What interval is created by skipping one string between two identical notes?",
+    "options": "[\"Perfect fourth\",\"Perfect fifth\",\"Octave\",\"Major sixth\"]",
+    "correct_answer": "Octave",
+    "xp_reward": 110
+  },
+  {
+    "level_id": 67,
+    "question": "Which notes make up a C Major triad?",
+    "options": "[\"C-Eb-G\",\"C-E-G\",\"C-Eb-Gb\",\"C-E-G#\"]",
+    "correct_answer": "C-E-G",
+    "xp_reward": 110
+  },
+  {
+    "level_id": 73,
+    "question": "What note is played throughout most of \"Seven Nation Army\"?",
+    "options": "[\"A\",\"C\",\"G\",\"E\"]",
+    "correct_answer": "G",
+    "xp_reward": 120
+  },
+  {
+    "level_id": 75,
+    "question": "Which band created the \"Iron Man\" riff?",
+    "options": "[\"Deep Purple\",\"The White Stripes\",\"AC/DC\",\"Black Sabbath\"]",
+    "correct_answer": "Black Sabbath",
+    "xp_reward": 120
+  },
+  {
+    "level_id": 77,
+    "question": "What technique gives \"Back in Black\" its tight, percussive sound?",
+    "options": "[\"Fingerpicking\",\"Palm muting\",\"Whammy bar\",\"Harmonics\"]",
+    "correct_answer": "Palm muting",
+    "xp_reward": 120
+  }
+]

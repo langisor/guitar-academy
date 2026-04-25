@@ -1,4 +1,4 @@
-import { levelRepository } from "@/repositories";
+import { levelRepository, quizRepository } from "@/repositories";
 import LevelClient from "./LevelClient";
 import { getMdxContent } from "@/lib/mdx";
 import { notFound } from "next/navigation";
@@ -35,10 +35,13 @@ export default async function LevelPage({ params }: PageProps) {
   }
 
   const plainLevel = JSON.parse(JSON.stringify(level));
+  const quiz = await quizRepository.getByLevel(levelId);
+  const plainQuiz = quiz ? JSON.parse(JSON.stringify(quiz)) : null;
 
   return (
     <LevelClient 
       level={plainLevel} 
+      quiz={plainQuiz}
       mdxSource={mdxSource as any}
       frontmatter={frontmatter}
     />

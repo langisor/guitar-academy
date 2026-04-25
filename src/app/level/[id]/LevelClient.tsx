@@ -14,7 +14,7 @@ import { StrummingPattern } from "@/components/guitar/StrummingPattern";
 import { Fretboard } from "@/components/guitar/Fretboard";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useProgressStore } from "@/stores/progress";
-import { Level } from "@/repositories";
+import { Level, Quiz } from "@/repositories";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { QuestionComponent } from "@/components/mdx/QuestionComponent";
 
@@ -60,6 +60,7 @@ const mdxComponents = {
 
 interface LevelClientProps {
   level: Level;
+  quiz?: Quiz | null;
   mdxSource?: MDXRemoteSerializeResult;
   frontmatter?: any;
 }
@@ -75,7 +76,7 @@ const chordFingerings: Record<string, number[]> = {
   'F': [1, 3, 3, 2, 1, 1],
 };
 
-export default function LevelClient({ level, mdxSource, frontmatter }: LevelClientProps) {
+export default function LevelClient({ level, quiz, mdxSource, frontmatter }: LevelClientProps) {
   const router = useRouter();
   const { t, isRTL } = useLanguage();
   const { completeLevel, addXP, updateDailyPractice } = useProgressStore();
@@ -93,6 +94,11 @@ export default function LevelClient({ level, mdxSource, frontmatter }: LevelClie
   const handleStartExercise = () => {
     setShowLesson(false);
     setShowExercise(true);
+  };
+
+  const handleQuizSuccess = () => {
+    setIsCorrect(true);
+    setShowResult(true);
   };
 
   const handleAnswer = (answer: string) => {
@@ -181,30 +187,40 @@ export default function LevelClient({ level, mdxSource, frontmatter }: LevelClie
                   <span className="text-sm text-muted-foreground">Practice</span>
                 </div>
 
-                <div className="text-center">
-                  <p className="text-lg mb-6">
-                    {levelType === 'chord' && chordName 
-                      ? `Practice the ${chordName} chord` 
-                      : "Complete the lesson to earn XP!"}
-                  </p>
-                  
-                  {levelType === 'chord' && chordName && (
-                    <div className="flex justify-center mb-6">
-                      <ChordDiagram
-                        chordName={chordName}
-                        fingers={chordFingerings[chordName] || []}
-                        size="lg"
-                      />
-                    </div>
-                  )}
+                {quiz ? (
+                  <QuestionComponent
+                    question={quiz.question}
+                    options={JSON.parse(quiz.options)}
+                    correctAnswer={quiz.correct_answer}
+                    xpReward={quiz.xp_reward}
+                    onCorrect={handleQuizSuccess}
+                  />
+                ) : (
+                  <div className="text-center">
+                    <p className="text-lg mb-6">
+                      {levelType === 'chord' && chordName 
+                        ? `Practice the ${chordName} chord` 
+                        : "Complete the lesson to earn XP!"}
+                    </p>
+                    
+                    {levelType === 'chord' && chordName && (
+                      <div className="flex justify-center mb-6">
+                        <ChordDiagram
+                          chordName={chordName}
+                          fingers={chordFingerings[chordName] || []}
+                          size="lg"
+                        />
+                      </div>
+                    )}
 
-                  <Button
-                    className="w-full"
-                    onClick={() => handleAnswer("correct")}
-                  >
-                    {levelType === 'chord' ? "I've practiced it!" : "I've finished the lesson!"}
-                  </Button>
-                </div>
+                    <Button
+                      className="w-full"
+                      onClick={() => handleAnswer("correct")}
+                    >
+                      {levelType === 'chord' ? "I've practiced it!" : "I've finished the lesson!"}
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

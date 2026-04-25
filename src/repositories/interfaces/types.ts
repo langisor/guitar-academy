@@ -22,6 +22,15 @@ export interface Exercise {
   order_index: number;
 }
 
+export interface Quiz {
+  id: number;
+  level_id: number;
+  question: string;
+  options: string;
+  correct_answer: string;
+  xp_reward: number;
+}
+
 export interface Song {
   id: number;
   title: string;
