@@ -34,9 +34,11 @@ export default async function LevelPage({ params }: PageProps) {
     }
   }
 
+  const plainLevel = JSON.parse(JSON.stringify(level));
+
   return (
     <LevelClient 
-      level={level as any} 
+      level={plainLevel} 
       mdxSource={mdxSource as any}
       frontmatter={frontmatter}
     />

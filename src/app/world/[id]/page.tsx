@@ -22,11 +22,13 @@ export default async function WorldPage({ params }: PageProps) {
   const world = worldResult.rows[0];
   const worldTitle = world ? (world.title as string) : `World ${worldId}`;
 
+  const plainLevels = JSON.parse(JSON.stringify(levels));
+
   return (
     <WorldClient 
       worldId={worldId} 
       worldTitle={worldTitle} 
-      levels={levels as any} 
+      levels={plainLevels} 
     />
   );
 }
