@@ -8,6 +8,10 @@ export class ExerciseService {
   async getExercisesByType(type: string): Promise<Exercise[]> {
     return await exerciseRepository.getByType(type);
   }
+
+  async getExerciseById(id: number): Promise<Exercise | undefined> {
+    return await exerciseRepository.getById(id);
+  }
 }
 
 export const exerciseService = new ExerciseService();

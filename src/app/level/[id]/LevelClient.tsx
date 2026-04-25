@@ -16,6 +16,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useProgressStore } from "@/stores/progress";
 import { Level } from "@/repositories";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
+import { QuestionComponent } from "@/components/mdx/QuestionComponent";
 
 import Image from "next/image";
 
@@ -53,6 +54,7 @@ const mdxComponents = {
   Card,
   CardContent,
   Image: MdxImage,
+  QuestionComponent,
   // You can add more components here
 };
 
