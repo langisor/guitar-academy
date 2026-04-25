@@ -19,6 +19,31 @@ import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 
 import Image from "next/image";
 
+// Safe Image wrapper: next-mdx-remote can drop numeric JSX props ({500}),
+// so we provide fallback dimensions to satisfy next/image requirements.
+const MdxImage = ({
+  src,
+  alt,
+  width,
+  height,
+  ...props
+}: {
+  src?: string;
+  alt?: string;
+  width?: number | string;
+  height?: number | string;
+  [key: string]: unknown;
+}) => (
+  <Image
+    src={src || ""}
+    alt={alt || ""}
+    width={Number(width) || 800}
+    height={Number(height) || 600}
+    style={{ maxWidth: "100%", height: "auto" }}
+    {...(props as object)}
+  />
+);
+
 // Define components for MDX
 const mdxComponents = {
   ChordDiagram,
@@ -27,7 +52,7 @@ const mdxComponents = {
   Badge,
   Card,
   CardContent,
-  Image,
+  Image: MdxImage,
   // You can add more components here
 };
 
