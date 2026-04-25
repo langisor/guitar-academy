@@ -401,6 +401,7 @@ export function useTuner(): UseTunerReturn {
         setIsInTune(false);
       }
     }
+    animRef.current = requestAnimationFrame(detect);
   }, [playSuccessSound]);
 
   /* Start microphone */
@@ -556,7 +557,7 @@ export function useTuner(): UseTunerReturn {
     if (status !== "listening") return;
     if (animRef.current !== null) cancelAnimationFrame(animRef.current);
     animRef.current = requestAnimationFrame(detect);
-  }, [status, detect]);
+  }, [status]);
 
   /* Restart detect loop when targetString changes */
   useEffect(() => {
@@ -564,7 +565,7 @@ export function useTuner(): UseTunerReturn {
     if (animRef.current !== null) cancelAnimationFrame(animRef.current);
     pitchFilter.current.reset();
     animRef.current = requestAnimationFrame(detect);
-  }, [targetString, detect, status]);
+  }, [targetString, status]);
 
   return {
     status,
