@@ -49,6 +49,12 @@ export default function HomePage() {
                 Tools
               </Button>
             </Link>
+             <Link href="https://guitar-helper-steel.vercel.app" target="_blank">
+              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                <Wrench className="w-4 h-4 mr-1.5" />
+                Guitar Helper
+              </Button>
+            </Link>
             <Button
               variant="ghost"
               size="icon"
