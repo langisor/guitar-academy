@@ -201,7 +201,7 @@ export const chords: Record<string, ChordData> = {
     difficulty: "medium",
   },
   FmChord: {
-    name: "Fm",
+    name: "Fm (alt)",
     fingers: [
       { string: 1, fret: 1, finger: 1 },
       { string: 3, fret: 3, finger: 3 },

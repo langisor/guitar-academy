@@ -393,9 +393,9 @@ const ChordDiagramComponent = ({
 
    {interactive && chordList.length > 0 && (
     <div className="mt-3 flex flex-wrap gap-1 justify-center max-w-xs">
-     {chordList.map((chord) => (
+     {chordList.map((chord, index) => (
       <button
-       key={chord.name}
+       key={`${chord.name}-${index}`}
        onClick={() => onChordSelect?.(chord.name)}
        className={cn(
         "px-2 py-1 text-xs rounded border transition-colors",
