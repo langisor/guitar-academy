@@ -30,6 +30,32 @@ export default function ExercisePage() {
   const [sessionTime, setSessionTime] = useState(0)
   const [isSessionActive, setIsSessionActive] = useState(false)
 
+  // Load progress
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedProgress = localStorage.getItem(`warmup_progress_${id}`)
+      if (savedProgress) {
+        try {
+          const { completed, time } = JSON.parse(savedProgress)
+          setCompletedSteps(completed || [])
+          setSessionTime(time || 0)
+        } catch (e) {
+          console.error("Failed to parse saved progress", e)
+        }
+      }
+    }
+  }, [id])
+
+  // Save progress
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(`warmup_progress_${id}`, JSON.stringify({
+        completed: completedSteps,
+        time: sessionTime
+      }))
+    }
+  }, [id, completedSteps, sessionTime])
+
   // Timer
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -43,16 +69,11 @@ export default function ExercisePage() {
 
   if (!exercise) {
     return (
-      <div className="min-h-full p-4">
-        <div className="text-center py-12">
-          <h1 className="text-xl font-bold mb-4">Exercise Not Found</h1>
-          <p className="text-muted-foreground mb-4">
-            The exercise you're looking for doesn't exist.
-          </p>
-          <Link href="/warm-up">
-            <Button>Back to Warm-Up</Button>
-          </Link>
-        </div>
+      <div className="min-h-full p-4 text-center py-20">
+        <h1 className="text-2xl font-bold mb-4">Exercise Not Found</h1>
+        <Link href="/warm-up">
+          <Button variant="outline">Back to Warm-Up</Button>
+        </Link>
       </div>
     )
   }
@@ -64,9 +85,10 @@ export default function ExercisePage() {
   }
 
   const handleStepComplete = (stepIndex: number) => {
-    if (!completedSteps.includes(stepIndex)) {
-      setCompletedSteps([...completedSteps, stepIndex])
-    }
+    setCompletedSteps(prev => {
+      if (prev.includes(stepIndex)) return prev
+      return [...prev, stepIndex]
+    })
     if (stepIndex < exercise.steps.length - 1) {
       setCurrentStep(stepIndex + 1)
     }

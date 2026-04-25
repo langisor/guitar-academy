@@ -14,7 +14,8 @@ interface UseMetronomeReturn {
 
 export function useMetronome(initialBpm = 80): UseMetronomeReturn {
   const synthRef = useRef<any>(null)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const transportRef = useRef<any>(null)
+  const eventIdRef = useRef<number | null>(null)
 
   const [isPlaying, setIsPlaying] = useState(false)
   const [isReady, setIsReady] = useState(false)
@@ -28,63 +29,82 @@ export function useMetronome(initialBpm = 80): UseMetronomeReturn {
     const Tone = await import("tone")
     await Tone.start()
 
-    const synth = new Tone.Synth({
+    const synth = new Tone.PolySynth(Tone.Synth, {
       oscillator: { type: "sine" },
-      envelope: { attack: 0.001, decay: 0.05, sustain: 0, release: 0.05 }
+      envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
     }).toDestination()
     synth.volume.value = -12
 
     synthRef.current = synth
+    transportRef.current = Tone.Transport
+    transportRef.current.bpm.value = bpm
     setIsReady(true)
-  }, [])
+  }, [bpm])
 
   const start = useCallback(async () => {
     if (!isReady) await initAudio()
-    if (!synthRef.current) return
+    if (!transportRef.current) return
+
+    const Tone = await import("tone")
+    if (Tone.getContext().state !== 'running') {
+      await Tone.start()
+    }
+
+    // Clear existing event if any
+    if (eventIdRef.current !== null) {
+      transportRef.current.clear(eventIdRef.current)
+    }
 
     setCurrentBeat(0)
     setIsPlaying(true)
 
-    const msPerBeat = (60 / bpm) * 1000
-    
-    intervalRef.current = setInterval(() => {
-      setCurrentBeat(prev => {
-        const nextBeat = (prev + 1) % beatsPerMeasure
-        synthRef.current?.triggerAttackRelease("C5", "32n")
-        return nextBeat
-      })
-    }, msPerBeat)
-  }, [bpm, isReady, initAudio])
+    let beatCounter = 0
+    eventIdRef.current = transportRef.current.scheduleRepeat((time: number) => {
+      const isDownbeat = beatCounter % beatsPerMeasure === 0
+      
+      // Schedule the sound
+      synthRef.current?.triggerAttackRelease(
+        isDownbeat ? "C5" : "G4",
+        "32n",
+        time
+      )
+
+      // Schedule the state update
+      Tone.Draw.schedule(() => {
+        setCurrentBeat(beatCounter % beatsPerMeasure)
+        beatCounter++
+      }, time)
+    }, "4n")
+
+    transportRef.current.start()
+  }, [isReady, initAudio])
 
   const stop = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
+    if (transportRef.current) {
+      transportRef.current.stop()
+      if (eventIdRef.current !== null) {
+        transportRef.current.clear(eventIdRef.current)
+        eventIdRef.current = null
+      }
     }
     setCurrentBeat(0)
     setIsPlaying(false)
   }, [])
 
   const setBpm = useCallback((newBpm: number) => {
-    const clamped = Math.max(40, Math.min(200, newBpm))
+    const clamped = Math.max(40, Math.min(240, newBpm))
     setBpmState(clamped)
-    
-    if (isPlaying && intervalRef.current) {
-      clearInterval(intervalRef.current)
-      const msPerBeat = (60 / clamped) * 1000
-      intervalRef.current = setInterval(() => {
-        setCurrentBeat(prev => {
-          const nextBeat = (prev + 1) % beatsPerMeasure
-          synthRef.current?.triggerAttackRelease("C5", "32n")
-          return nextBeat
-        })
-      }, msPerBeat)
+    if (transportRef.current) {
+      transportRef.current.bpm.value = clamped
     }
-  }, [isPlaying])
+  }, [])
 
   useEffect(() => {
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
+      if (transportRef.current) {
+        transportRef.current.stop()
+        transportRef.current.cancel()
+      }
       if (synthRef.current) {
         synthRef.current.dispose()
         synthRef.current = null
