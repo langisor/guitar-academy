@@ -19,12 +19,15 @@ pnpm seed     # Seed database (tsx src/db/seed.ts)
 - `src/app/level/[id]/` - Level pages (lesson content)
 - `src/app/songs/` - Songs browser
 - `src/app/practice/` - Practice mode
+- `src/app/warm-up/` - Warm-up practice exercises with metronome
 - `src/app/tools/` - Interactive tools
 - `src/components/guitar/` - Fretboard, ChordDiagram, InteractiveFretboard, StrummingPattern
 - `src/components/ui/` - Shadcn UI components
+- `src/components/warm-up/` - Warm-up components (SimpleFretboard, MetronomeControl)
+- `src/components/tools/` - Tool components (ChordExplorer, FretboardExplorer, Tuner, etc.)
 - `src/content/guitar/world-N/level-XXX.mdx` - MDX lesson files
 - `src/data/` - JSON static data (chords, songs, strumming patterns)
-- `src/hooks/` - useGuitarEngine (Tone.js), useProgress, useSongs, useLevels, useLeftHandMode
+- `src/hooks/` - useGuitarEngine (Tone.js), useMetronome, useProgress, useSongs, useLevels, useLeftHandMode
 - `src/repositories/` - Dual implementation: `json/` (static) and `sqlite/` (persisted)
 - `src/stores/` - Zustand stores
 - `src/tools/` - Interactive tools (chord-explorer, fretboard-explorer, metronome-trainer, term-search)

@@ -43,6 +43,12 @@ export default function HomePage() {
             <p className="text-sm text-white/80">{t.home.welcome}</p>
           </div>
           <div className="flex items-center gap-2">
+            <Link href="/warm-up">
+              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
+                <Flame className="w-4 h-4 mr-1.5" />
+                Warm-Up
+              </Button>
+            </Link>
             <Link href="/tools">
               <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
                 <Wrench className="w-4 h-4 mr-1.5" />
