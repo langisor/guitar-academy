@@ -26,7 +26,7 @@ pnpm seed     # Seed database (tsx src/db/seed.ts)
 - `src/data/` - JSON static data (chords, songs, strumming patterns)
 - `src/hooks/` - useGuitarEngine (Tone.js), useProgress, useSongs, useLevels, useLeftHandMode
 - `src/repositories/` - Dual implementation: `json/` (static) and `sqlite/` (persisted)
-- `src/store/` - Zustand stores
+- `src/stores/` - Zustand stores
 - `src/tools/` - Interactive tools (chord-explorer, fretboard-explorer, metronome-trainer, term-search)
 
 ## Key Patterns

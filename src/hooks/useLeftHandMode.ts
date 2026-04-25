@@ -1,6 +1,6 @@
 "use client"
 
-import { useGuitarSettings } from '@/store/guitarSettings'
+import { useGuitarSettings } from '@/stores/guitarSettings'
 
 export function useLeftHandMode() {
   const leftHandMode = useGuitarSettings((state) => state.leftHandMode)
