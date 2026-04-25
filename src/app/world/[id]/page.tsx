@@ -1,278 +1,32 @@
-"use client";
+import { levelRepository } from "@/repositories";
+import WorldClient from "./WorldClient";
+import { db } from "@/db/database";
 
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import { 
-  ChevronLeft, ChevronRight, Lock, Check, Play,
-  Music, Star, Zap
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { useLanguage } from "@/hooks/useLanguage";
-import { useProgressStore } from "@/stores/progress";
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-export type WorldLevel = { id: number; title: string; isLesson: boolean };
+export default async function WorldPage({ params }: PageProps) {
+  const { id } = await params;
+  const worldId = parseInt(id) || 1;
 
-export type WorldData = Record<number, { title: string; levels: WorldLevel[]; theme?: string }>;
-
-export const worldData: WorldData = {
-  1: { 
-    title: "Beginner Basics", 
-    theme: "Physical orientation and fundamentals.",
-    levels: [
-      { id: 1, title: "Parts of the Guitar", isLesson: true },
-      { id: 2, title: "Proper Posture", isLesson: true },
-      { id: 3, title: "Tuning Basics", isLesson: true },
-      { id: 4, title: "String Names & Numbers", isLesson: true },
-      { id: 5, title: "Beginner Basics Boss", isLesson: false },
-    ]
-  },
-  2: { 
-    title: "Open Chords", 
-    theme: "The 'Big Five' essential shapes.",
-    levels: [
-      { id: 6, title: "G Major", isLesson: true },
-      { id: 7, title: "C Major", isLesson: true },
-      { id: 8, title: "D Major", isLesson: true },
-      { id: 9, title: "E Minor", isLesson: true },
-      { id: 10, title: "Open Chords Quiz", isLesson: false },
-    ]
-  },
-  3: { 
-    title: "Chord Transitions", 
-    theme: "Speed and efficiency.",
-    levels: [
-      { id: 11, title: "G → C", isLesson: true },
-      { id: 12, title: "C → D", isLesson: true },
-      { id: 13, title: "D → Em", isLesson: true },
-      { id: 14, title: "Em → Am", isLesson: true },
-      { id: 15, title: "Transition Quiz", isLesson: false },
-    ]
-  },
-  4: { 
-    title: "Strumming Patterns", 
-    theme: "Developing an internal clock.",
-    levels: [
-      { id: 16, title: "Down Strum", isLesson: true },
-      { id: 17, title: "Down-Up Pattern", isLesson: true },
-      { id: 18, title: "Country/Folk Pattern", isLesson: true },
-      { id: 19, title: "Pop Pattern", isLesson: true },
-      { id: 20, title: "Strumming Quiz", isLesson: false },
-    ]
-  },
-  5: { 
-    title: "First Songs", 
-    theme: "Real-world application.",
-    levels: [
-      { id: 21, title: "Let It Be", isLesson: true },
-      { id: 22, title: "A Horse with No Name", isLesson: true },
-      { id: 23, title: "Wonderwall", isLesson: true },
-      { id: 24, title: "Knockin' on Heaven's Door", isLesson: true },
-      { id: 25, title: "Song Challenge Boss", isLesson: false },
-    ]
-  },
-  6: { 
-    title: "Barre Chords", 
-    theme: "The 'Intermediate Wall.'",
-    levels: [
-      { id: 26, title: "F Major Barre", isLesson: true },
-      { id: 27, title: "B Minor Barre", isLesson: true },
-      { id: 28, title: "D Minor Barre", isLesson: true },
-      { id: 29, title: "Moving the Shapes", isLesson: true },
-      { id: 30, title: "Barre Chord Quiz", isLesson: false },
-    ]
-  },
-  7: { 
-    title: "Fretboard Mastery", 
-    theme: "Navigating the neck.",
-    levels: [
-      { id: 31, title: "Note Names", isLesson: true },
-      { id: 32, title: "Minor Pentatonic Pattern 1", isLesson: true },
-      { id: 33, title: "Interval Shapes", isLesson: true },
-      { id: 34, title: "Triads", isLesson: true },
-      { id: 35, title: "Fretboard Quiz", isLesson: false },
-    ]
-  },
-  8: { 
-    title: "Rock Riffs", 
-    theme: "Iconic melodies.",
-    levels: [
-      { id: 36, title: "Smoke on the Water", isLesson: true },
-      { id: 37, title: "Seven Nation Army", isLesson: true },
-      { id: 38, title: "Iron Man", isLesson: true },
-      { id: 39, title: "Back in Black", isLesson: true },
-      { id: 40, title: "Riff Challenge Boss", isLesson: false },
-    ]
-  },
-  9: { 
-    title: "Advanced Techniques", 
-    theme: "Flavor and expression.",
-    levels: [
-      { id: 41, title: "Travis Picking", isLesson: true },
-      { id: 42, title: "Hammer-ons", isLesson: true },
-      { id: 43, title: "Pull-offs", isLesson: true },
-      { id: 44, title: "Slides", isLesson: true },
-      { id: 45, title: "Technique Quiz", isLesson: false },
-    ]
-  },
-  10: { 
-    title: "Master Guitarist", 
-    theme: "Theory and performance.",
-    levels: [
-      { id: 46, title: "Syncopated Rhythms", isLesson: true },
-      { id: 47, title: "Jazz Chords", isLesson: true },
-      { id: 48, title: "Modal Interchange", isLesson: true },
-      { id: 49, title: "Performance Mindset", isLesson: true },
-      { id: 50, title: "Graduation Level", isLesson: false },
-    ]
-  },
-};
-
-const worldColors: Record<number, string> = {
-  1: "from-green-400 to-green-600",
-  2: "from-emerald-400 to-emerald-600",
-  3: "from-teal-400 to-teal-600",
-  4: "from-cyan-400 to-cyan-600",
-  5: "from-blue-400 to-blue-600",
-  6: "from-indigo-400 to-indigo-600",
-  7: "from-violet-400 to-violet-600",
-  8: "from-purple-400 to-purple-600",
-  9: "from-pink-400 to-pink-600",
-  10: "from-amber-400 to-amber-600",
-};
-
-export default function WorldPage() {
-  const params = useParams();
-  const { t, isRTL } = useLanguage();
-  const { levelsCompleted, setCurrentLevel } = useProgressStore();
+  // Fetch levels from database
+  const levels = await levelRepository.getByWorld(worldId);
   
-  const worldId = parseInt(params.id as string) || 1;
-  const world = worldData[worldId] || worldData[1];
-  const prevWorldId = worldId > 1 ? worldId - 1 : null;
-  const nextWorldId = worldId < 10 ? worldId + 1 : null;
+  // Fetch world details
+  const worldResult = await db.execute({
+    sql: "SELECT * FROM worlds WHERE id = ?",
+    args: [worldId]
+  });
   
-  const completedLevelsInWorld = world.levels.filter(l => 
-    levelsCompleted.includes(l.id)
-  ).length;
-  const progress = (completedLevelsInWorld / world.levels.length) * 100;
-
-  const handleStartLevel = (levelId: number) => {
-    setCurrentLevel(levelId);
-  };
+  const world = worldResult.rows[0];
+  const worldTitle = world ? (world.title as string) : `World ${worldId}`;
 
   return (
-    <div className="min-h-full pb-20">
-      <header className={`bg-gradient-to-r ${worldColors[worldId]} text-white p-4`}>
-        <div className="flex items-center justify-between mb-4">
-          <Link href="/">
-            <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
-              <ChevronLeft className={`w-6 h-6 ${isRTL ? "rotate-180" : ""}`} />
-            </Button>
-          </Link>
-          <h1 className="text-xl font-bold">{t.worlds.world} {worldId}</h1>
-          <div className="w-10" />
-        </div>
-        
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">{world.title}</h2>
-          <div className="flex items-center justify-center gap-2 text-sm text-white/80">
-            <span>{completedLevelsInWorld}/{world.levels.length} {t.home.levelsCompleted}</span>
-          </div>
-          <Progress 
-            value={progress} 
-            className="h-2 mt-3 bg-white/30"
-          />
-        </div>
-      </header>
-
-      <div className="p-4 space-y-3">
-        {world.levels.map((level, index) => {
-          const isCompleted = levelsCompleted.includes(level.id);
-          const isUnlocked = index === 0 || levelsCompleted.includes(world.levels[index - 1].id);
-          const stars = isCompleted ? 3 : 0;
-          
-          return (
-            <Link 
-              key={level.id}
-              href={isUnlocked ? `/level/${level.id}` : "#"}
-              onClick={() => isUnlocked && handleStartLevel(level.id)}
-              className={`block ${!isUnlocked ? "pointer-events-none" : ""}`}
-            >
-              <Card className={`overflow-hidden transition-all ${!isUnlocked ? "opacity-60" : "hover:shadow-lg"}`}>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold
-                      ${isCompleted 
-                        ? "bg-green-500" 
-                        : isUnlocked 
-                          ? "bg-primary" 
-                          : "bg-gray-400"
-                      }
-                    `}>
-                      {isCompleted ? (
-                        <Check className="w-6 h-6" />
-                      ) : isUnlocked ? (
-                        level.isLesson ? <Music className="w-5 h-5" /> : <Star className="w-5 h-5" />
-                      ) : (
-                        <Lock className="w-5 h-5" />
-                      )}
-                    </div>
-                    
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">{t.worlds.level} {index + 1}</span>
-                        {!level.isLesson && (
-                          <Badge variant="warning" className="text-xs">⭐</Badge>
-                        )}
-                      </div>
-                      <h3 className="font-medium">{level.title}</h3>
-                      
-                      {isCompleted && (
-                        <div className="flex gap-0.5 mt-1">
-                          {[1, 2, 3].map((s) => (
-                            <Star 
-                              key={s} 
-                              className={`w-4 h-4 ${s <= stars ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}`} 
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    
-                    {isUnlocked && (
-                      <Button size="sm" variant={isCompleted ? "outline" : "default"}>
-                        {isCompleted ? t.common.continue : t.common.start}
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          );
-        })}
-      </div>
-
-      <div className="fixed bottom-16 left-0 right-0 p-4 flex justify-between">
-        {prevWorldId ? (
-          <Link href={`/world/${prevWorldId}`}>
-            <Button variant="outline" size="sm">
-              <ChevronLeft className={`w-4 h-4 ${isRTL ? "" : "rotate-180"}`} />
-              {t.worlds.world} {prevWorldId}
-            </Button>
-          </Link>
-        ) : <div />}
-        
-        {nextWorldId && (
-          <Link href={`/world/${nextWorldId}`}>
-            <Button variant="outline" size="sm">
-              {t.worlds.world} {nextWorldId}
-              <ChevronRight className={`w-4 h-4 ${isRTL ? "rotate-180" : ""}`} />
-            </Button>
-          </Link>
-        )}
-      </div>
-    </div>
+    <WorldClient 
+      worldId={worldId} 
+      worldTitle={worldTitle} 
+      levels={levels as any} 
+    />
   );
 }
