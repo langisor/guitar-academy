@@ -1,0 +1,512 @@
+[
+  {
+    "level_id": 1,
+    "type": "practice",
+    "question": "Point to each part of your guitar as you identify it:\n1. Headstock\n2. Tuning Pegs\n3. Nut\n4. Frets\n5. Fretboard\n6. Soundhole/Pickups\n7. Bridge\n\nPractice until you can name all 7 parts without looking.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 50,
+    "order_index": 1
+  },
+  {
+    "level_id": 3,
+    "type": "practice",
+    "question": "Practice sitting in the correct position for 2 minutes:\n1. Sit in a chair with your feet flat on the floor\n2. Place the guitar on your strumming leg\n3. Keep your back straight\n4. Relax your shoulders\n5. Angle the neck slightly upward\n\nHold this position until it feels natural.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 50,
+    "order_index": 1
+  },
+  {
+    "level_id": 5,
+    "type": "practice",
+    "question": "Using an electronic tuner, tune each string:\n1. Low E (6th string) - Tune to match the E below middle C\n2. A (5th string) - Tune to match the A below middle C\n3. D (4th string) - Tune to match the D below middle C\n4. G (3rd string) - Tune to match the G below middle C\n5. B (2nd string) - Tune to match the B below middle C\n6. High e (1st string) - Tune to match the E above middle C\n\nAim for the green light or centered needle on your tuner.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 50,
+    "order_index": 1
+  },
+  {
+    "level_id": 7,
+    "type": "practice",
+    "question": "Say the string names in order while pointing to each string on your guitar:\n1. Low E (6th string - thickest)\n2. A (5th string)\n3. D (4th string)\n4. G (3rd string)\n5. B (2nd string)\n6. High e (1st string - thinnest)\n\nPractice until you can recite them from memory.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 50,
+    "order_index": 1
+  },
+  {
+    "level_id": 9,
+    "type": "practice",
+    "question": "Complete the quiz to earn your Beginner Basics badge:\n1. Review each concept from Levels 1-4\n2. Test your knowledge of guitar parts\n3. Practice saying string names in order\n4. Tune your guitar using the proper method\n\nAnswer all questions correctly to unlock the next world.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 60,
+    "order_index": 1
+  },
+  {
+    "level_id": 291,
+    "type": "practice",
+    "question": "Master syncopated rhythms with this progressive practice:\n1. Count out loud: 1-and-2-and-3-and-4-and—keep this steady\n2. Strum down on each number (1, 2, 3, 4) with open strings\n3. Now add up strums on the \"and\" counts after 1, 2, and 3 (skip the last)\n4. The pattern is: down (1), up (and), down (2), up (and), down (3), up (and), down (4)\n5. Practice until this feels natural at 80 BPM\n6. Now add the \"rest stroke\" on beat 4: lift your hand instead of strumming\n7. The pattern becomes: down-up-down-up-down-up-rest-down\n8. Practice with G chord, focusing on the groove feel\n9. Increase to 100 BPM, maintaining the syncopated feel\n10. Try the pattern with C and D chords, switching in time",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 140,
+    "order_index": 1
+  },
+  {
+    "level_id": 293,
+    "type": "practice",
+    "question": "Learn these essential jazz chord shapes step by step:\n1. Start with Cmaj7: place your 1st finger on the 2nd string 1st fret, 2nd finger on 4th string 2nd fret, 3rd finger on 5th string 3rd fret\n2. Strum all five strings (skip the low E)—check for clean sound\n3. Practice switching between Cmajor and Cmaj7 to hear the difference\n4. Now learn Dm7: 1st finger on 1st string 1st fret, 2nd finger on 2nd string 1st fret, 3rd finger on 3rd string 2nd fret\n5. The Dm7 shape uses three fingers in a compact cluster—practice until clean\n6. Learn G7: 1st finger on 1st string 1st fret, 2nd finger on 5th string 2nd fret, 3rd finger on 6th string 3rd fret, 4th finger on 3rd string 3rd fret\n7. G7 is a four-finger chord—take your time building the shape\n8. Learn Am7: 1st finger on 2nd string 1st fret, 2nd finger on 3rd string 1st fret, 3rd finger on 4th string 2nd fret\n9. Practice the progression: Cmaj7 to Dm7 to G7 to Am7 and back\n10. Work on smooth transitions, keeping the rhythm steady throughout",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 140,
+    "order_index": 1
+  },
+  {
+    "level_id": 295,
+    "type": "practice",
+    "question": "Apply modal interchange in your playing with this guided practice:\n1. Start in the key of C major with a simple C to F to G progression\n2. Now replace the F chord with an Fm chord—feel the emotional shift\n3. The Fm is borrowed from C minor (bVI chord)—this is modal interchange\n4. Try replacing G with G7, then experiment with Gb7 (the bVII of C major)\n5. Practice the progression: C to Db to G7—feel the dramatic tension the Db creates\n6. Try the bVII chord: instead of G to C, try F to C where F is the bVII of G\n7. Practice: C to Am to F to G becomes C to Am to Fm to G (borrowing Fm from C minor)\n8. The bIII chord: try adding an Eb chord in your C major progressions\n9. Practice the \"Andalusian\" progression: Am to G to F to E\n10. Create your own progression using one borrowed chord and notice how it transforms the mood",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 140,
+    "order_index": 1
+  },
+  {
+    "level_id": 297,
+    "type": "practice",
+    "question": "Build your performance mindset with these preparation steps:\n1. Create a realistic setlist that challenges you but doesn't overwhelm you\n2. Practice your full set at least three times in complete runs\n3. Record yourself performing the full set and watch it back critically\n4. Practice in front of a friend or family member weekly\n5. Visualize your performance the night before: imagine walking on stage feeling confident\n6. Prepare your guitar, stool, and any needed accessories before the gig\n7. Develop a pre-performance routine (stretching, breathing, or playing through scales)\n8. Plan your transitions between songs to minimize dead air\n9. Prepare for something to go wrong—know how you'll handle a string break or memory lapse\n10. On performance day, do a short practice session, then rest your hands before the show",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 140,
+    "order_index": 1
+  },
+  {
+    "level_id": 299,
+    "type": "practice",
+    "question": "Complete your journey with these final steps:\n1. Play through all ten world maps, selecting one favorite level from each\n2. Create a medley of your five favorite techniques or chord progressions\n3. Record yourself playing something—anything—from this course\n4. Write down three things you learned that surprised you\n5. Identify one technique you want to continue developing\n6. Choose a song outside this course that you'd like to learn\n7. Find and follow three guitarists whose style you admire\n8. Consider teaching someone else the basics—it solidifies your own understanding\n9. Celebrate your accomplishment—you've completed fifty levels!\n10. Make a plan for your continued guitar journey",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 150,
+    "order_index": 1
+  },
+  {
+    "level_id": 11,
+    "type": "practice",
+    "question": "1. Form the chord\n2. Play each string individually\n3. Make sure all notes ring clearly\n4. If a string buzzes, adjust your finger position\n\n## Challenge\nPlay a clean G chord, strum down once, and hold for 5 seconds without any buzzy notes!",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 50,
+    "order_index": 1
+  },
+  {
+    "level_id": 211,
+    "type": "practice",
+    "question": "Practice the G Major chord for 1 minute:\n1. Place your index finger on the 3rd fret of the low E string\n2. Place your middle finger on the 2nd fret of the A string\n3. Place your ring finger on the 3rd fret of the D string\n4. Strum all six strings\n5. Check for any muted or buzzing strings\n6. Adjust finger positions as needed\n7. Repeat the process\n\nFocus on clean, clear sound from every string.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 60,
+    "order_index": 1
+  },
+  {
+    "level_id": 213,
+    "type": "practice",
+    "question": "Practice the C Major chord for 1 minute:\n1. Place your index finger on the 1st fret of the B string\n2. Place your middle finger on the 2nd fret of the D string\n3. Place your ring finger on the 3rd fret of the A string\n4. Strum from the A string down (skip the low E)\n5. Ensure the open G string is not muted\n6. Check each note rings clearly\n7. Repeat the process\n\nFocus on the stretch between your index and middle fingers.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 60,
+    "order_index": 1
+  },
+  {
+    "level_id": 215,
+    "type": "practice",
+    "question": "Practice the D Major chord for 1 minute:\n1. Place your index finger on the 2nd fret of the G string\n2. Place your middle finger on the 3rd fret of the B string\n3. Place your ring finger on the 2nd fret of the D string\n4. Strum only the top four strings (D, G, B, e)\n5. Ensure all fretted notes ring clearly\n6. Keep your wrist relaxed and loose\n7. Repeat the process\n\nRemember: only strum the D, G, B, and high e strings.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 60,
+    "order_index": 1
+  },
+  {
+    "level_id": 217,
+    "type": "practice",
+    "question": "Practice the E Minor chord for 1 minute:\n1. Place your index finger on the 2nd fret of the G string\n2. Place your middle finger on the 2nd fret of the A string\n3. Strum all six strings (they should all ring)\n4. Check that each note sounds clear\n5. Release and reform the chord\n6. Repeat the process\n\nNotice how only two fingers create a full, complete chord sound.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 60,
+    "order_index": 1
+  },
+  {
+    "level_id": 219,
+    "type": "practice",
+    "question": "Complete the quiz to earn your Open Chords badge:\n1. Review each chord shape from Levels 6-9\n2. Practice forming each chord from memory\n3. Test your knowledge of finger placements\n4. Ensure you can identify each chord by its shape\n\nAnswer all questions correctly to unlock the next world.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 70,
+    "order_index": 1
+  },
+  {
+    "level_id": 221,
+    "type": "practice",
+    "question": "Transition between G and C 10 times:\n1. Start with your G Major chord shape\n2. Lift all fingers slightly off the fretboard\n3. Move directly to C Major shape\n4. Check that each note rings clearly\n5. Return to G Major\n6. Repeat the process 10 times\n7. Focus on the middle finger as your pivot point\n\nGoal: Smooth, silent transitions without hesitation.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 70,
+    "order_index": 1
+  },
+  {
+    "level_id": 223,
+    "type": "practice",
+    "question": "Transition between C and D 10 times:\n1. Start with your C Major chord shape\n2. Slide your ring finger to the 3rd fret of the B string\n3. Move your index finger to the 2nd fret of the G string\n4. Move your middle finger to the 3rd fret of the D string\n5. Check that all notes ring clearly\n6. Return to C Major and repeat 10 times\n7. Focus on the ring finger as your guide\n\nPractice until the transition feels smooth and natural.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 70,
+    "order_index": 1
+  },
+  {
+    "level_id": 225,
+    "type": "practice",
+    "question": "Transition between D and Em 10 times:\n1. Start with your D Major chord shape\n2. Lift your middle and ring fingers off the fretboard\n3. Keep your index finger pressed on the 2nd fret of the G string\n4. Place your middle finger on the 2nd fret of the A string\n5. Check that all notes ring clearly\n6. Return to D Major and repeat 10 times\n7. Focus on minimal finger movement\n\nThe key is keeping your index finger anchored.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 70,
+    "order_index": 1
+  },
+  {
+    "level_id": 227,
+    "type": "practice",
+    "question": "Transition between Em and Am 10 times:\n1. Start with your E Minor chord shape\n2. Move both fingers down one string set (G → D, A → G)\n3. Add your index finger on the 1st fret of the B string\n4. Ensure all notes ring clearly\n5. Return to Em and repeat 10 times\n6. Feel the relationship between the two shapes\n\nNotice how similar the finger patterns feel.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 70,
+    "order_index": 1
+  },
+  {
+    "level_id": 229,
+    "type": "practice",
+    "question": "Complete the quiz to earn your Chord Transition badge:\n1. Review each transition from Levels 11-14\n2. Practice each transition 10 times\n3. Focus on minimal, efficient movement\n4. Test your knowledge of which fingers do what\n\nAnswer all questions correctly to unlock World 4.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 80,
+    "order_index": 1
+  },
+  {
+    "level_id": 231,
+    "type": "practice",
+    "question": "Practice the down strum pattern at 80 BPM:\n1. Set your metronome or rhythm app to 80 BPM\n2. Hold your guitar in playing position\n3. Make a down strum on each beat (1, 2, 3, 4)\n4. Keep your wrist loose and relaxed\n5. Strum through all six strings each time\n6. Maintain steady timing for 2 minutes\n7. Gradually increase tempo as you improve\n\nListen for even volume on every strum.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 80,
+    "order_index": 1
+  },
+  {
+    "level_id": 233,
+    "type": "practice",
+    "question": "Practice the down-up pattern at 90 BPM:\n1. Set metronome to 90 BPM\n2. Strum down on beats 1 and 3\n3. Strum up on beats 2 and 4\n4. Keep your wrist loose and relaxed\n5. Make the down stroke louder than up stroke\n6. Maintain steady rhythm for 2 minutes\n7. Gradually increase tempo\n\nThe key is continuous motion—never stop moving your hand.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 80,
+    "order_index": 1
+  },
+  {
+    "level_id": 235,
+    "type": "practice",
+    "question": "Practice the country/folk pattern at 100 BPM:\n1. Set metronome to 100 BPM\n2. Strum down on beat 1 (\"boom\")\n3. Strum down on the \"and\" after beat 1\n4. Strum up on beat 2 (\"chicka\")\n5. Strum down on beat 3 (\"boom\")\n6. Strum up on beat 4 (\"chicka\")\n7. Practice for 2 minutes continuously\n8. Focus on the accent pattern: boom-CHICKA-boom-CHICKA",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 80,
+    "order_index": 1
+  },
+  {
+    "level_id": 237,
+    "type": "practice",
+    "question": "Practice the pop pattern at 110 BPM:\n1. Set metronome to 110 BPM\n2. Strum down on beat 1\n3. Strum up on the \"and\" after beat 1\n4. Strum down on beat 2\n5. Strum up on the \"and\" after beat 2\n6. Strum down on beat 3\n7. Strum up on the \"and\" after beat 3\n8. Strum down on beat 4\n9. Maintain continuous motion for 2 minutes\n10. Never stop moving your hand",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 80,
+    "order_index": 1
+  },
+  {
+    "level_id": 239,
+    "type": "practice",
+    "question": "Complete the quiz to earn your Strumming badge:\n1. Review each pattern from Levels 16-19\n2. Practice each pattern at its tempo\n3. Focus on smooth, continuous motion\n4. Test your knowledge of strumming notation\n\nAnswer all questions correctly to unlock World 5.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 90,
+    "order_index": 1
+  },
+  {
+    "level_id": 241,
+    "type": "practice",
+    "question": "Play through the progression smoothly:\n1. Start with the C Major chord\n2. Count 4 beats, then transition to G Major\n3. Count 4 beats, then transition to A Minor\n4. Count 4 beats, then transition to E Minor\n5. Use the country/folk strumming pattern: D-D-U-D-U-D\n6. Practice the entire progression 10 times\n7. Focus on smooth, silent transitions between chords\n8. Keep a steady beat throughout\n\nPractice until you can play through without stopping.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 90,
+    "order_index": 1
+  },
+  {
+    "level_id": 243,
+    "type": "practice",
+    "question": "Play through the progression smoothly:\n1. Start with the E Minor chord\n2. Count 4 beats, then transition to D Major\n3. Count 4 beats, then return to E Minor\n4. Use the pop strumming pattern: D-U-D-U-D-U\n5. Practice the back-and-forth motion 10 times\n6. Focus on the Em to D transition (lift two fingers)\n7. Keep a steady, relaxed rhythm\n8. Listen to the song and play along\n\nSimple but satisfying once you get the rhythm.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 90,
+    "order_index": 1
+  },
+  {
+    "level_id": 245,
+    "type": "practice",
+    "question": "Play through the progression smoothly:\n1. Start with E Minor (2nd fret, G and A strings)\n2. Count 4 beats, transition to G Major\n3. Count 4 beats, transition to D Major\n4. Count 4 beats, transition to A Minor\n5. Use the country/folk strumming: D-D-U-D-U-D\n6. Practice the full sequence 10 times\n7. Focus on the transition timing between each chord\n8. Keep your strumming hand moving continuously\n\nPractice until you can maintain the rhythm without hesitation.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 90,
+    "order_index": 1
+  },
+  {
+    "level_id": 247,
+    "type": "practice",
+    "question": "Play through the progression smoothly:\n1. Start with G Major chord\n2. Count 4 beats, then transition to D Major\n3. Count 4 beats, then transition to A Minor\n4. Use the country/folk strumming: D-D-U-D-U-D\n5. Practice the sequence 10 times\n6. Focus on clean transitions between G and D\n7. Let each chord ring fully before moving\n8. Try playing along with the original recording",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 90,
+    "order_index": 1
+  },
+  {
+    "level_id": 249,
+    "type": "practice",
+    "question": "Complete the quiz to earn your First Songs badge:\n1. Review each song's chord progression\n2. Practice each progression until it's automatic\n3. Test your knowledge of song-progression matching\n4. Challenge yourself to identify songs by their progressions\n\nAnswer all questions correctly to unlock World 6.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 100,
+    "order_index": 1
+  },
+  {
+    "level_id": 251,
+    "type": "practice",
+    "question": "Practice the F Major barre chord:\n1. Place your index finger across the 1st fret (all 6 strings)\n2. Curl your index finger to avoid muting strings\n3. Place your middle finger on the 3rd fret of the A string\n4. Place your ring finger on the 3rd fret of the D string\n5. Place your pinky on the 3rd fret of the G string\n6. Strum and check each note rings clearly\n7. Practice for 2 minutes, building finger strength\n8. Focus on even pressure across all strings\n\nThis chord takes time—be patient and practice daily.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 100,
+    "order_index": 1
+  },
+  {
+    "level_id": 253,
+    "type": "practice",
+    "question": "Practice the B Minor barre chord:\n1. Place your index finger across the 2nd fret (strings 1-5)\n2. Your index should bar strings A through high e\n3. Place your middle finger on the 4th fret of the D string\n4. Place your ring finger on the 4th fret of the G string\n5. Place your pinky on the 4th fret of the B string\n6. The low E string should remain open\n7. Check that all fretted notes ring clearly\n8. Practice for 2 minutes, building strength\n\nThe root note is on the 5th string (A).",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 100,
+    "order_index": 1
+  },
+  {
+    "level_id": 255,
+    "type": "practice",
+    "question": "Practice the D Minor barre chord:\n1. Place your index finger across the 5th fret (strings 1-5)\n2. Your index should bar strings A through high e\n3. Place your middle finger on the 7th fret of the G string\n4. Place your ring finger on the 7th fret of the B string\n5. Place your pinky on the 7th fret of the high e string\n6. The D and G strings should remain open (don't bar them)\n7. Check that all fretted notes ring clearly\n8. Practice for 2 minutes, building finger strength\n\nFinger strength matters—keep practicing!",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 100,
+    "order_index": 1
+  },
+  {
+    "level_id": 257,
+    "type": "practice",
+    "question": "Practice moving the F shape up the neck:\n1. Start with your F Major barre chord\n2. Slide the entire shape to the 3rd fret (G Major)\n3. Check that all notes ring clearly\n4. Slide back to F (1st fret)\n5. Slide to the 5th fret (A Major)\n6. Check that all notes ring clearly\n7. Repeat the slide between G and A 10 times\n8. Focus on smooth, controlled movement\n\nThe key is sliding smoothly without lifting fingers.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 100,
+    "order_index": 1
+  },
+  {
+    "level_id": 259,
+    "type": "practice",
+    "question": "Complete the quiz to earn your Barre Chord badge:\n1. Review each barre chord shape from Levels 26-29\n2. Practice each chord until it's clean and consistent\n3. Practice sliding between different positions\n4. Test your knowledge of barre chord theory\n\nAnswer all questions correctly to unlock World 7.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 110,
+    "order_index": 1
+  },
+  {
+    "level_id": 261,
+    "type": "practice",
+    "question": "Name each note on the fretboard:\n1. Start at the 5th fret of the low E string (A)\n2. Move up one fret at a time, naming each note\n3. Remember: B-C and E-F have no sharps between them\n4. Practice from the open string up to the 12th fret\n5. Repeat the process on the A string\n6. Then practice on D, G, B, and high e strings\n7. Create flashcards to test yourself\n8. Practice daily until you know every note location\n\nKnow your notes— they're the foundation of everything!",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 110,
+    "order_index": 1
+  },
+  {
+    "level_id": 263,
+    "type": "practice",
+    "question": "Practice the pentatonic box shape:\n1. Start at the 5th fret of the low E string (A note)\n2. Play the root note on the 5th fret, low E\n3. Move to the 7th fret (C), then 8th fret (D)\n4. Play the 7th fret of the G string (E)\n5. Play the 5th fret of the high e string (A)\n6. Practice playing up and down the pattern\n7. Start slow, then gradually increase speed\n8. Focus on clean, precise note articulation\n\nThis is the most important scale pattern in rock!",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 110,
+    "order_index": 1
+  },
+  {
+    "level_id": 265,
+    "type": "practice",
+    "question": "Practice octave shapes:\n1. Find any note on the low E string\n2. Find the same note on the D string (two strings apart)\n3. That's an octave—play both notes together\n4. Now find the 5th interval (7 frets up from root)\n5. Play root plus 5th together (power chord)\n6. Practice this on every string position\n7. Focus on skipping the middle string (E-A, A-D, D-G, B-e)\n8. Practice the root-5th pattern up and down the neck\n\nThese shapes are essential for rock rhythm playing!",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 110,
+    "order_index": 1
+  },
+  {
+    "level_id": 267,
+    "type": "practice",
+    "question": "Practice all triad shapes:\n1. Start with the A string root position\n2. Play C-E-G (C Major triad) on strings 2-1-3\n3. Play C-Eb-G (C Minor triad) one fret lower\n4. Play C-Eb-Gb (C Diminished) another fret lower\n5. Play C-E-G# (C Augmented) starting from C Major\n6. Practice moving these shapes up the neck\n7. Practice on strings 1-2-3, then 2-3-4\n8. Practice moving between major and minor\n\nCompact shapes—maximum flexibility!",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 110,
+    "order_index": 1
+  },
+  {
+    "level_id": 269,
+    "type": "practice",
+    "question": "Complete the quiz to earn your Fretboard Mastery badge:\n1. Review each concept from Levels 31-34\n2. Practice naming notes on every string\n3. Run through the pentatonic box repeatedly\n4. Test your interval and triad knowledge\n\nAnswer all questions correctly to unlock World 8.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 120,
+    "order_index": 1
+  },
+  {
+    "level_id": 271,
+    "type": "practice",
+    "question": "Learn the iconic riff:\n1. Start with the G5 power chord (3rd fret, low E and A strings together)\n2. Play three down strums on G5\n3. Skip one beat, then play A5 (5th fret, A and D strings)\n4. Play three down strums on A5\n5. Skip one beat, then play D5 (5th fret, D and G strings)\n6. Play three down strums on D5\n7. Repeat the entire sequence until it flows\n8. Focus on the driving rhythm and heavy feel\n\nPower through it—it's simpler than it sounds!",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 120,
+    "order_index": 1
+  },
+  {
+    "level_id": 273,
+    "type": "practice",
+    "question": "Learn the riff:\n1. Start at the 3rd fret of the low E string (G note)\n2. Play four times: 3-3-3-3 (four down strums at the same fret)\n3. Then play the open high e string (0)\n4. Then play the 3rd fret of the high e string (3)\n5. The pattern is: 3-3-3-3-0-3\n6. Practice slowly until you can play it cleanly\n7. Then increase to the song tempo of 116 BPM\n8. Add a slight palm mute for the \"bite\" sound\n\nOne note can be a hit—prove it with this riff!",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 120,
+    "order_index": 1
+  },
+  {
+    "level_id": 275,
+    "type": "practice",
+    "question": "Master the opening riff:\n1. Start with the open low E string (muted or lightly palm-muted)\n2. Play the 2nd fret of the low E string (F#)\n3. Play the 2nd fret again\n4. Return to open low E\n5. Play the 2nd fret again\n6. Return to open low E\n7. The pattern is: open-2-2-open-2-open\n8. Play slowly at 104 BPM with heavy palm muting\n9. Feel the weight and intensity in each note\n\nSlow and heavy—the Iron Man way!",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 120,
+    "order_index": 1
+  },
+  {
+    "level_id": 277,
+    "type": "practice",
+    "question": "Learn the riff with palm muting:\n1. Place your palm lightly against the strings near the bridge\n2. Form the A5 power chord (5th fret, A and D strings)\n3. Play down strokes with the palm muting engaged\n4. The palm should barely touch the strings—just enough to damp\n5. Practice the \"chugga-chugga\" rhythm\n6. Keep your down strokes even and powerful\n7. Aim for 120 BPM with tight, aggressive feel\n8. Practice until the muting is clean and consistent\n\nMute for tightness—the AC/DC secret!",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 120,
+    "order_index": 1
+  },
+  {
+    "level_id": 279,
+    "type": "practice",
+    "question": "Complete the quiz to earn your Rock Riffs badge:\n1. Review each riff from Levels 36-39\n2. Practice each riff until you can play it cleanly\n3. Focus on the techniques: power chords, single notes, heavy feel, palm muting\n4. Test your knowledge of rock history\n\nAnswer all questions correctly to unlock World 9.",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 130,
+    "order_index": 1
+  },
+  {
+    "level_id": 281,
+    "type": "practice",
+    "question": "Practice the Travis picking pattern with these steps:\n1. Position your thumb on the 5th string (A string) and your index finger on the 2nd string (B string)\n2. Play the 5th string with your thumb, then immediately pluck the 2nd string with your index finger\n3. Next, play the 4th string (D string) with your thumb, then the 3rd string (G string) with your middle finger\n4. Continue alternating: thumb on 5th, index on 2nd, thumb on 4th, middle on 3rd\n5. Keep your wrist relaxed and your thumb striking downward in a comfortable arc\n6. Maintain a slow tempo of 60 BPM initially—accuracy is more important than speed\n7. Practice each transition slowly until the movement feels natural\n8. Gradually increase tempo to 80 BPM while maintaining consistent thumb rhythm\n9. Add the G chord shape with your left hand while maintaining the picking pattern\n10. Practice until you can play the pattern smoothly without thinking",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 130,
+    "order_index": 1
+  },
+  {
+    "level_id": 283,
+    "type": "practice",
+    "question": "Build finger independence with this systematic practice routine:\n1. Place your guitar on your lap and position your picking hand above the strings\n2. Practice lifting only your index finger while keeping other fingers stationary on the strings\n3. Repeat with each finger: middle, ring, and pinky—ensure no other fingers move\n4. Practice playing just the 1st string with your index finger while other fingers rest\n5. Now play the 2nd string with your middle finger while keeping index still\n6. Practice playing two notes in sequence: index on 1st string, then middle on 2nd string\n7. Try the reverse: middle on 2nd string, then index on 1st string\n8. Add the ring finger: play index on 1st, middle on 2nd, ring on 3rd in sequence\n9. Practice playing the same note with different fingers to feel each one's unique touch\n10. Combine patterns: play index-middle-ring-pinky in sequence, then reverse back down",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 135,
+    "order_index": 1
+  },
+  {
+    "level_id": 285,
+    "type": "practice",
+    "question": "Master advanced Travis picking with chord transitions:\n1. Start with the basic Travis pattern in open position (no left hand chords)\n2. Add a simple G chord with your left hand while continuing the pattern\n3. Practice playing four beats of Travis pattern on G chord\n4. Now transition to C chord—keep thumb pattern steady during the switch\n5. Practice switching between G and C in time, holding each for four beats\n6. Add D chord to the progression: G to C to D and back to G\n7. Focus on making each note ring clearly, especially during chord changes\n8. Practice the full progression at 70 BPM, then gradually increase to 90 BPM\n9. Listen to each chord change—any muddiness means you need more practice\n10. Record yourself and compare to professional examples to check timing",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 140,
+    "order_index": 1
+  },
+  {
+    "level_id": 287,
+    "type": "practice",
+    "question": "Achieve mastery with the three-note Travis pattern:\n1. Review your two-note Travis pattern until it feels completely automatic\n2. Introduce a third thumb strike: play 5th string, then 4th string, then 6th string (root-octave-fifth pattern)\n3. Count carefully: thumb on beat 1, thumb on beat 2, fingers on beat 2-and, thumb on beat 3\n4. The pattern is: 5th string (down), 4th string (down), fingers (up), 6th string (down)\n5. Practice this pattern slowly until it feels natural at 60 BPM\n6. Add chord shapes: play G shape while maintaining the three-note thumb pattern\n7. Focus on the 6th string (low E) bass note—make it ring clearly\n8. Practice transitioning between chords while keeping the three-note pattern\n9. Try the progression G to D to C, maintaining the pattern throughout\n10. Work up to 100 BPM while maintaining perfect timing and clarity",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 145,
+    "order_index": 1
+  },
+  {
+    "level_id": 289,
+    "type": "practice",
+    "question": "Master the classical tremolo technique with this progression:\n1. Place your thumb on the 5th string and prepare your index finger\n2. Play the 5th string with your thumb, then immediately play it with your index finger\n3. Continue: thumb-index-thumb-index at a slow, steady pace\n4. Focus on making both notes equal in volume and duration\n5. Now add the middle finger: practice p-i-m-i pattern on the 3rd string\n6. The sequence is: thumb down, index up, middle down, index up\n7. Keep your wrist relaxed and your fingers close to the strings\n8. Practice at 60 BPM until the pattern feels natural\n9. Gradually increase to 80 BPM, then 100 BPM, maintaining even tone\n10. Apply tremolo to melody passages, keeping the pulse steady and consistent",
+    "options": null,
+    "correct_answer": null,
+    "data": null,
+    "xp_reward": 150,
+    "order_index": 1
+  }
+]

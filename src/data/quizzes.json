@@ -1,128 +1,226 @@
 [
   {
-    "level_id": 5,
-    "question": "What is the correct tuning for the 4th string (counting from lowest)?",
-    "options": "[\"E\",\"A\",\"D\",\"G\"]",
-    "correct_answer": "D",
+    "level_id": 1,
+    "question": "Which part of the guitar holds the strings in place at the bottom?",
+    "options": "[\"Headstock\",\"Nut\",\"Bridge\",\"Fretboard\"]",
+    "correct_answer": "Bridge",
     "xp_reward": 50
   },
   {
-    "level_id": 93,
-    "question": "What gives jazz chords their characteristic rich sound?",
-    "options": "[\"Using only root notes\",\"Adding 7th and extended notes beyond basic triads\",\"Playing all strings open\",\"Using only power chords\"]",
-    "correct_answer": "Adding 7th and extended notes beyond basic triads",
+    "level_id": 3,
+    "question": "Which leg should you rest your guitar on if you're right-handed?",
+    "options": "[\"Left leg\",\"Right leg\",\"Either leg\",\"Both legs\"]",
+    "correct_answer": "Right leg",
+    "xp_reward": 50
+  },
+  {
+    "level_id": 7,
+    "question": "Which string is the thinnest (highest-pitched) string on a guitar?",
+    "options": "[\"E (low E)\",\"A\",\"B\",\"e (high e)\"]",
+    "correct_answer": "e (high e)",
+    "xp_reward": 50
+  },
+  {
+    "level_id": 9,
+    "question": "Which part of the guitar holds the strings in place at the bottom of the body?",
+    "options": "[\"Headstock\",\"Nut\",\"Bridge\",\"Fretboard\"]",
+    "correct_answer": "Bridge",
+    "xp_reward": 60
+  },
+  {
+    "level_id": 291,
+    "question": "What makes syncopated strumming create a \"groovy\" feel?",
+    "options": "[\"Playing on only the main beats\",\"Accenting unexpected off-beats to create tension and release\",\"Playing as fast as possible\",\"Using only downstrokes\"]",
+    "correct_answer": "Accenting unexpected off-beats to create tension and release",
     "xp_reward": 140
   },
   {
-    "level_id": 95,
-    "question": "What is modal interchange in chord progression?",
-    "options": "[\"Playing chords in a random order\",\"Borrowing chords from parallel minor/major keys to add color\",\"Only using chords from one key signature\",\"Avoiding chord changes\"]",
-    "correct_answer": "Borrowing chords from parallel minor/major keys to add color",
+    "level_id": 297,
+    "question": "What is the most important aspect of preparing for live performance?",
+    "options": "[\"Buying expensive stage clothes\",\"Consistent and thorough practice of your material\",\"Playing as fast as possible\",\"Memorizing every single note perfectly with no room for spontaneity\"]",
+    "correct_answer": "Consistent and thorough practice of your material",
     "xp_reward": 140
   },
   {
-    "level_id": 11,
-    "question": "Which finger goes on the 2nd fret of the A string when playing G Major?",
+    "level_id": 299,
+    "question": "You've completed 50 levels of Guitar Academy. What comes next?",
+    "options": "[\"The journey ends here\",\"Only practicing what you've already learned\",\"Your continued growth as a guitarist, exploring new skills and genres\",\"Stopping playing until you forget everything\"]",
+    "correct_answer": "Your continued growth as a guitarist, exploring new skills and genres",
+    "xp_reward": 150
+  },
+  {
+    "level_id": 219,
+    "question": "Which open chord has fingers placed on frets 2-2 on the A and D strings?",
+    "options": "[\"E Minor (Em)\",\"G Major\",\"C Major\",\"D Major\"]",
+    "correct_answer": "E Minor (Em)",
+    "xp_reward": 70
+  },
+  {
+    "level_id": 221,
+    "question": "Which finger serves as the pivot when transitioning from G to C?",
     "options": "[\"Index finger\",\"Middle finger\",\"Ring finger\",\"Pinky finger\"]",
     "correct_answer": "Middle finger",
-    "xp_reward": 60
+    "xp_reward": 70
   },
   {
-    "level_id": 13,
-    "question": "What fret does the middle finger press for C Major?",
-    "options": "[\"1st fret\",\"2nd fret\",\"3rd fret\",\"Open (no fret)\"]",
-    "correct_answer": "2nd fret",
-    "xp_reward": 60
+    "level_id": 223,
+    "question": "Which finger moves the most when transitioning from C to D?",
+    "options": "[\"Index finger\",\"Middle finger\",\"Ring finger\",\"No finger moves significantly\"]",
+    "correct_answer": "Ring finger",
+    "xp_reward": 70
   },
   {
-    "level_id": 15,
-    "question": "Which strings should be strummed when playing D Major?",
-    "options": "[\"All six strings\",\"Only the top 4 strings (D, G, B, e)\",\"Only the bottom 3 strings (E, A, D)\",\"The low E, A, D, and G strings\"]",
-    "correct_answer": "Only the top 4 strings (D, G, B, e)",
-    "xp_reward": 60
+    "level_id": 225,
+    "question": "What should you do with your middle and ring fingers when transitioning from D to Em?",
+    "options": "[\"Move them to different frets\",\"Keep them in the same position\",\"Lift them off the fretboard\",\"Cross them over each other\"]",
+    "correct_answer": "Lift them off the fretboard",
+    "xp_reward": 70
   },
   {
-    "level_id": 17,
-    "question": "How many fingers are needed to play E Minor?",
-    "options": "[\"One finger\",\"Two fingers\",\"Three fingers\",\"Four fingers\"]",
-    "correct_answer": "Two fingers",
-    "xp_reward": 60
+    "level_id": 227,
+    "question": "What finger do you add when transitioning from Em to Am?",
+    "options": "[\"No additional finger needed\",\"Index finger on the B string\",\"Pinky finger on the D string\",\"Ring finger on the G string\"]",
+    "correct_answer": "Index finger on the B string",
+    "xp_reward": 70
   },
   {
-    "level_id": 31,
-    "question": "How many down strums are in one measure of 4/4 time using the DDDD pattern?",
-    "options": "[\"2\",\"4\",\"6\",\"8\"]",
-    "correct_answer": "4",
+    "level_id": 229,
+    "question": "Which chord transition requires the least finger movement?",
+    "options": "[\"G to C\",\"D to Em\",\"Am to E\",\"F to Bm\"]",
+    "correct_answer": "D to Em",
     "xp_reward": 80
   },
   {
-    "level_id": 33,
-    "question": "In the D-U-D-U pattern, what type of note subdivision is being used?",
-    "options": "[\"Quarter notes\",\"Eighth notes\",\"Sixteenth notes\",\"Half notes\"]",
-    "correct_answer": "Eighth notes",
+    "level_id": 235,
+    "question": "In the country pattern \"Boom-Chicka\", what does the \"boom\" represent?",
+    "options": "[\"An upstroke on the beat\",\"A downstroke on the beat\",\"A rest\",\"A muted strum\"]",
+    "correct_answer": "A downstroke on the beat",
     "xp_reward": 80
   },
   {
-    "level_id": 37,
-    "question": "What is the most important technique tip for the pop strumming pattern?",
-    "options": "[\"Strum loudly on every stroke\",\"Stop between strums\",\"Never stop moving your hand\",\"Only use down strums\"]",
-    "correct_answer": "Never stop moving your hand",
-    "xp_reward": 80
-  },
-  {
-    "level_id": 45,
-    "question": "What is the chord progression in \"Wonderwall\"?",
-    "options": "[\"C - G - Am - F\",\"G - D - Am - Em\",\"Em - G - D - Am\",\"D - Am - G - Em\"]",
-    "correct_answer": "Em - G - D - Am",
+    "level_id": 239,
+    "question": "What does the letter 'D' typically represent in strumming patterns?",
+    "options": "[\"Down-up strum\",\"Double strum\",\"Down strum\",\"Dampened strum\"]",
+    "correct_answer": "Down strum",
     "xp_reward": 90
   },
   {
-    "level_id": 51,
-    "question": "What does your index finger do in an F Major barre chord?",
-    "options": "[\"Frets only 1 string\",\"Bars all 6 strings\",\"Plays no role\",\"Only mutes strings\"]",
-    "correct_answer": "Bars all 6 strings",
+    "level_id": 241,
+    "question": "What is the chord progression for \"Let It Be\" (simplified version)?",
+    "options": "[\"G - D - Am - C\",\"C - G - Am - Em\",\"Em - G - D - Am\",\"D - G - C - Am\"]",
+    "correct_answer": "C - G - Am - Em",
+    "xp_reward": 90
+  },
+  {
+    "level_id": 243,
+    "question": "How many unique chords does \"A Horse with No Name\" use?",
+    "options": "[\"One chord\",\"Two chords\",\"Four chords\",\"Six chords\"]",
+    "correct_answer": "Two chords",
+    "xp_reward": 90
+  },
+  {
+    "level_id": 247,
+    "question": "Which artist originally wrote \"Knockin' on Heaven's Door\"?",
+    "options": "[\"Guns N' Roses\",\"Bob Dylan\",\"The Beatles\",\"Eric Clapton\"]",
+    "correct_answer": "Bob Dylan",
+    "xp_reward": 90
+  },
+  {
+    "level_id": 249,
+    "question": "Which song uses the Em - D progression?",
+    "options": "[\"Let It Be\",\"A Horse with No Name\",\"Wonderwall\",\"Knockin' on Heaven's Door\"]",
+    "correct_answer": "A Horse with No Name",
     "xp_reward": 100
   },
   {
-    "level_id": 61,
-    "question": "Which two natural half-steps have no sharps between them?",
-    "options": "[\"C-D and F-G\",\"D-E and G-A\",\"B-C and E-F\",\"A-B and E-F\"]",
-    "correct_answer": "B-C and E-F",
+    "level_id": 253,
+    "question": "What is the root string for a B Minor barre chord?",
+    "options": "[\"6th string (low E)\",\"5th string (A)\",\"4th string (D)\",\"3rd string (G)\"]",
+    "correct_answer": "5th string (A)",
+    "xp_reward": 100
+  },
+  {
+    "level_id": 255,
+    "question": "Which strings should remain open when playing D Minor barre?",
+    "options": "[\"Low E and A\",\"D and G\",\"G and B\",\"All strings should be fretted\"]",
+    "correct_answer": "D and G",
+    "xp_reward": 100
+  },
+  {
+    "level_id": 257,
+    "question": "What chord do you get when you move the F Major barre shape to the 5th fret?",
+    "options": "[\"G Major\",\"A Major\",\"B Major\",\"C Major\"]",
+    "correct_answer": "A Major",
+    "xp_reward": 100
+  },
+  {
+    "level_id": 259,
+    "question": "What fret is the A-shape barre chord when the root is on the A string?",
+    "options": "[\"3rd fret\",\"5th fret\",\"7th fret\",\"12th fret\"]",
+    "correct_answer": "5th fret",
     "xp_reward": 110
   },
   {
-    "level_id": 65,
-    "question": "What interval is created by skipping one string between two identical notes?",
-    "options": "[\"Perfect fourth\",\"Perfect fifth\",\"Octave\",\"Major sixth\"]",
-    "correct_answer": "Octave",
+    "level_id": 263,
+    "question": "How many notes are in the minor pentatonic scale?",
+    "options": "[\"Four notes\",\"Five notes\",\"Seven notes\",\"Eight notes\"]",
+    "correct_answer": "Five notes",
     "xp_reward": 110
   },
   {
-    "level_id": 67,
-    "question": "Which notes make up a C Major triad?",
-    "options": "[\"C-Eb-G\",\"C-E-G\",\"C-Eb-Gb\",\"C-E-G#\"]",
-    "correct_answer": "C-E-G",
-    "xp_reward": 110
-  },
-  {
-    "level_id": 73,
-    "question": "What note is played throughout most of \"Seven Nation Army\"?",
-    "options": "[\"A\",\"C\",\"G\",\"E\"]",
-    "correct_answer": "G",
+    "level_id": 269,
+    "question": "What is the note at the 5th fret on the A string?",
+    "options": "[\"C\",\"D\",\"E\",\"F\"]",
+    "correct_answer": "D",
     "xp_reward": 120
   },
   {
-    "level_id": 75,
-    "question": "Which band created the \"Iron Man\" riff?",
-    "options": "[\"Deep Purple\",\"The White Stripes\",\"AC/DC\",\"Black Sabbath\"]",
-    "correct_answer": "Black Sabbath",
+    "level_id": 271,
+    "question": "What is the chord progression for \"Smoke on the Water\"?",
+    "options": "[\"G5 - A5 - C5\",\"G5 - A5 - D5\",\"A5 - D5 - G5\",\"D5 - G5 - A5\"]",
+    "correct_answer": "G5 - A5 - D5",
     "xp_reward": 120
   },
   {
-    "level_id": 77,
-    "question": "What technique gives \"Back in Black\" its tight, percussive sound?",
-    "options": "[\"Fingerpicking\",\"Palm muting\",\"Whammy bar\",\"Harmonics\"]",
-    "correct_answer": "Palm muting",
-    "xp_reward": 120
+    "level_id": 279,
+    "question": "Which song uses primarily G5 power chords?",
+    "options": "[\"Smoke on the Water\",\"Seven Nation Army\",\"Iron Man\",\"Back in Black\"]",
+    "correct_answer": "Smoke on the Water",
+    "xp_reward": 130
+  },
+  {
+    "level_id": 281,
+    "question": "What is the defining characteristic of Travis picking?",
+    "options": "[\"Using a pick for all strings\",\"Thumb alternates between bass strings while fingers play melody\",\"Only using fingerpicking without thumb\",\"Playing all strings simultaneously\"]",
+    "correct_answer": "Thumb alternates between bass strings while fingers play melody",
+    "xp_reward": 130
+  },
+  {
+    "level_id": 283,
+    "question": "Why is finger independence important for advanced guitar playing?",
+    "options": "[\"It allows you to play faster scales\",\"It enables playing bass and melody simultaneously with one hand\",\"It makes chord changes easier\",\"It is only needed for classical guitar\"]",
+    "correct_answer": "It enables playing bass and melody simultaneously with one hand",
+    "xp_reward": 135
+  },
+  {
+    "level_id": 285,
+    "question": "What makes advanced Travis picking more challenging than the basic pattern?",
+    "options": "[\"Faster tempo required\",\"Adding chord changes while maintaining the picking pattern\",\"Using more fingers\",\"Playing without a thumb\"]",
+    "correct_answer": "Adding chord changes while maintaining the picking pattern",
+    "xp_reward": 140
+  },
+  {
+    "level_id": 287,
+    "question": "What creates the signature sound of master-level Travis picking?",
+    "options": "[\"Using all six strings at once\",\"Three-note thumb pattern cycling through root, fifth, and octave bass notes\",\"Playing without any chord changes\",\"Using only the pinky finger\"]",
+    "correct_answer": "Three-note thumb pattern cycling through root, fifth, and octave bass notes",
+    "xp_reward": 145
+  },
+  {
+    "level_id": 289,
+    "question": "What is the standard tremolo pattern in classical guitar?",
+    "options": "[\"i-m-i-m\",\"p-i-m-i\",\"m-i-p-m\",\"p-p-p-p\"]",
+    "correct_answer": "p-i-m-i",
+    "xp_reward": 150
   }
 ]

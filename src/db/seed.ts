@@ -96,7 +96,8 @@ async function seed() {
     for (let j = 0; j < levelTitles.length; j++) {
       const levelTitle = levelTitles[j];
       const difficulty = i < 2 ? "easy" : i < 5 ? "medium" : "hard";
-      const contentPath = `guitar/world-${i + 1}/level-${String(j + 1).padStart(3, '0')}.mdx`;
+      const levelNumber = i * 5 + j + 1;
+      const contentPath = `guitar/world-${i + 1}/level-${String(levelNumber).padStart(3, '0')}.mdx`;
 
       await db.execute({
         sql: `INSERT INTO levels (world_id, title, description, difficulty, xp_reward, order_index, is_locked, content_path)
@@ -128,6 +129,19 @@ async function seed() {
       await db.execute({
         sql: "INSERT INTO quizzes (level_id, question, options, correct_answer, xp_reward) VALUES (?, ?, ?, ?, ?)",
         args: [quiz.level_id, quiz.question, quiz.options, quiz.correct_answer, quiz.xp_reward]
+      });
+    }
+  }
+
+  // Seed exercises from generated JSON
+  const exercisesPath = path.join(process.cwd(), "src", "data", "exercises.json");
+  if (fs.existsSync(exercisesPath)) {
+    console.log("Seeding exercises...");
+    const exercises = JSON.parse(fs.readFileSync(exercisesPath, "utf-8"));
+    for (const exercise of exercises) {
+      await db.execute({
+        sql: "INSERT INTO exercises (level_id, type, question, options, correct_answer, data, xp_reward, order_index) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        args: [exercise.level_id, exercise.type, exercise.question, exercise.options, exercise.correct_answer, exercise.data, exercise.xp_reward, exercise.order_index]
       });
     }
   }
