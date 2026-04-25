@@ -34,10 +34,11 @@ interface ChordDiagramProps {
 function convertLegacyFingers(fingers: number[]): FingerPosition[] {
  return fingers
   .map((fret, idx) => {
-   if (fret <= 0) return null
-   return { string: idx, fret, finger: Math.ceil((idx + 1) / 2) }
+   if (fret <= -1) return null
+   // Legacy index 0 is Low E (string 6), index 5 is High e (string 1)
+   return { string: 6 - idx, fret, finger: Math.ceil((idx + 1) / 2) }
   })
-  .filter((f): f is FingerPosition => f !== null)
+  .filter((f): f is FingerPosition => f !== null && f.fret > 0)
 }
 
 const fingerColors = [
@@ -121,12 +122,28 @@ const ChordDiagramComponent = ({
  const stringNames = getStringNames()
 
  const mirroredFingers = useMemo(() => {
-  if (!leftHandMode) return fingers
-  return fingers.map((f) => ({
-   ...f,
-   string: 5 - f.string,
-  }))
- }, [fingers, leftHandMode])
+  return fingers
+ }, [fingers])
+
+ const mirroredOpenStrings = useMemo(() => {
+  return openStrings
+ }, [openStrings])
+
+ const mirroredMuteStrings = useMemo(() => {
+  return muteStrings
+ }, [muteStrings])
+
+ const marginLeft = 20
+ const stringSpacing = (config.width - marginLeft * 2) / 5
+
+ const getX = useCallback((string: number) => {
+  // string is 1-indexed (1=high e, 6=low E)
+  // Right hand: 6 is on left (index 0), 1 is on right (index 5)
+  // Left hand: 1 is on left (index 0), 6 is on right (index 5)
+  const baseIndex = 6 - string
+  const displayIndex = leftHandMode ? 5 - baseIndex : baseIndex
+  return marginLeft + displayIndex * stringSpacing
+ }, [leftHandMode, marginLeft, stringSpacing])
 
  const handleFretClick = useCallback(
   (stringIndex: number, fret: number) => {
@@ -148,10 +165,8 @@ const ChordDiagramComponent = ({
 
  const svgWidth = config.width
  const svgHeight = config.height
- const marginLeft = 20
  const marginTop = startFret > 1 ? 15 : 10
  const fretSpacing = (svgHeight - marginTop) / (frets + 1)
- const stringSpacing = (svgWidth - marginLeft * 2) / 5
 
  const isHighlighted = useCallback(
   (stringIndex: number, fretIndex: number) => {
@@ -170,8 +185,7 @@ const ChordDiagramComponent = ({
 
    <div
     className={cn(
-     "relative bg-background rounded-lg p-2 border-2 border-border transition-transform duration-300 ease-in-out",
-     leftHandMode && "scale-x-[-1]"
+     "relative bg-background rounded-lg p-2 border-2 border-border transition-all duration-300 ease-in-out"
     )}
     style={{ width: svgWidth, height: svgHeight }}
     role="img"
@@ -221,20 +235,20 @@ const ChordDiagramComponent = ({
       />
      ))}
 
-     {muteStrings.map((string) => (
+     {mirroredMuteStrings.map((string) => (
       <g key={`mute-${string}`}>
        <line
-        x1={marginLeft + (string - 1) * stringSpacing - 4}
+        x1={getX(string) - 4}
         y1={marginTop - 8}
-        x2={marginLeft + (string - 1) * stringSpacing + 4}
+        x2={getX(string) + 4}
         y2={marginTop - 2}
         stroke="#333"
         strokeWidth={2}
        />
        <line
-        x1={marginLeft + (string - 1) * stringSpacing - 4}
+        x1={getX(string) - 4}
         y1={marginTop - 2}
-        x2={marginLeft + (string - 1) * stringSpacing + 4}
+        x2={getX(string) + 4}
         y2={marginTop - 8}
         stroke="#333"
         strokeWidth={2}
@@ -242,10 +256,10 @@ const ChordDiagramComponent = ({
       </g>
      ))}
 
-     {openStrings.map((string) => (
+     {mirroredOpenStrings.map((string) => (
       <circle
        key={`open-${string}`}
-       cx={marginLeft + (string - 1) * stringSpacing}
+       cx={getX(string)}
        cy={marginTop + frets * fretSpacing + 8}
        r={config.circleR * 0.6}
        fill="transparent"
@@ -255,7 +269,7 @@ const ChordDiagramComponent = ({
      ))}
 
      {mirroredFingers.map((finger, idx) => {
-      const x = marginLeft + finger.string * stringSpacing
+      const x = getX(finger.string)
       const y = marginTop + (finger.fret - 0.5) * fretSpacing
       const isHov = hoveredFret?.string === finger.string && hoveredFret?.fret === finger.fret
       const isHl = isHighlighted(finger.string, finger.fret)
@@ -329,7 +343,7 @@ const ChordDiagramComponent = ({
 
     {hoveredFret && interactive && (
      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background px-2 py-0.5 rounded text-xs whitespace-nowrap">
-      String {hoveredFret.string + 1} · Fret {hoveredFret.fret}
+      String {hoveredFret.string} · Fret {hoveredFret.fret}
      </div>
     )}
    </div>

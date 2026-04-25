@@ -11,7 +11,9 @@ import { Progress } from "@/components/ui/progress"
 import { getExerciseById, warmUpExercises, type WarmUpExercise } from "@/data/warm-up-exercises"
 import { useMetronome } from "@/hooks/useMetronome"
 import { MetronomeControl } from "@/components/warm-up/MetronomeControl"
-import { SimpleFretboard, ChordFretboard } from "@/components/warm-up/SimpleFretboard"
+import { SimpleFretboard } from "@/components/warm-up/SimpleFretboard"
+import { ChordDiagram } from "@/components/guitar/ChordDiagram"
+import { useGuitarEngine } from "@/hooks/useGuitarEngine"
 import { chords, type ChordData } from "@/data/guitar/chords"
 import { cn } from "@/lib/utils"
 
@@ -29,6 +31,14 @@ export default function ExercisePage() {
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
   const [sessionTime, setSessionTime] = useState(0)
   const [isSessionActive, setIsSessionActive] = useState(false)
+
+  const { playChord, initialize: initAudio } = useGuitarEngine()
+
+  // Initialize audio on first interaction
+  const handleStartSession = async () => {
+    await initAudio()
+    setIsSessionActive(!isSessionActive)
+  }
 
   // Load progress
   useEffect(() => {
@@ -159,7 +169,7 @@ export default function ExercisePage() {
           <div className="text-2xl font-bold font-mono">{formatTime(sessionTime)}</div>
           <Button
             variant={isSessionActive ? "destructive" : "default"}
-            onClick={() => setIsSessionActive(!isSessionActive)}
+            onClick={handleStartSession}
           >
             {isSessionActive ? (
               <>
@@ -268,27 +278,28 @@ export default function ExercisePage() {
       {/* Chord Diagrams (for chord exercises) */}
       {exercise.chords && exercise.chords.length > 0 && (
         <div className="p-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Chord Reference</CardTitle>
+          <Card className="overflow-hidden border-primary/20 shadow-lg">
+            <CardHeader className="bg-primary/5 border-b border-primary/10">
+              <CardTitle className="text-base flex items-center justify-between">
+                <span>Chord Reference</span>
+                <Badge variant="outline" className="text-[10px] uppercase tracking-wider">Interactive</Badge>
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                 {exercise.chords.map((chordName) => {
                   const chord = getChordData(chordName)
                   if (!chord) return null
                   
                   return (
-                    <div key={chordName} className="text-center">
-                      <div className="font-medium mb-2">{chordName}</div>
-                      <ChordFretboard
-                        positions={chord.fingers.map(f => ({
-                          string: f.string,
-                          fret: f.fret,
-                          finger: f.finger
-                        }))}
-                        openStrings={chord.openStrings}
-                        muteStrings={chord.muteStrings}
+                    <div key={chordName} className="flex flex-col items-center bg-muted/30 p-4 rounded-xl border border-border/50 hover:border-primary/30 transition-all duration-300">
+                      <ChordDiagram
+                        chordName={chordName}
+                        size="md"
+                        showPlayButton={true}
+                        interactive={true}
+                        onPlayChord={(name) => playChord(name)}
+                        className="scale-90 sm:scale-100"
                       />
                     </div>
                   )
