@@ -12,7 +12,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useProgressStore } from "@/stores/progress";
-
+import {ResponsiveMenu} from "@/components/app-menu";
+import { menuItems } from "@/content/menu-items";
 const worlds = [
   { id: 1, title: "Beginner Basics", icon: "🎸", levels: 5, color: "from-green-400 to-green-600" },
   { id: 2, title: "Open Chords", icon: "🎵", levels: 5, color: "from-emerald-400 to-emerald-600" },
@@ -30,7 +31,6 @@ export default function HomePage() {
   const { t, isRTL, language, setLanguage } = useLanguage();
   const { xp, streak, levelsCompleted, dailyPracticeMinutes, dailyGoalMinutes, currentLevelId } = useProgressStore();
   const [isDarkMode, setIsDarkMode] = useState(false);
-
   const completedWorlds = Math.floor(levelsCompleted.length / 5);
   const dailyProgress = (dailyPracticeMinutes / dailyGoalMinutes) * 100;
 
@@ -41,26 +41,10 @@ export default function HomePage() {
           <div>
             <h1 className="text-2xl font-bold">{t.common.appName}</h1>
             <p className="text-sm text-white/80">{t.home.welcome}</p>
+            <ResponsiveMenu items={menuItems} />
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/warm-up">
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                <Flame className="w-4 h-4 mr-1.5" />
-                Warm-Up
-              </Button>
-            </Link>
-            <Link href="/tools">
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                <Wrench className="w-4 h-4 mr-1.5" />
-                Tools
-              </Button>
-            </Link>
-             <Link href="https://guitar-helper-steel.vercel.app" target="_blank">
-              <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
-                <Wrench className="w-4 h-4 mr-1.5" />
-                Guitar Helper
-              </Button>
-            </Link>
+         
             <Button
               variant="ghost"
               size="icon"
